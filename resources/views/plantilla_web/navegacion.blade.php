@@ -35,17 +35,11 @@
                                 href="JavaScript:void(0)" role="button" data-bs-toggle="dropdown"
                                 aria-expanded="false">Sedes</a>
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="/sedes/1">Villa Esperanza</a></li>
-                                <li><a class="dropdown-item" href="pages/about.html">Ancoraimes</a></li>
-                                <li><a class="dropdown-item" href="pages/alumni.html">Caranavi</a></li>
-                                <li><a class="dropdown-item" href="pages/blank.html">Coroico-Cruz Loma</a></li>
-                                <li><a class="dropdown-item" href="pages/blank.html">Guaqui</a></li>
-                                <li><a class="dropdown-item" href="pages/blank.html">Batallas</a></li>
-                                <li><a class="dropdown-item" href="pages/blank.html">Mapiri</a></li>
-                                <li><a class="dropdown-item" href="pages/blank.html">Palos Blancos</a></li>
-                                <li><a class="dropdown-item" href="pages/blank.html">Chaguaya</a></li>
-                                <li><a class="dropdown-item" href="pages/blank.html">Viacha</a></li>
-                                <li><a class="dropdown-item" href="pages/blank.html">San Pablo</a></li>
+                                @foreach ($sedes as $sede)
+                                    <li><a class="dropdown-item" href="/sedes/{{$sede->id}}">{{$sede->nombre}}</a></li>
+                                @endforeach
+                                
+                                
                             </ul>
                         </li>
                         <li class="nav-item dropdown"><a class="nav-link dropdown-toggle dropdown-indicator"

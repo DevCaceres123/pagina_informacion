@@ -13,16 +13,18 @@
         {{-- Selector de sede --}}
         <div class="card shadow-sm p-4 mb-5">
             <label for="sedeSelect" class="form-label fw-semibold">Selecciona una sede:</label>
-            <select id="sedeSelect" class="form-select">
-                <option value="sede1">Sede Central</option>
-                <option value="sede2">Sede Norte</option>
-                <option value="sede3">Sede Sur</option>
+            <select id="sedeSelect" class="form-select text-capitalize">
+                @foreach ($sedes as $sede)
+                    <option value="{{ $sede->id }}">{{ $sede->nombre }}</option>
+                @endforeach
+
+
             </select>
         </div>
 
         {{-- Información de la sede --}}
         <div class="card shadow-sm p-4 mb-5">
-            <h2 id="nombreSede" class="fw-bold mb-3">Sede Villa Esperanza</h2>
+            <h2 id="nombreSede" class="fw-bold mb-3 text-uppercase">{{ $sedeUnica->nombre }}</h2>
             <p id="descripcionSede" class="text-muted">Contamos con infraestructura moderna, laboratorios equipados y áreas
                 recreativas.</p>
 
@@ -42,7 +44,7 @@
         <div class="card shadow-sm p-4 mb-5">
             <h4 class="fw-bold mb-2">Resolución de Funcionamiento</h4>
             <p class="mb-3">Número de resolución: <span class="fw-semibold text-primary">RES-2025-00123</span></p>
-            <a href="{{ asset('resoluciones/sede_central_resolucion.pdf') }}" class="btn btn-success" download>
+            <a href="{{ asset('storage/resoluciones/' . $sedeUnica->resolucion_pdf) }}" class="btn btn-success" download>
                 📄 Descargar Resolución
             </a>
         </div>
@@ -118,21 +120,21 @@
         </h5>
         <div class="d-flex justify-content-center gap-3 mt-2">
             {{-- WhatsApp --}}
-            <a href="https://wa.me/" target="_blank"
+            <a href="https://api.whatsapp.com/send?phone={{$sedeUnica->whatsapp}}&text=Hola%20me%20gustaria%20que%20me%20ayuden%20%20en%20una%20duda" target="_blank"
                 class="btn btn-success rounded-circle d-flex align-items-center justify-content-center"
                 style="width: 70px; height: 70px;" title="WhatsApp">
                 <i class="fab fa-whatsapp fa-lg"></i>
             </a>
 
             {{-- Facebook --}}
-            <a href="#" target="_blank"
+            <a href="{{$sedeUnica->facebook}}" target="_blank"
                 class="btn btn-primary rounded-circle d-flex align-items-center justify-content-center"
                 style="width: 70px; height: 70px;" title="Facebook">
                 <i class="fab fa-facebook-f fa-lg"></i>
             </a>
 
             {{-- YouTube --}}
-            <a href="#" target="_blank"
+            <a href="{{$sedeUnica->youtobe}}" target="_blank"
                 class="btn btn-danger rounded-circle d-flex align-items-center justify-content-center"
                 style="width: 70px; height: 70px;" title="YouTube">
                 <i class="fab fa-youtube fa-lg"></i>
