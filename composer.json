@@ -6,6 +6,8 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "intervention/image": "^3.11",
+        "intervention/image-laravel": "^1.5",
         "laravel-lang/lang": "^15.8",
         "laravel/framework": "^11.9",
         "laravel/tinker": "^2.9",

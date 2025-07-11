@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-startbar="dark" data-bs-theme="light">
+<html lang="es" data-startbar="dark" data-bs-theme="light">
 
 <head>
     <meta charset="utf-8" />
@@ -15,55 +15,77 @@
     <link href="{{ asset('admin_template/css/bootstrap.min.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('admin_template/css/icons.min.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('admin_template/css/app.min.css') }}" rel="stylesheet" type="text/css" />
+    <style>
+        body {
+            background: url('assets/perfil3.jpeg') no-repeat center center;
+            background-size: cover;
+        }
 
+        .fondo {
+            width: 100%;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, .8);
+        }
+
+        #logo {
+            width: 75%;
+            height: 70%;
+            object-fit: contain;
+        }
+    </style>
 </head>
 
 <!-- Top Bar Start -->
+
 <body>
-    <div class="container-xxl">
-        <div class="row vh-100 d-flex justify-content-center">
-            <div class="col-12 align-self-center">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-lg-4 mx-auto">
-                            <div class="card">
-                                <div class="card-body p-0 bg-black auth-header-box rounded-top">
-                                    <div class="text-center p-3">
-                                        <a href="index.html" class="logo logo-admin">
-                                            <img src="{{ asset('admin_template/images/logo-sm.png') }}" height="50"
-                                                alt="logo" class="auth-logo">
-                                        </a>
-                                        <h4 class="mt-3 mb-1 fw-semibold text-white fs-18">LOGIN</h4>
-                                    </div>
-                                </div>
+    <div class="fondo">
+        <div class="container-xxl ">
+            <div class="row vh-100 d-flex justify-content-center">
+                <div class="col-12 align-self-center">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-lg-4 mx-auto">
+                                <div class="card rouneded">
+                                    <div class="card-body p-0 auth-header-box rounded-top">
 
-                                <div class="card-body pt-0">
-                                    <div class="text-center py-2" id="mensaje_error"></div>
-                                    <form id="formulario_login" autocomplete="off">
-                                        @csrf
-                                        <div class="form-group mb-2">
-                                            <label class="form-label" for="usuario">Usuario</label>
-                                            <input type="text" class="form-control" id="usuario" name="usuario"
-                                                placeholder="Ingrese usuario">
-                                        </div><!--end form-group-->
-
-                                        <div class="form-group">
-                                            <label class="form-label" for="password">Password</label>
-                                            <input type="password" class="form-control" name="password" id="password"
-                                                placeholder="Ingrese la contraseña">
-                                        </div><!--end form-group-->
-                                    </form>
-
-                                    <div class="form-group mb-0 row">
-                                        <div class="col-12">
-                                            <div class="d-grid mt-3">
-                                                <button class="btn btn-primary" type="button"
-                                                    id="btn_ingresar_usuario">INGRESAR <i
-                                                        class="fas fa-sign-in-alt ms-1"></i></button>
+                                        <div class="bg-holder"
+                                            style="background-image:url(pagina_template/assets/img/perfil3.jpeg);">
+                                            <div class="text-center p-3" style="background-color:rgba(0, 0, 0, .1);">
+                                                <img src="{{ asset('assets/logo_d.png') }}" alt="logo"
+                                                    class="auth-logo"id="logo">
                                             </div>
                                         </div>
+
                                     </div>
 
+                                    <div class="card-body pt-0 border rounded-bottom">
+                                        <div class="text-center py-2" id="mensaje_error"></div>
+                                        <form id="formulario_login" autocomplete="off">
+                                            @csrf
+                                            <div class="form-group mb-2">
+                                                <label class="form-label" for="usuario">Usuario</label>
+                                                <input type="text" class="form-control" id="usuario" name="usuario"
+                                                    placeholder="Ingrese usuario">
+                                            </div><!--end form-group-->
+
+                                            <div class="form-group">
+                                                <label class="form-label" for="password">Contraseña</label>
+                                                <input type="password" class="form-control" name="password"
+                                                    id="password" placeholder="Ingrese la contraseña">
+                                            </div><!--end form-group-->
+                                        </form>
+
+                                        <div class="form-group mb-0 row">
+                                            <div class="col-12">
+                                                <div class="d-grid mt-3">
+                                                    <button class="btn text-light btn-primary" type="button"
+                                                        id="btn_ingresar_usuario">INGRESAR <i
+                                                            class="fas fa-sign-in-alt ms-1"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -72,8 +94,6 @@
             </div>
         </div>
     </div>
-
-
 
 </body>
 

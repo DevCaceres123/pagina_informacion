@@ -6,8 +6,10 @@
                 <img src="{{ asset('admin_template/images/logo-sm.png') }}" alt="logo-small" class="logo-sm">
             </span>
             <span class="">
-                <img src="{{ asset('admin_template/images/logo-light.png') }}" alt="logo-large" class="logo-lg logo-light">
-                <img src="{{ asset('admin_template/images/logo-dark.png') }}" alt="logo-large" class="logo-lg logo-dark">
+                <img src="{{ asset('admin_template/images/logo-light.png') }}" alt="logo-large"
+                    class="logo-lg logo-light">
+                <img src="{{ asset('admin_template/images/logo-dark.png') }}" alt="logo-large"
+                    class="logo-lg logo-dark">
             </span>
         </a>
     </div>
@@ -22,8 +24,8 @@
                         <span>MENU</span>
                     </li>
                     <li class="nav-item">
-                        <a  class="nav-link" href="{{ route('inicio') }}" role="button"
-                            aria-expanded="false" aria-controls="sidebarDashboards">
+                        <a class="nav-link" href="{{ route('inicio') }}" role="button" aria-expanded="false"
+                            aria-controls="sidebarDashboards">
                             <i class="iconoir-home-simple menu-icon"></i>
                             <span>INICIO</span>
                         </a>
@@ -49,13 +51,36 @@
                             </ul><!--end nav-->
                         </div><!--end startbarApplications-->
                     </li><!--end nav-item-->
+
                     <li class="menu-label mt-2">
                         <small class="label-border">
                             <div class="border_left hidden-xs"></div>
                             <div class="border_right"></div>
                         </small>
-                        <span>NEGOCIO</span>
+                        <span>DATOS INSTITUCIONALES</span>
                     </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="#sedesCarreras" data-bs-toggle="collapse" role="button"
+                            aria-expanded="false" aria-controls="sedesCarreras">
+                            <i class="fas fa-home  menu-icon"></i>
+                            <span>SEDES Y CARRERAS</span>
+                        </a>
+                        <div class="collapse " id="sedesCarreras">
+                            <ul class="nav flex-column">
+
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ route('sedes.index') }}">Sedes</a>
+                                </li><!--end nav-item-->
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ route('carrera.index') }}">Carreras</a>
+                                </li><!--end nav-item-->
+                              
+                            </ul><!--end nav-->
+                        </div><!--end startbarApplications-->
+                    </li><!--end nav-item-->
+
+
                     {{-- <li class="nav-item">
                         <a class="nav-link" href="#sidebarElements" data-bs-toggle="collapse" role="button"
                             aria-expanded="false" aria-controls="sidebarElements">
