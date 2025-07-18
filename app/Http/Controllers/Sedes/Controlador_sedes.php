@@ -58,9 +58,10 @@ class Controlador_sedes extends Controller
     }
 
 
-    public function listarImagenes($id_sede){
+    public function listarImagenes($id_sede)
+    {
 
-        
+
         $imagenes = ImgSede::select('id', 'imagen')
             ->where('sede_id', $id_sede)
             ->get();
@@ -71,58 +72,79 @@ class Controlador_sedes extends Controller
             return response()->json($this->mensaje, 200);
         }
 
-       $this->mensaje('exito', $imagenes);
+        $this->mensaje('exito', $imagenes);
         return response()->json($this->mensaje, 200);
     }
 
-    // public function agregarImagenes(Request $request)
-    // {
+    public function agregarImagenes(Request $request, string $id_sede)
+    {
+        DB::beginTransaction();
+
+        try {
+
+            $sede = Sede::find($id_sede);
+            if (!$request->hasFile('nuevasImagenes')) {
+                throw new Exception('No se han enviado imágenes.');
+            }
+
+            $rutasGaleria = $this->guardarGaleria($request);
+            if (!empty($rutasGaleria)) {
+                foreach ($rutasGaleria as $ruta) {
+                    $imgSede = new ImgSede();
+                    $imgSede->descripcion = $sede->nombre;
+                    $imgSede->imagen = $ruta; // ruta relativa
+                    $imgSede->sede_id = $id_sede;
+                    $imgSede->save();
+
+                    $archivosGuardados[] = $ruta; // guardar para rollback
+                }
+            }
+
+            DB::commit();
+
+            $this->mensaje('exito', 'Imágenes subidas correctamente');
+            return response()->json($this->mensaje, 200);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            foreach ($archivosGuardados as $ruta) {
+                if (Storage::exists($ruta)) {
+                    Storage::delete($ruta);
+                }
+            }
+            $this->mensaje('error', 'error' . $e->getMessage());
+            return response()->json($this->mensaje, 200);
+        }
+    }
+
+
+    public function eliminarImagen(string $id_imagen){
+
         
+        DB::beginTransaction();
+        try {
+            $imagen = ImgSede::find($id_imagen);
+            if (!$imagen) {
+                throw new Exception('Imagen no encontrada');
+            }
+            // Eliminar la imagen del almacenamiento
+            if (Storage::disk('public')->exists('galeria_sedes/' . $imagen->imagen)) {
+                Storage::disk('public')->delete('galeria_sedes/' . $imagen->imagen);
+            }
+            // Eliminar el registro de la base de datos
+            $imagen->delete();
 
-    //     DB::beginTransaction();
-    //     $archivosGuardados = [];
+            DB::commit();
 
-    //     try {
-    //         foreach ($request->file('nuevasImagenes') as $imagen) {
-    //             $imgSede = new ImgSede();
-    //             $imgSede->descripcion = $request->id_sede; // Puedes cambiar esto según tu lógica
-    //             $imgSede->sede_id = $request->id_sede;
-
-    //             // Procesar la imagen
-    //             $manager = new ImageManager(new Driver());
-    //             $img = $manager->read($imagen->getPathname());
-    //             $img->resize(height: 800);
-    //             $encoded = $img->toJpg(80);
-
-    //             // Generar nombre único
-    //             $nombre = uniqid() . '.webp';
-    //             $ruta = storage_path("app/public/galeria_sedes/{$nombre}");
-    //             $encoded->save($ruta);
-
-    //             // Guardar la ruta relativa para la BD
-    //             $imgSede->imagen = str_replace('app/public/galeria_sedes/', '', $ruta);
-    //             $imgSede->save();
-
-    //             $archivosGuardados[] = $imgSede->imagen; // guardar para rollback
-    //         }
-
-    //         DB::commit();
-    //         $this->mensaje('exito', 'Imágenes agregadas correctamente');
-    //         return response()->json($this->mensaje, 200);
-    //     } catch (\Exception $e) {
-    //         DB::rollBack();
-    //         // Eliminar archivos si ocurre error
-    //         foreach ($archivosGuardados as $ruta) {
-    //             if (Storage::exists($ruta)) {
-    //                 Storage::delete($ruta);
-    //             }
-    //         }
-
-    //         $this->mensaje('error', 'Error al agregar imágenes: ' . $e->getMessage());
-    //         return response()->json($this->mensaje, 200);
-    //     }
-    // }
-
+            $this->mensaje('exito', 'Imagen eliminada correctamente');
+            return response()->json($this->mensaje, 200);
+        } catch (Exception $e) {
+            DB::rollBack();
+            $this->mensaje('error', 'error' . $e->getMessage());
+            return response()->json($this->mensaje, 200);
+        }
+    }
     /**
      * Show the form for creating a new resource.
      */
@@ -204,41 +226,47 @@ class Controlador_sedes extends Controller
     }
 
     // guardarmos las imagenes
+
     public function guardarGaleria(Request $request)
     {
-        $rutas = []; // Para almacenar las rutas de las imágenes guardadas
+        $rutas = [];
 
-        if ($request->hasFile('galeria')) {
-            // Inicializar el gestor de imágenes con el driver GD
-            $manager = new ImageManager(new Driver());
+        // Inicializar el gestor de imágenes con el driver GD
+        $manager = new ImageManager(new Driver());
 
-            foreach ($request->file('galeria') as $imagen) {
-                // Leer la imagen desde el archivo subido
-                $img = $manager->read($imagen->getPathname());
+        // Recorrer todos los archivos recibidos
+        foreach ($request->allFiles() as $inputName => $files) {
+            // Asegurar que sea un array para permitir múltiples archivos por input
+            $files = is_array($files) ? $files : [$files];
 
-                // Redimensionar manteniendo proporción con altura de 300px
-                $img->resize(height: 800);
+            foreach ($files as $imagen) {
+                // Validar que sea imagen antes de procesar
+                if (str_starts_with($imagen->getMimeType(), 'image/')) {
+                    // Leer la imagen
+                    $img = $manager->read($imagen->getPathname());
 
-                // Convertir a JPG con 80% de calidad
-                $encoded = $img->toJpg(80);
+                    // Redimensionar manteniendo proporción
+                    $img->resize(height: 800);
 
-                // Generar nombre único
-                $nombre = uniqid() . '.webp';
+                    // Convertir a WEBP con calidad 80
+                    $encoded = $img->toWebp(80);
 
-                // Ruta absoluta donde guardar
-                $ruta = storage_path("app/public/galeria_sedes/{$nombre}");
+                    // Generar nombre único
+                    $nombre = uniqid() . '.webp';
 
-                // Guardar la imagen procesada
-                $encoded->save($ruta);
+                    // Ruta de guardado
+                    $ruta = storage_path("app/public/galeria_sedes/{$nombre}");
 
-                $ruta = str_replace('app/public/galeria_sedes/', '', $ruta);
+                    // Guardar imagen procesada
+                    $encoded->save($ruta);
 
-                // Guardar la ruta relativa para la BD
-                $rutas[] = $nombre;
+                    // Guardar solo el nombre para BD
+                    $rutas[] = $nombre;
+                }
             }
         }
 
-        return $rutas; // Devuelve un array con las rutas para guardar en BD si deseas
+        return $rutas;
     }
 
     public function actualizar_pdf(Request $request, $id)

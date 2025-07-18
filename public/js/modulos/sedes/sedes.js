@@ -176,49 +176,22 @@ $("#formNuevaSede").on("submit", function (e) {
 
 // Validar al seleccionar imágenes
 $("#galeria").on("change", function () {
-    let archivos = this.files;
-    let maxSize = 3 * 1024 * 1024; // 2 MB en bytes
-
-    for (let i = 0; i < archivos.length; i++) {
-        let file = archivos[i];
-
-        if (!file.type.match("image.*")) {
-            mensajeAlerta("Solo se permiten imágenes.", "error");
-            $(this).val(""); // Limpiar input
-            break;
-        }
-
-        if (file.size > maxSize) {
-            mensajeAlerta(
-                `La imagen "${file.name}" excede el tamaño máximo de 2 MB.`,
-                "error"
-            );
-            $(this).val(""); // Limpiar input
-            break;
-        }
+    let archivo = this.files;
+    if (validarArchivos(archivo, "imagen") == false) {
+        $(this).val(""); // Limpiar input
     }
+
 });
 
 // Validar al seleccionar PDF
 $("#resolucion_archivo").on("change", function () {
     let archivo = this.files[0];
-    let maxSize = 1 * 1024 * 1024; // 5 MB en bytes
 
-    if (archivo) {
-        if (archivo.type !== "application/pdf") {
-            mensajeAlerta("Solo se permite PDF para la resolución.", "error");
-            $(this).val(""); // Limpiar input
-            return;
-        }
-
-        if (archivo.size > maxSize) {
-            mensajeAlerta(
-                `El archivo "${archivo.name}" excede el tamaño máximo de 5 MB.`,
-                "error"
-            );
-            $(this).val(""); // Limpiar input
-        }
+    if (validarArchivos(archivo, "pdf") == false) {
+        $(this).val(""); // Limpiar input
     }
+
+
 });
 
 // ver y editar la resolucion
@@ -392,10 +365,11 @@ function cargarGaleria(idSede) {
 }
 
 
+// Eliminar imagen de la galeria
 
 $(document).on("click", ".eliminar_imagen", function () {
     const idImagen = $(this).data("id");
-
+    
     Swal.fire({
         title: "¿Eliminar imagen?",
         text: "Esta acción no se puede deshacer.",
@@ -417,29 +391,30 @@ $(document).on("click", ".eliminar_imagen", function () {
     });
 });
 
+
 // Mostrar vistas previas al seleccionar imágenes
 $("#nuevasImagenes").on("change", function () {
-    
+
     const contenedorVistaPrevia = $("#vistaPreviaGaleria");
     contenedorVistaPrevia.empty(); // limpiar antes de cargar nuevas vistas previas
 
     const archivos = this.files;
 
-    if (archivos.length === 0) {
-        contenedorVistaPrevia.html("<p class='text-muted'>No hay imágenes seleccionadas.</p>");
-        return;
+    if (validarArchivos(archivos, "imagen") == false) {
+        $(this).val(""); // Limpiar input
     }
+
 
     Array.from(archivos).forEach((archivo) => {
         if (!archivo.type.match("image.*")) {
-            // Ignorar si no es imagen
+
             return;
         }
 
         const lector = new FileReader();
         lector.onload = function (e) {
             const imagenHtml = `
-                <div class="col-6 col-md-3 position-relative rounded border p-2" style="width: 300px; height: 180px;">
+                <div class="col-6 col-md-3 position-relative rounded border p-2 ms-2 mb-1" style="width: 300px; height: 180px;">
                     <img src="${e.target.result}" class="img-fluid " alt="Vista previa" style="width: 100%; height: 100%; object-fit: contain;">
                 </div>
             `;
@@ -450,28 +425,52 @@ $("#nuevasImagenes").on("change", function () {
 });
 
 
+// Agregar nuevos archivos de imagenes a la sede
+$("#formSubirImagenes").on("submit", function (e) {
 
-$("#btnAgregarImagenes").on("click", function () {
-    alert('dasdsa');
-    const files = document.getElementById("nuevasImagenes").files;
-    console.log(files);
+    e.preventDefault();
+
+    const input = document.getElementById("nuevasImagenes");
+    const files = input.files;
+
     if (files.length === 0) {
         mensajeAlerta("Selecciona imágenes para subir.", "error");
         return;
     }
 
-    const formData = new FormData();
+    // Validar que todos los archivos sean imágenes
     for (let i = 0; i < files.length; i++) {
-        formData.append("imagenes[]", files[i]);
+        if (!files[i].type.match("image.*")) {
+            mensajeAlerta(`El archivo ${files[i].name} no es una imagen válida.`, "error");
+            return;
+        }
     }
 
-    const idSede = $("#id_sede_actual").val(); // asegúrate de tener este input oculto para mantener el id actual
+    let formData = new FormData(this);
+
+    const idSede = $("#id_sede_actual").val();
+
+    // Opcional: Desactivar botón para evitar doble clic    
+    const btn = $("#btnAgregarImagenes");
+    btn.prop("disabled", true).html('<i class="ri-loader-4-line spin"></i> Subiendo...');
 
     crud("admin/agregarImagenes", "POST", idSede, formData, function (error, response) {
-        
-       
+        btn.prop("disabled", false).html('<i class="ri-upload-cloud-line me-1"></i> Subir Imágenes');
 
-    console.log(response);
+        if (error) {
+            mensajeAlerta("Error al subir imágenes.", "error");
+            console.error(error);
+            return;
+        }
+
+        if (response.tipo === "exito") {
+            mensajeAlerta(response.mensaje, "exito");
+            $("#nuevasImagenes").val(""); // Limpiar input
+            cargarGaleria(idSede); // Recargar galería
+            $("#vistaPreviaGaleria").empty(); // Limpiar vista previa
+        } else {
+            mensajeAlerta(response.mensaje, "error");
+        }
     });
 });
 
@@ -479,26 +478,57 @@ $("#btnAgregarImagenes").on("click", function () {
 
 
 
-$("#nuevasImagenes").on("change", function () {
-    let archivos = this.files;
-    let maxSize = 3 * 1024 * 1024; // 2 MB en bytes
+// funcion que nos servira para validar imagenes y pdf
+function validarArchivos(archivos, tipo) {
 
-    for (let i = 0; i < archivos.length; i++) {
-        let file = archivos[i];
+    const maxSizeImagen = 3 * 1024 * 1024; // 3 MB
+    const maxSizePdf = 2 * 1024 * 1024; // 5 MB
 
-        if (!file.type.match("image.*")) {
-            mensajeAlerta("Solo se permiten imágenes.", "error");
-            $(this).val(""); // Limpiar input
-            break;
-        }
+    if (tipo === "imagen") {
 
-        if (file.size > maxSize) {
-            mensajeAlerta(
-                `La imagen "${file.name}" excede el tamaño máximo de 2 MB.`,
-                "error"
-            );
-            $(this).val(""); // Limpiar input
-            break;
+
+        for (let i = 0; i < archivos.length; i++) {
+            const file = archivos[i];
+
+            if (!file.type.match("image.*")) {
+                mensajeAlerta(`El archivo "${file.name}" no es una imagen.`, "error");
+
+                return false;
+            }
+
+            if (file.size > maxSizeImagen) {
+                mensajeAlerta(
+                    `La imagen "${file.name}" excede el tamaño máximo de 3 MB.`,
+                    "error"
+                );
+
+                return false;
+            }
         }
     }
-});
+
+    if (tipo === "pdf") {
+
+
+        if (!archivos) {
+            mensajeAlerta("No se seleccionó ningún archivo.", "error");
+            return false;
+        }
+
+        if (archivos.type !== "application/pdf") {
+            mensajeAlerta(`El archivo "${archivos.name}" no es un PDF.`, "error");
+
+            return false;
+        }
+
+        if (archivos.size > maxSizePdf) {
+            mensajeAlerta(
+                `El archivo "${archivos.name}" excede el tamaño máximo de 2 MB.`,
+                "error"
+            );
+
+            return false;
+        }
+    }
+    return true; // Si pasa todas las validaciones
+}

@@ -13,6 +13,18 @@ use App\Http\Middleware\No_autenticados;
 use Illuminate\Support\Facades\Route;
 use Intervention\Image\Facades\Image;
 
+Route::get('/', function () {
+    return view('plantilla_web/paginas/inicio');
+})->name('login');
+
+
+Route::controller(Controlador_pagina::class)->group(function () {
+    Route::get('/noticias/{id}', 'noticias')->name('noticias.show');
+    Route::get('/sedes/{id}', 'sedes')->name('pagina.sedes');
+    Route::get('/inicio', 'inicio')->name('pagina.inicio');
+});
+
+
 Route::prefix('/')->middleware([No_autenticados::class])->group(function () {
 
 
@@ -24,14 +36,7 @@ Route::prefix('/')->middleware([No_autenticados::class])->group(function () {
         Route::post('ingresar', 'ingresar')->name('log_ingresar');
     });
 });
-Route::get('/', function () {
-    return view('plantilla_web/paginas/inicio');
-})->name('login');
-Route::controller(Controlador_pagina::class)->group(function () {
-    Route::get('/noticias/{id}', 'noticias')->name('noticias.show');
-    Route::get('/sedes/{id}', 'sedes')->name('pagina.sedes');
-    Route::get('/inicio', 'inicio')->name('pagina.inicio');
-});
+
 
 Route::prefix('/admin')->middleware([Autenticados::class])->group(function () {
     Route::controller(Controlador_login::class)->group(function () {
@@ -39,21 +44,25 @@ Route::prefix('/admin')->middleware([Autenticados::class])->group(function () {
         Route::post('cerrar_session', 'cerrar_session')->name('salir');
     });
 
+    // CONTROLADOR PARA LOS USAURIOS
     Route::controller(Controlador_usuario::class)->group(function () {
         Route::get('perfil', 'perfil')->name('perfil');
         Route::post('pwd_guardar', 'password_guardar')->name('pwd_guardar');
     });
 
 
+    // CONTROLADOR PARA LAS SEDES
     Route::controller(Controlador_sedes::class)->group(function () {
         Route::resource('sedes', Controlador_sedes::class);
         Route::get('listarSedes', 'listarSedes')->name('sede.listar');
         Route::post('resolucion/{id}/actualizar_pdf', 'actualizar_pdf')->name('sede.pdf');
         Route::get('listarImagenes/{id_sede}', 'listarImagenes')->name('sede.listarImagenes');
-        Route::post('agregarImagenes', 'agregarImagenes')->name('sede.agregarImagenes');
+        Route::post('agregarImagenes/{id_sede}', 'agregarImagenes')->name('sede.agregarImagenes');
+        Route::delete('eliminarImagen/{id_sede}', 'eliminarImagen')->name('sede.eliminarImagen');
     });
 
 
+    // CONTROLADOR PARA LAS CARRERAS
     Route::controller(Controlador_carrera::class)->group(function () {
         Route::resource('carrera', Controlador_carrera::class);
         Route::get('listarCarreras', 'listarCarreras')->name('sede.carreras');

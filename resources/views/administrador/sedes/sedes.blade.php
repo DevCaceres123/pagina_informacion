@@ -273,6 +273,7 @@
     </div>
 
     {{-- modal para ver las imagenes de la sede --}}
+    {{-- modal para ver las imagenes de la sede --}}
     <div class="modal fade" id="modalGaleria" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-xl modal-dialog-centered">
             <div class="modal-content shadow">
@@ -283,21 +284,30 @@
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <input type="hidden" id="id_sede_actual">
-                    <div class="mb-3">
-                        <label for="nuevasImagenes" class="form-label">Agregar nuevas imágenes</label>
-                        <input type="file" id="nuevasImagenes" name="nuevasImagenes[]" class="form-control" accept="image/*" multiple>
-                        <button id="btnAgregarImagenes" class="btn btn-success btn-sm mt-2">
-                            <i class="ri-upload-cloud-line me-1"></i> Subir Imágenes
-                        </button>
-                    </div>
+                    
+
+                    {{-- Formulario de subida --}}
+                    <form id="formSubirImagenes" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label for="nuevasImagenes" class="form-label">Agregar nuevas imágenes</label>
+                            <input type="hidden" id="id_sede_actual">
+                            <input type="file" id="nuevasImagenes" name="nuevasImagenes[]" class="form-control"
+                                accept="image/*" multiple>
+                            <button type="submit" id="btnAgregarImagenes" class="btn btn-success btn-sm mt-2">
+                                <i class="ri-upload-cloud-line me-1"></i> Subir Imágenes
+                            </button>
+                        </div>
+                    </form>
+
+                    {{-- Contenedor de imágenes existentes --}}
                     <div id="galeriaContenedor" class="row g-2"></div>
 
+                    {{-- Vista previa de nuevas imágenes seleccionadas --}}
                     <div class="mt-3">
                         <label class="form-label">
                             <i class="ri-image-line me-1"></i> Vista previa de imágenes seleccionadas
                         </label>
-                        <div id="vistaPreviaGaleria" class="row g-2"></div>
+                        <div id="vistaPreviaGaleria" class="row container d-flex"></div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -308,6 +318,7 @@
             </div>
         </div>
     </div>
+
 
 @endsection
 
