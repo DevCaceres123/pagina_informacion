@@ -13,11 +13,12 @@ return new class extends Migration
     {
         Schema::create('puntos_salidas', function (Blueprint $table) {
             $table->id();
-            $table->string('descripcion', 150);
-            $table->unsignedBigInteger('ubicacion_id');
-            $table->foreign('ubicacion_id')
+            $table->string('ubicacion', 150);
+            $table->unsignedBigInteger('sede_id');
+            $table->timestamp('deleted_at')->nullable();
+            $table->foreign('sede_id')        
                 ->references('id')
-                ->on('ubicacion_sedes')
+                ->on('sedes')
                 ->onDelete('restrict')
                 ->onUpdate('cascade');
             $table->timestamps();

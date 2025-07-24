@@ -14,6 +14,7 @@ return new class () extends Migration {
             $table->id();
             $table->string('ubicacion', 100);
             $table->unsignedBigInteger('sede_id');
+            $table->timestamp('deleted_at')->nullable();
             $table->foreign('sede_id')
                 ->references('id')
                 ->on('sedes')
@@ -24,9 +25,9 @@ return new class () extends Migration {
         // Campos geoespaciales
         // Asegura que PostGIS esté disponible
         DB::statement('CREATE EXTENSION IF NOT EXISTS postgis');
-        DB::statement("ALTER TABLE ubicacion_sedes ADD COLUMN punto geometry(Point, 4326)");
-        DB::statement("ALTER TABLE ubicacion_sedes ADD COLUMN poligono geometry(Polygon, 4326)");
-        DB::statement("ALTER TABLE ubicacion_sedes ADD COLUMN linea geometry(LineString, 4326)");
+        // B::statement("ALTER TABLE ubicacion_sedes ADD COLUMN punto geometry(Point, 4326) NULL");
+        DB::statement("ALTER TABLE ubicacion_sedes ADD COLUMN poligono geometry(Polygon, 4326) NULL");
+        // DB::statement("ALTER TABLE ubicacion_sedes ADD COLUMN linea geometry(LineString, 4326)");
     }
 
     /**

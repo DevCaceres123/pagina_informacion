@@ -59,6 +59,10 @@ Route::prefix('/admin')->middleware([Autenticados::class])->group(function () {
         Route::get('listarImagenes/{id_sede}', 'listarImagenes')->name('sede.listarImagenes');
         Route::post('agregarImagenes/{id_sede}', 'agregarImagenes')->name('sede.agregarImagenes');
         Route::delete('eliminarImagen/{id_sede}', 'eliminarImagen')->name('sede.eliminarImagen');
+        Route::get('ubicacionSede/{id_sede}', 'ubicacionSede')->name('sede.ubicacionSede');
+        Route::post('guardarUbicaciones', 'guardarUbicaciones')->name('sede.guardarUbicaciones');
+        Route::put('eliminarUbicacion/{id_ubicacion}', 'eliminarUbicacion')->name('sede.eliminarUbicacion');
+        Route::put('actualizarUbicacion/{id_ubicacion}', 'actualizarUbicacion')->name('sede.eliminarUbicacion');
     });
 
 

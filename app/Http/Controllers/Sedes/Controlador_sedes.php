@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Sede;
 use App\Models\ImgSede;
+use App\Models\UbicacionSedes;
+use App\Models\PuntosSalida;
 use Illuminate\Support\Facades\DB;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
@@ -119,9 +121,10 @@ class Controlador_sedes extends Controller
     }
 
 
-    public function eliminarImagen(string $id_imagen){
+    public function eliminarImagen(string $id_imagen)
+    {
 
-        
+
         DB::beginTransaction();
         try {
             $imagen = ImgSede::find($id_imagen);
@@ -366,7 +369,7 @@ class Controlador_sedes extends Controller
         try {
             $sede = Sede::find($id);
             if (!$sede) {
-                throw new Exception('Afiliado no encontrado');
+                throw new Exception('Sede no encontrado');
             }
 
             $sede->delete();
@@ -381,6 +384,178 @@ class Controlador_sedes extends Controller
 
             $this->mensaje("error", "error" . $e->getMessage());
 
+            return response()->json($this->mensaje, 200);
+        }
+    }
+
+
+    // listamos todas las ubicaciones de la sede
+    public function ubicacionSede($id_sede)
+    {
+        $sede = Sede::find($id_sede);
+
+        $poligonos = DB::table('ubicacion_sedes')
+            ->selectRaw("id, ubicacion, ST_AsGeoJSON(poligono)::json as geometry")
+            ->where('sede_id', $id_sede)
+            ->whereNotNull('poligono')
+            ->whereNull('deleted_at')  // listamos todos aquellos que no se hayan eliminado
+            ->get()
+            ->map(function ($p) {
+                $p->geometry = json_decode($p->geometry);
+                return $p;
+            });
+
+        $puntos = DB::table('puntos_salidas')
+            ->selectRaw("puntos_salidas.id, puntos_salidas.ubicacion, ST_AsGeoJSON(punto)::json as geometry")
+            ->join('ubicacion_sedes', 'puntos_salidas.sede_id', '=', 'ubicacion_sedes.id')
+            ->where('puntos_salidas.sede_id', $id_sede)
+            ->whereNotNull('punto')
+            ->whereNull('puntos_salidas.deleted_at') // listamos todos aquellos que no se hayan eliminado
+            ->get()
+            ->map(function ($p) {
+                $p->geometry = json_decode($p->geometry);
+                return $p;
+            });
+
+
+        return view('administrador.sedes.mapas', [
+            'sede' => $sede,
+            'poligonos' => $poligonos,
+            'puntos' => $puntos
+        ]);
+    }
+
+
+
+    public function guardarUbicaciones(Request $request)
+    {
+        $nombre = $request->input('nombre');
+        $idSede = $request->input('idSede') ?? null;
+        $geojson = json_decode($request->input('geojson'), true);
+
+        if (!$geojson || !isset($geojson['features'])) {
+            return response()->json([
+                'tipo' => 'errores',
+                'mensaje' => 'No se recibió un geojson válido.'
+            ]);
+        }
+
+        try {
+            DB::beginTransaction();
+
+            foreach ($geojson['features'] as $feature) {
+                $geometryType = $feature['geometry']['type'];
+                $geometryJson = json_encode($feature['geometry']);
+                $nombreFeature = $feature['properties']['nombre'] ?? $nombre;
+
+                if ($geometryType === 'Polygon' || $geometryType === 'MultiPolygon') {
+                    $ubicacion = new UbicacionSedes();
+                    $ubicacion->ubicacion = $nombreFeature;
+                    $ubicacion->sede_id = $idSede;
+                    $ubicacion->poligono = DB::raw("ST_GeomFromGeoJSON('{$geometryJson}')");
+                    $ubicacion->save();
+                }
+
+                if ($geometryType === 'Point') {
+                    $puntoSalida = new PuntosSalida();
+                    $puntoSalida->ubicacion = $nombreFeature;
+                    $puntoSalida->sede_id = $idSede; // Cambio aquí
+                    $puntoSalida->punto = DB::raw("ST_GeomFromGeoJSON('{$geometryJson}')");
+                    $puntoSalida->save();
+                }
+            }
+            DB::commit();
+
+            $this->mensaje("exito", "Ubicacion Agregada Correctamente");
+
+            return response()->json($this->mensaje, 200);
+        } catch (Exception $e) {
+            // Revertir los cambios si hay algún error
+            DB::rollBack();
+
+            $this->mensaje("error", "error" . $e->getMessage());
+
+            return response()->json($this->mensaje, 200);
+        }
+
+    }
+
+
+    public function eliminarUbicacion(String $id_ubicacion, Request $request)
+    {
+
+        $tipo = $request->input('geometry.type'); // ✅ obtener tipo correctamente
+
+        DB::beginTransaction();
+        try {
+            if ($tipo === 'Point') {
+                // Es un punto: buscar en puntos_salida
+                $punto = PuntosSalida::find($id_ubicacion);
+                if (!$punto) {
+                    throw new Exception('Punto de salida no encontrado');
+                }
+                $punto->delete();
+            } elseif ($tipo === 'Polygon' || $tipo === 'MultiPolygon') {
+                // Es un polígono: buscar en ubicacion_sedes
+                $ubicacion = UbicacionSedes::find($id_ubicacion);
+                if (!$ubicacion) {
+                    throw new Exception('Ubicación no encontrada');
+                }
+                $ubicacion->delete();
+            } else {
+                throw new Exception('Tipo de geometría no reconocido');
+            }
+
+            DB::commit();
+
+            $this->mensaje('exito', 'Ubicación eliminada correctamente');
+            return response()->json($this->mensaje, 200);
+        } catch (Exception $e) {
+            DB::rollBack();
+            $this->mensaje('error', 'Error: ' . $e->getMessage());
+            return response()->json($this->mensaje, 200);
+        }
+    }
+
+    // editar ubocacion
+    public function actualizarUbicacion(String $id_ubicacion, Request $request)
+    {
+        DB::beginTransaction();
+        try {
+            $geometry = $request->input('geometry');
+            $tipo = $geometry['type'] ?? null;
+            $nombre = $request->input('nombre');
+
+
+            if ($tipo !== 'Point' && $tipo != 'Polygon' && $tipo != 'MultiPolygon') {
+                throw new Exception('Tipo de geometría no reconocido');
+            }
+            if ($tipo === 'Point') {
+                // Es un punto: buscar en puntos_salida
+                $punto = PuntosSalida::find($id_ubicacion);
+                if (!$punto) {
+                    throw new Exception('Punto de salida no encontrado');
+                }
+                $punto->punto = DB::raw("ST_GeomFromGeoJSON('" . json_encode($geometry) . "')");
+                $punto->save();
+
+            } elseif ($tipo === 'Polygon' || $tipo === 'MultiPolygon') {
+                // Es un polígono: buscar en ubicacion_sedes
+                $ubicacion = UbicacionSedes::find($id_ubicacion);
+                if (!$ubicacion) {
+                    throw new Exception('Ubicación no encontrada');
+                }
+                $ubicacion->poligono = DB::raw("ST_GeomFromGeoJSON('" . json_encode($geometry) . "')");
+                $ubicacion->save();
+            }
+
+            DB::commit();
+
+            $this->mensaje('exito', 'Ubicación actualizada correctamente');
+            return response()->json($this->mensaje, 200);
+        } catch (Exception $e) {
+            DB::rollBack();
+            $this->mensaje('error', 'Error: ' . $e->getMessage());
             return response()->json($this->mensaje, 200);
         }
     }

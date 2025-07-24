@@ -3,13 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-
+use Illuminate\Database\Eloquent\SoftDeletes;
 class PuntosSalida extends Model
 {
-    protected $table = 'puntos_salida';
+    use SoftDeletes;
+    protected $table = 'puntos_salidas';
     //
     public function ubicacionSede()
     {
-        return $this->belongsTo('App\Models\UbicacionSedes');
+        return $this->belongsTo('App\Models\Sede');
     }
 }

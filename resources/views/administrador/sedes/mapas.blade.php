@@ -1,0 +1,86 @@
+@extends('principal')
+@section('titulo', 'Mapa de Lugares y Puntos de Transbordo')
+
+@section('contenido')
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css" />
+
+    <div class="container mt-4">
+        <h3 class="mb-3">Registrar ubicación geoespacial</h3>
+
+        @if (session('success'))
+            <div class="alert alert-success">{{ session('success') }}</div>
+        @endif
+
+        <form id="guardarUbicaciones">
+
+            <div class="row">
+                <!-- MAPA -->
+                <div class="col-md-8 mb-3">
+                    <div id="map" style="height: 500px; border: 1px solid #ccc;"></div>
+                </div>
+
+                <!-- PANEL DERECHO -->
+                <div class="col-md-4 mb-3">
+                    <div class="card mb-3">
+                        <div class="card-header">Agregar ubicación</div>
+                        <div class="card-body">
+                            <div class="mb-2">
+                                <label class="form-label">Nombre de la ubicación</label>
+                                <input type="text" name="nombre" id="nombre" class="form-control">
+                                <input type="hidden" name="idSede" id="idSede" value="{{ $sede->id ?? '' }}">
+                            </div>
+
+                            <div class="mb-2">
+                                <label class="form-label">Tipo de geometría</label>
+                                <select id="tipo" class="form-select" required>
+                                    <option value="">Selecciona tipo</option>
+                                    <option value="punto">🟢 Punto</option>
+                                    <option value="poligono">🟩 Polígono</option>
+                                </select>
+                            </div>
+
+                            <div class="text-end">
+                                <button type="button" id="activarDibujo" class="btn btn-primary btn-sm">Agregar Ubuicación
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header bg-danger text-light text-uppercase">Información Registrada</div>                        
+                        <div class="card-body">
+                            <h6>Puntos agregados</h6>
+                            <hr>
+                            <ul id="info-puntos" class="list-group small mb-1 text-capitalize text-muted"></ul>
+
+                            <h6>Polígonos agregados</h6>
+                            <hr>
+                            <ul id="info-poligonos" class="list-group small text-capitalize text-muted"></ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <input type="hidden" name="geojson" id="geojson">
+
+            <div class="text-end">
+                <button type="submit" class="btn btn-success">Guardar ubicación</button>
+            </div>
+        </form>
+    </div>
+
+@endsection
+
+@section('scripts')
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
+    <script>
+        const POLIGONOS = @json($poligonos);
+        const PUNTOS = @json($puntos);
+    </script>
+    <script src="{{ asset('js/modulos/sedes/mapas.js') }}" type="module"></script>
+
+@endsection

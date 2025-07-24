@@ -128,7 +128,7 @@ function listar_afiliado() {
                         }
 
                           ${permisosGlobal.eliminar
-                            ? ` <a class="btn btn-sm btn-outline-success px-2 d-inline-flex align-items-center editar_afiliado me-1" data-id="${row.id}" title="Agregar Rutas">
+                            ? ` <a href='ubicacionSede/${row.id}' class="btn btn-sm btn-outline-success px-2 d-inline-flex align-items-center editar_afiliado me-1" data-id="${row.id}" title="Agregar Rutas">
                             <i class="fas fa-map-marked fs-16"></i>
                         </a>`
                             : ``
@@ -468,6 +468,8 @@ $("#formSubirImagenes").on("submit", function (e) {
             $("#nuevasImagenes").val(""); // Limpiar input
             cargarGaleria(idSede); // Recargar galería
             $("#vistaPreviaGaleria").empty(); // Limpiar vista previa
+
+            
         } else {
             mensajeAlerta(response.mensaje, "error");
         }
