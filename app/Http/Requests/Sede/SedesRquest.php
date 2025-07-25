@@ -39,6 +39,16 @@ class SedesRquest extends BasePrincipalRequest
                     'facebook' => 'nullable|url|max:255',
                     'youtube' => 'nullable|url|max:255',
                 ];
+            case 'sede.actualizarDatos':
+                return [
+                    'nombre_edit' => 'required|max:50|min:5',
+                    'descripcion_edit' => 'required|max:100|min:5',
+                    'resolucion_numero_edit' => 'required|max:100|min:5',                   
+                    'whatsapp_edit' => 'nullable|regex:/^\d{8}$/',
+                    'facebook_edit' => 'nullable|url|max:255',
+                    'youtube_edit' => 'nullable|url|max:255',
+                ];
+
 
             default:
                 return [];

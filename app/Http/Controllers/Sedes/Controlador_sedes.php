@@ -320,9 +320,54 @@ class Controlador_sedes extends Controller
      */
     public function edit(string $id)
     {
-        //
+
+        $sede = Sede::Find($id);
+        if (!$sede) {
+            $this->mensaje('error', 'Sede no encontrada');
+            return response()->json($this->mensaje, 200);
+        }
+        $this->mensaje("exito", $sede);
+
+        return response()->json($this->mensaje, 200);
     }
 
+
+    public function actualizarDatos(SedesRquest $request)
+    {
+        
+        DB::beginTransaction();
+        try {
+            // Encontrar el usuario por ID
+            $sede = Sede::find($request->id_sede_edit);
+            if (!$sede) {
+                throw new Exception('Sede no encontrada');
+            }
+
+            // Actualizar los campos
+            $sede->nombre = $request->nombre_edit;
+            $sede->descripcion = $request->descripcion_edit;
+            $sede->resolucion = $request->resolucion_numero_edit;
+            $sede->whatsapp = $request->whatsapp_edit;
+            $sede->facebook = $request->facebook_edit;
+            $sede->youtobe = $request->youtube_edit;
+
+            // Guardar la sede actualizada
+            $sede->save();
+
+            DB::commit();
+
+            $this->mensaje("exito", "Datos actualizados correctamente");
+
+            return response()->json($this->mensaje, 200);
+        } catch (Exception $e) {
+            // Revertir los cambios si hay algún error
+            DB::rollBack();
+
+            $this->mensaje("error", "error" . $e->getMessage());
+
+            return response()->json($this->mensaje, 200);
+        }
+    }
     /**
      * Update the specified resource in storage.
      */

@@ -23,6 +23,7 @@
                                 <tr>
                                     <th>Nº</th>
                                     <th>SEDE</th>
+                                    <th>DESCRIPCION</th>
                                     <th>RESOLUCION</th>
                                     <th>CARREAS</th>
                                     <th>ESTADO</th>
@@ -151,14 +152,14 @@
                                 </div>
                             </div>
                             {{-- SECCIÓN: UBICACIÓN --}}
-                            <div class="row border border-3 rounded m-auto position-relative mt-3 p-2">
+                            {{-- <div class="row border border-3 rounded m-auto position-relative mt-3 p-2">
                                 <div class="position-absolute" style="top:0px; left:38%; margin-top: -15px;">
                                     <div class="d-inline p-1 border rounded border-danger bg-danger text-light">
                                         <i class="fas fa-map-marker-alt me-1"></i> UBICACIÓN
                                     </div>
                                 </div>
 
-                                {{-- URL de Google Maps --}}
+                                
                                 <div class="form-group py-2 col-12 mt-2">
                                     <label class="form-label">
                                         <i class="fas fa-link me-1"></i> URL DE GOOGLE MAPS
@@ -168,7 +169,7 @@
                                     <div id="_mapa_url">
                                     </div>
                                 </div>
-                            </div>
+                            </div> --}}
 
                         </div>
 
@@ -319,6 +320,145 @@
         </div>
     </div>
 
+
+
+      <!-- MODAL EDITAR-->
+    <div class="modal fade" id="modalSedeEdit" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="modalSedeLabel" aria-hidden="true">
+        <div class="modal-dialog modal-center modal-lg" role="document">
+            <div class="modal-content shadow">
+                <div class="modal-header bg-black text-light">
+                    <h4 class="modal-title">
+                        <span class="badge badge-outline-light rounded">
+                            <i class="fas fa-university me-1"></i>EDITAR SEDE
+                        </span>
+                    </h4>
+                    <span class="ms-3">Campos obligatorios <strong class="text-danger">(*)</strong></span>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="formNuevaSedeEdit" >
+
+                        <div class="container">
+
+                            {{-- SECCIÓN: DATOS DE LA SEDE --}}
+                            <div class="row border border-3 rounded m-auto position-relative mt-3 p-2">
+                                <div class="position-absolute" style="top:0px; left:35%; margin-top: -15px;">
+                                    <div class="d-inline p-1 border rounded border-danger bg-danger text-light">
+                                        <i class="fas fa-building me-1"></i> DATOS DE LA SEDE
+                                    </div>
+                                </div>
+
+                                {{-- Nombre --}}
+                                <div class="form-group py-2 col-12 col-md-6 mt-2">
+                                    <label class="form-label">
+                                        <i class="fas fa-tag me-1"></i> NOMBRE DE LA SEDE <strong
+                                            class="text-danger">(*)</strong>
+                                    </label>
+                                    <input type="hidden" name="id_sede_edit" id="id_sede_edit">
+                                    <input type="text" class="form-control rounded text-uppercase" name="nombre_edit"
+                                        id="nombre_edit" required>
+                                    <div id="_nombre_edit">
+
+                                    </div>
+                                </div>
+
+                                {{-- Descripción --}}
+                                <div class="form-group py-2 col-12 col-md-6 mt-2">
+                                    <label class="form-label">
+                                        <i class="fas fa-align-left me-1"></i> DESCRIPCIÓN <strong
+                                            class="text-danger">(*)</strong>
+                                    </label>
+                                    <textarea name="descripcion_edit" id="descripcion_edit" rows="2" class="form-control rounded text-uppercase" required></textarea>
+                                    <div id="_descripcion_edit">
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            {{-- SECCIÓN: DATOS DE RESOLUCIÓN --}}
+                            <div class="row border border-3 rounded m-auto position-relative mt-3 p-2">
+                                <div class="position-absolute" style="top:0px; left:31%; margin-top: -15px;">
+                                    <div class="d-inline p-1 border rounded border-danger bg-danger text-light">
+                                        <i class="fas fa-file-alt me-1"></i> DATOS DE LA RESOLUCIÓN
+                                    </div>
+                                </div>
+
+                                {{-- Número de resolución --}}
+                                <div class="form-group py-2 col-12 col-md-12 mt-2">
+                                    <label class="form-label">
+                                        <i class="fas fa-hashtag me-1"></i> NÚMERO DE RESOLUCIÓN <strong
+                                            class="text-danger">(*)</strong>
+                                    </label>
+                                    <input type="text" class="form-control rounded text-uppercase"
+                                        name="resolucion_numero_edit" id="resolucion_numero_edit" required>
+                                    <div id="_resolucion_numero_edit">
+                                    </div>
+                                </div>                              
+                            </div>                        
+
+                        </div>
+
+                        {{-- SECCIÓN: REDES SOCIALES --}}
+                        <div class="row border border-3 rounded m-auto position-relative mt-4 p-2">
+                            <div class="position-absolute" style="top:0px; left:40%; margin-top: -15px;">
+                                <div class="d-inline p-1 border rounded border-danger bg-danger text-light">
+                                    <i class="fas fa-map-marker-alt me-1"></i> SOCIAL
+                                </div>
+                            </div>
+                            {{-- Facebook --}}
+                            <div class="form-group py-2 col-12 col-md-6 mt-2">
+                                <label class="form-label">
+                                    <i class="fab fa-facebook me-1"></i> URL DE FACEBOOK
+                                </label>
+                                <input type="url" class="form-control rounded" name="facebook_edit" id="facebook_edit"
+                                    placeholder="https://facebook.com/tu_pagina">
+                                <div id="_facebook_edit">
+
+                                </div>
+                            </div>
+
+                            {{-- YouTube --}}
+                            <div class="form-group py-2 col-12 col-md-6 mt-2">
+                                <label class="form-label">
+                                    <i class="fab fa-youtube me-1"></i> URL DE YOUTUBE
+                                </label>
+                                <input type="url" class="form-control rounded" name="youtube_edit" id="youtube_edit"
+                                    placeholder="https://youtube.com/tu_canal">
+                                <div id="_youtube_edit">
+
+                                </div>
+
+                            </div>
+                            {{-- WhatsApp --}}
+                            <div class="form-group py-2 col-12 col-md-4 mt-2">
+                                <label class="form-label">
+                                    <i class="fab fa-whatsapp me-1"></i> NÚMERO DE WHATSAPP
+                                </label>
+                                <input type="text" class="form-control rounded" name="whatsapp_edit" id="whatsapp_edit"
+                                    placeholder="Ej:1234567">
+                                <div id="_whatsapp_edit">
+                                </div>
+                            </div>
+
+
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger rounded btn-sm" data-bs-dismiss="modal">
+                                <i class="fas fa-times-circle me-1"></i> Cerrar
+                            </button>
+                            <button type="submit" class="btn btn-success rounded btn-sm" id="btn_guardar_sede-edit">
+                                <i class="ri-save-3-line me-1 align-middle"></i> Guardar
+                            </button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
 @endsection
 

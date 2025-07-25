@@ -44,6 +44,15 @@ function listar_afiliado() {
                 },
             },
             {
+                data: "descripcion",
+                className: "table-td text-uppercase",
+                render: function (data) {
+                    return `                            
+                        ${data}
+                    `;
+                },
+            },
+            {
                 data: "resolucion",
                 className: "table-td text-uppercase",
                 render: function (data) {
@@ -107,7 +116,7 @@ function listar_afiliado() {
                         }
                       
                              ${permisosGlobal.eliminar
-                            ? ` <a class="btn btn-sm btn-outline-warning px-2 d-inline-flex align-items-center editar_afiliado me-1" data-id="${row.id}" title="Editar Sede">
+                            ? ` <a class="btn btn-sm btn-outline-warning px-2 d-inline-flex align-items-center editar_sede me-1" data-id="${row.id}" title="Editar Sede">
                             <i class="fas fa-pencil-alt fs-16"></i>
                         </a>`
                             : ``
@@ -128,7 +137,7 @@ function listar_afiliado() {
                         }
 
                           ${permisosGlobal.eliminar
-                            ? ` <a href='ubicacionSede/${row.id}' class="btn btn-sm btn-outline-success px-2 d-inline-flex align-items-center editar_afiliado me-1" data-id="${row.id}" title="Agregar Rutas">
+                            ? ` <a href='ubicacionSede/${row.id}' class="btn btn-sm btn-outline-success px-2 d-inline-flex align-items-center me-1" data-id="${row.id}" title="Agregar Rutas">
                             <i class="fas fa-map-marked fs-16"></i>
                         </a>`
                             : ``
@@ -369,7 +378,7 @@ function cargarGaleria(idSede) {
 
 $(document).on("click", ".eliminar_imagen", function () {
     const idImagen = $(this).data("id");
-    
+
     Swal.fire({
         title: "¿Eliminar imagen?",
         text: "Esta acción no se puede deshacer.",
@@ -391,6 +400,61 @@ $(document).on("click", ".eliminar_imagen", function () {
     });
 });
 
+// Editar sede
+$(document).on("click", ".editar_sede", function () {
+    const idImagen = $(this).data("id");
+    let id_sede = $(this).data('id'); // Obtener el id del alumno desde el data-id
+
+    crud("admin/sedes", "GET", id_sede + '/edit', null, function (error, response) {
+
+        console.log(response);
+
+        if (response.tipo != "exito") {
+            mensajeAlerta(response.mensaje, response.tipo);
+            return;
+        }
+        $('#id_sede_edit').val(response.mensaje.id);
+        $('#nombre_edit').val(response.mensaje.nombre);
+        $('#descripcion_edit').val(response.mensaje.descripcion);
+        $('#resolucion_numero_edit').val(response.mensaje.resolucion);
+        $('#facebook_edit').val(response.mensaje.facebook);
+        $('#youtube_edit').val(response.mensaje.youtobe);
+        $('#whatsapp_edit').val(response.mensaje.whatsapp);
+
+        $('#modalSedeEdit').modal('show')
+        // si todo esta correcto muestra el mensaje de correcto
+    })
+});
+
+
+
+$("#formNuevaSedeEdit").on("submit", function (e) {
+    e.preventDefault();
+    $("#btn_guardar_sede-edit").prop("disabled", true);
+    let formData = new FormData(this);
+    vaciar_errores("formNuevaSedeEdit");
+
+    crud("admin/actualizarDatos", "POST", null, formData, function (error, response) {
+        $("#btn_guardar_sede-edit").prop("disabled", false);
+        // console.log(response);
+
+        // Verificamos que no haya un error o que todos los campos sean llenados
+        if (response.tipo === "errores") {
+            mensajeAlerta(response.mensaje, "errores");
+            return;
+        }
+        if (response.tipo != "exito") {
+            mensajeAlerta(response.mensaje, response.tipo);
+            return;
+        }
+
+        // //si todo esta correcto muestra el mensaje de correcto
+        $("#modalSedeEdit").modal("hide");
+        vaciar_formulario("formNuevaSedeEdit");
+        mensajeAlerta(response.mensaje, response.tipo);
+        actualizarTabla();
+    });            
+});
 
 // Mostrar vistas previas al seleccionar imágenes
 $("#nuevasImagenes").on("change", function () {
@@ -469,7 +533,7 @@ $("#formSubirImagenes").on("submit", function (e) {
             cargarGaleria(idSede); // Recargar galería
             $("#vistaPreviaGaleria").empty(); // Limpiar vista previa
 
-            
+
         } else {
             mensajeAlerta(response.mensaje, "error");
         }
