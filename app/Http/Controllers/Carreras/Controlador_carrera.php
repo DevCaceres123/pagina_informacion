@@ -113,6 +113,39 @@ class Controlador_carrera extends Controller
         }
     }
 
+    public function cambiarEstado(Request $request, string $id)
+    {
+        
+        DB::beginTransaction();
+        try {
+
+            // Encontrar el usuario por ID
+            $carrera = Carrera::find($id);
+            if (!$carrera) {
+                throw new Exception('Afiliado no encontrado');
+            }
+            if ($request->estado == "activo") {
+                $carrera->estado = "inactivo";
+            }
+            if ($request->estado == "inactivo") {
+                $carrera->estado = "activo";
+            }
+
+            $carrera->save();
+            DB::commit();
+
+            $this->mensaje("exito", "Estado cambiado Correctamente");
+
+            return response()->json($this->mensaje, 200);
+        } catch (Exception $e) {
+            // Revertir los cambios si hay algún error
+            DB::rollBack();
+
+            $this->mensaje("error", "error" . $e->getMessage());
+
+            return response()->json($this->mensaje, 200);
+        }
+    }
     /**
      * Display the specified resource.
      */

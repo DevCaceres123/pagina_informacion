@@ -188,6 +188,36 @@ $(document).on("click", ".eliminar_carrera", function () {
 });
 
 
+// cambiar estado carrera
+$("#tabla_listar_carreras").on("click", ".cambiar_estado_carrera", function (e) {
+    e.preventDefault(); // Evitar que el enlace recargue la página
+
+    // Obtener el valor de data-id
+    var dataId = $(this).data("id");
+
+    // Separar el id y el estado
+    var values = dataId.split(",");
+
+    let datos = {        
+        estado: values[1],
+    };
+
+    crud("admin/cambiarEstado", "PUT", values[0], datos, function (error, response) {
+        if (response.tipo === "errores") {
+            mensajeAlerta(response.mensaje, "errores");
+            return;
+        }
+        if (response.tipo != "exito") {
+            mensajeAlerta(response.mensaje, response.tipo);
+            return;
+        }
+
+        mensajeAlerta(response.mensaje, response.tipo);
+
+        actualizarTabla();
+    });
+});
+
 // Validar al seleccionar imágenes
 $("#malla_curricular").on("change", function () {
      let archivo = this.files[0];

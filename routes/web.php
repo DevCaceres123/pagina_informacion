@@ -70,7 +70,8 @@ Route::prefix('/admin')->middleware([Autenticados::class])->group(function () {
     // CONTROLADOR PARA LAS CARRERAS
     Route::controller(Controlador_carrera::class)->group(function () {
         Route::resource('carrera', Controlador_carrera::class);
-        Route::get('listarCarreras', 'listarCarreras')->name('sede.carreras');
+        Route::get('listarCarreras', 'listarCarreras')->name('carrera.listarCarreras');
+        Route::put('cambiarEstado/{id_carrera}', 'cambiarEstado')->name('carrera.cambiarEstado');
     });
 
 
