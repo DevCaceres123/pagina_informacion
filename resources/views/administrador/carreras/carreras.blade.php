@@ -40,24 +40,25 @@
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content shadow">
                 <div class="modal-header bg-black text-white">
-                    <h5 class="modal-title">
-                        <i class="ri-graduation-cap-line me-2"></i> Agregar Nueva Carrera
-                    </h5>
+                    <span class="badge badge-outline-light rounded">
+                        <i class="fas fa-university me-1"></i> CREAR NUEVA CARRERA
+                    </span>
+                    <span class="ms-3">Campos obligatorios <strong class="text-danger">(*)</strong></span>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body p-4">
                     <form id="formCarrera" enctype="multipart/form-data">
                         @csrf
 
                         {{-- SELECCIONAR SEDE --}}
                         <div class="mb-3">
-                            <label for="sede_id" class="form-label">
-                                Sede <strong class="text-danger">*</strong>
+                            <label class="form-label">
+                                <i class="fas fa-school me-1"></i> SELECCIONAR SEDE <strong class="text-danger">(*)</strong>
                             </label>
-                            <select name="sede_id" id="sede_id" class="form-select"  required>
-                                <option selected disabled>Seleccione una sede</option>
+                            <select name="sede_id" id="sede_id" class="form-select text-capitalize" required>
+                                <option selected disabled>seleccionar</option>
                                 @foreach ($sedes as $sede)
-                                    <option value="{{ $sede->id }}">{{ $sede->nombre }}</option>
+                                    <option class="text-capitalize" value="{{ $sede->id }}">{{ $sede->nombre }}</option>
                                 @endforeach
                             </select>
                             <div id="_sede_id" class="text-danger small"></div>
@@ -65,8 +66,9 @@
 
                         {{-- NOMBRE DE LA CARRERA --}}
                         <div class="mb-3">
-                            <label for="nombre" class="form-label">
-                                Nombre de la Carrera <strong class="text-danger">*</strong>
+                            <label class="form-label">
+                                <i class="fas fa-graduation-cap me-1"></i> NOMBRE DE LA CARRERA <strong
+                                    class="text-danger">(*)</strong>
                             </label>
                             <input type="text" name="nombre" id="nombre" class="form-control text-uppercase"
                                 required>
@@ -75,21 +77,21 @@
 
                         {{-- MODALIDAD --}}
                         <div class="mb-3">
-                            <label for="modalidad" class="form-label">
-                                Modalidad <strong class="text-danger">*</strong>
+                            <label class="form-label">
+                                <i class="fas fa-calendar-alt me-1"></i>MODALIDAD <strong class="text-danger">(*)</strong>
                             </label>
                             <select name="modalidad" id="modalidad" class="form-select" required>
                                 <option value="">Seleccione una opción</option>
-                                <option value="Semestral">Semestral</option>
-                                <option value="Anual">Anual</option>
+                                <option value="semestral">Semestral</option>
+                                <option value="anual">Anual</option>
                             </select>
                             <div id="_modalidad" class="text-danger small"></div>
                         </div>
 
                         {{-- MALLA CURRICULAR --}}
                         <div class="mb-3">
-                            <label for="malla_curricular" class="form-label">
-                                Malla Curricular (PDF)
+                            <label class="form-label">
+                                <i class="fas fa-file-pdf me-1"></i>MALLA CURRICULAR (PDF) <strong class="text-danger"></strong>
                             </label>
                             <input type="file" name="malla_curricular" id="malla_curricular" class="form-control"
                                 accept="application/pdf">
@@ -98,8 +100,8 @@
 
                         {{-- VINCULO WEB --}}
                         <div class="mb-3">
-                            <label for="vinculo_web" class="form-label">
-                                Vínculo Web
+                            <label class="form-label">
+                                <i class="fas fa-globe me-1"></i>SITIO WEB<strong class="text-danger"></strong>
                             </label>
                             <input type="url" name="vinculo_web" id="vinculo_web" class="form-control"
                                 placeholder="https://">
@@ -107,11 +109,11 @@
                         </div>
 
                         <div class="text-end">
-                            <button type="submit" class="btn btn-success">
-                                <i class="ri-save-3-line me-1"></i> Guardar Carrera
+                            <button type="submit" class="btn btn-primary btn-sm" id="btnGuardarCarrera">                                
+                               <i class="fas fa-save me-1"></i> Guardar Carrera
                             </button>
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                                <i class="ri-close-line me-1"></i> Cancelar
+                            <button type="button" class="btn btn-danger btn-sm" data-bs-dismiss="modal">
+                                <i class="fas fa-times-circle me-1"></i> Cancelar
                             </button>
                         </div>
                     </form>

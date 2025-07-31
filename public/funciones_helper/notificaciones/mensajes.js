@@ -44,7 +44,7 @@ const notificaciones = {
   'errores': (obj) => {
 
     try {
-      console.log(obj);
+      // console.log(obj);
       for (let key in obj) {
         // console.log(key);
         document.getElementById('_' + key).innerHTML = `<p class="text-danger">${obj[key]}</p>`;

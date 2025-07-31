@@ -6,6 +6,12 @@ use App\Models\Sede;
 use App\Models\Carrera;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
+use Illuminate\Support\Facades\Storage;
+use App\Http\Requests\Carrera\CarrerasRequest;
+
 
 class Controlador_carrera extends Controller
 {
@@ -14,7 +20,7 @@ class Controlador_carrera extends Controller
      */
     public function index()
     {
-        $sedes = Sede::all();
+        $sedes = Sede::all()->where('estado', 'activo');
         return view('administrador.carreras.carreras', compact('sedes'));
     }
 
@@ -64,9 +70,47 @@ class Controlador_carrera extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(CarrerasRequest $request)
     {
-        //
+        
+        DB::beginTransaction();
+
+        try {
+            // Guardar la sede
+            $carrera = new Carrera();
+            $carrera->nombre = $request->nombre;
+            $carrera->modalidad = $request->modalidad;
+            $carrera->estado = 'activo';
+            $carrera->usuario_id = auth()->user()->id;
+            $carrera->sede_id = $request->sede_id;
+            $carrera->vinculo_web = $request->vinculo_web;
+            // Guardar el PDF si se envió
+            $rutaPdf = $this->guardarPdf($request);
+            if ($rutaPdf) {
+                $carrera->malla_curricular_pdf = $rutaPdf;
+                $archivosGuardados[] = $rutaPdf; // guardar para rollback
+            }
+
+            
+            $carrera->save();
+
+
+            DB::commit();
+
+            $this->mensaje('exito', 'Carrera registrada correctamente');
+            return response()->json($this->mensaje, 200);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            // Eliminar archivos si ocurre error
+            foreach ($archivosGuardados as $ruta) {
+                if (Storage::disk('public')->exists('mallas_curriculares/'. $ruta)) {
+                    Storage::disk('public')->delete('mallas_curriculares/'. $ruta);
+                }
+            }
+
+            $this->mensaje('error', 'error' . $e->getMessage());
+            return response()->json($this->mensaje, 200);
+        }
     }
 
     /**
@@ -93,11 +137,34 @@ class Controlador_carrera extends Controller
         //
     }
 
+
+    public function guardarPdf(Request $request)
+    {
+        if ($request->hasFile('malla_curricular')) {
+            $archivo = $request->file('malla_curricular');
+            $ruta = $archivo->store('mallas_curriculares', 'public'); // se guarda en storage/app/public/mallas_curriculares
+            return str_replace('mallas_curriculares/', '', $ruta); // devuelve: resoluciones/archivo.pdf
+        }
+        return null;
+    }
+
+
+
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(string $id)
     {
         //
+    }
+
+
+    // Mensaje para mostrar al usuario
+    public function mensaje($titulo, $mensaje)
+    {
+        $this->mensaje = [
+            'tipo' => $titulo,
+            'mensaje' => $mensaje,
+        ];
     }
 }

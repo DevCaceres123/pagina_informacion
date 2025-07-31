@@ -13,12 +13,14 @@ return new class extends Migration
     {
         Schema::create('carreras', function (Blueprint $table) {
             $table->id();
-            $table->string('nombre')->unique();
-            $table->string('descripcion', 150);
+            $table->string('nombre');
             $table->enum('modalidad', ['semestral', 'anual']);
             $table->enum('estado', ['activo', 'inactivo']);
             $table->string('malla_curricular_pdf')->nullable();
+            $table->string('vinculo_web')->nullable();
             $table->unsignedBigInteger('sede_id');
+            $table->unsignedBigInteger('usuario_id');
+            $table->timestamp('deleted_at')->nullable();
             $table->foreign('sede_id')
                 ->references('id')
                 ->on('sedes')
