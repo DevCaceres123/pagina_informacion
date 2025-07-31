@@ -155,7 +155,27 @@ class Controlador_carrera extends Controller
      */
     public function destroy(string $id)
     {
-        //
+         DB::beginTransaction();
+        try {
+            $carrera = Carrera::find($id);
+            if (!$carrera) {
+                throw new Exception('Carrera no encontrado');
+            }
+
+            $carrera->delete();
+
+            DB::commit();
+
+            $this->mensaje("exito", "Carrera eliminada correctamente");
+
+            return response()->json($this->mensaje, 200);
+        } catch (Exception $e) {
+            DB::rollBack();
+
+            $this->mensaje("error", "error" . $e->getMessage());
+
+            return response()->json($this->mensaje, 200);
+        }
     }
 
 

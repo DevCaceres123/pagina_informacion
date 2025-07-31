@@ -95,14 +95,14 @@ function listar_carreras() {
 
                          ${permisosGlobal.eliminar
                             ? `
-                        <a class="btn btn-sm btn-outline-danger px-2 d-inline-flex align-items-center eliminar_sede me-1" data-id="${row.id}" title="Eliminar carrera">
+                        <a class="btn btn-sm btn-outline-danger px-2 d-inline-flex align-items-center eliminar_carrera me-1" data-id="${row.id}" title="Eliminar carrera">
                             <i class="fas fa-window-close fs-16"></i>
                         </a>
                             `
                             : ``
                         }                      
                              ${permisosGlobal.eliminar
-                            ? ` <a class="btn btn-sm btn-outline-warning px-2 d-inline-flex align-items-center editar_afiliado me-1" data-id="${row.id}" title="Editar carrera">
+                            ? ` <a class="btn btn-sm btn-outline-warning px-2 d-inline-flex align-items-center editar_carrera me-1" data-id="${row.id}" title="Editar carrera">
                             <i class="fas fa-pencil-alt fs-16"></i>
                         </a>`
                             : ``
@@ -151,6 +151,41 @@ $("#formCarrera").on("submit", function (e) {
 
 
 
+// eliminar carrera
+$(document).on("click", ".eliminar_carrera", function () {
+    let id = $(this).data("id");
+
+    Swal.fire({
+        title: "NOTA!",
+        text: "¿Está seguro de Eliminar la carrera?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Sí, Estoy seguro",
+        cancelButtonText: "Cancelar",
+    }).then(async function (result) {
+        if (result.isConfirmed) {
+            crud("admin/carrera", "DELETE", id, null, function (error, response) {
+                console.log(response);
+                // Verificamos que no haya un error o que todos los campos sean llenados
+                if (response.tipo === "errores") {
+                    mensajeAlerta(response.mensaje, "errores");
+                    return;
+                }
+                if (response.tipo != "exito") {
+                    mensajeAlerta(response.mensaje, response.tipo);
+                    return;
+                }
+                // si todo esta correcto muestra el mensaje de correcto
+                mensajeAlerta(response.mensaje, response.tipo);
+                actualizarTabla();
+            });
+        } else {
+            alerta_top("error", "Se canceló la eliminacion");
+        }
+    });
+});
 
 
 // Validar al seleccionar imágenes
