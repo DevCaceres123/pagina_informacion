@@ -305,7 +305,7 @@ $(document).on("click", ".eliminar_sede", function () {
     });
 });
 
-// cambiar estado afiliado
+// cambiar estado sede
 $("#tabla_listar_sedes").on("click", ".cambiar_estado_sede", function (e) {
     e.preventDefault(); // Evitar que el enlace recargue la página
 
@@ -407,7 +407,7 @@ $(document).on("click", ".editar_sede", function () {
 
     crud("admin/sedes", "GET", id_sede + '/edit', null, function (error, response) {
 
-        console.log(response);
+        // console.log(response);
 
         if (response.tipo != "exito") {
             mensajeAlerta(response.mensaje, response.tipo);

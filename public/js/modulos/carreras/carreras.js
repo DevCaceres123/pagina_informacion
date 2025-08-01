@@ -47,7 +47,7 @@ function listar_carreras() {
                 data: "modalidad",
                 className: "table-td text-uppercase",
                 render: function (data) {
-                     return `                            
+                    return `                            
                         <span class="badge rounded-pill p-2 bg-success">${data}</span>
                     `;
                 },
@@ -106,7 +106,14 @@ function listar_carreras() {
                             <i class="fas fa-pencil-alt fs-16"></i>
                         </a>`
                             : ``
-                        }                                                                   
+                        } 
+                        ${permisosGlobal.eliminar
+                            ? ` <a class="btn btn-sm btn-outline-info px-2 d-inline-flex align-items-center verMallaCurricular me-1" data-id="${row.id}" data-malla='${row.malla_curricular_pdf}' title="Ver Malla curricular">
+                            <i class="fas fa-file-pdf fs-16"></i>
+                        </a>`
+                            : ``
+                        } 
+                                                                                                              
                         </div>`;
                 },
             },
@@ -128,7 +135,7 @@ $("#formCarrera").on("submit", function (e) {
     // console.log(formData);
     vaciar_errores("formCarrera");
     crud("admin/carrera", "POST", null, formData, function (error, response) {
-       $("#btnGuardarCarrera").prop("disabled", false);
+        $("#btnGuardarCarrera").prop("disabled", false);
         // console.log(response);
 
         // Verificamos que no haya un error o que todos los campos sean llenados
@@ -198,7 +205,7 @@ $("#tabla_listar_carreras").on("click", ".cambiar_estado_carrera", function (e) 
     // Separar el id y el estado
     var values = dataId.split(",");
 
-    let datos = {        
+    let datos = {
         estado: values[1],
     };
 
@@ -218,9 +225,145 @@ $("#tabla_listar_carreras").on("click", ".cambiar_estado_carrera", function (e) 
     });
 });
 
-// Validar al seleccionar imágenes
+
+// mostrar modal editar
+$(document).on("click", ".editar_carrera", function () {
+
+    const idImagen = $(this).data("id");
+    let id_carrera = $(this).data('id'); // Obtener el id del alumno desde el data-id
+
+
+    crud("admin/carrera", "GET", id_carrera + '/edit', null, function (error, response) {
+
+        // console.log(response);
+
+        if (response.tipo != "exito") {
+            mensajeAlerta(response.mensaje, response.tipo);
+            return;
+        }
+
+        $('#id_carrera').val(response.mensaje.id);
+        $('#nombre_edit').val(response.mensaje.nombre);
+        $('#modalidad_edit').val(response.mensaje.modalidad);
+        $('#sede_id_edit').val(response.mensaje.sede.id);
+        $('#vinculo_web_edit').val(response.mensaje.vinculo_web);
+
+        $('#modalCarreraEditar').modal('show');
+
+        // si todo esta correcto muestra el mensaje de correcto
+    })
+});
+
+
+// actualizar datos de carrera
+
+
+$("#formCarreraEditar").on("submit", function (e) {
+    e.preventDefault();
+    $("#btnGuardarCarreraedit").prop("disabled", true);
+
+    let datos = {
+        nombre: $('#nombre_edit').val(),
+        modalidad: $('#modalidad_edit').val(),
+        sede_id: $('#sede_id_edit').val(),
+        vinculo_web: $('#vinculo_web_edit').val(),
+        // agrega más campos si los tienes
+    };
+
+    let id_carrera = $('#id_carrera').val();
+    vaciar_errores("formCarreraEditar");
+
+    crud("admin/carrera", "PUT", id_carrera, datos, function (error, response) {
+        $("#btnGuardarCarreraedit").prop("disabled", false);
+        // console.log(response);
+
+        // Verificamos que no haya un error o que todos los campos sean llenados
+        if (response.tipo === "errores") {
+            mensajeAlerta(response.mensaje, "errores");
+            return;
+        }
+        if (response.tipo != "exito") {
+            mensajeAlerta(response.mensaje, response.tipo);
+            return;
+        }
+
+        // //si todo esta correcto muestra el mensaje de correcto
+        $("#modalCarreraEditar").modal("hide");
+        vaciar_formulario("formCarreraEditar");
+        mensajeAlerta(response.mensaje, response.tipo);
+        actualizarTabla();
+    });
+});
+
+
+
+
+$(document).on("click", ".verMallaCurricular", function () {
+    let id = $(this).data("id");
+    let malla_curiicular = $(this).data("malla");
+    // Opcional: Mostrar loader aquí
+
+    // Asumiendo que tu controlador devuelve la ruta en response.data.resolucion_pdf
+    let pdfUrl = `/storage/mallas_curriculares/${malla_curiicular}`;
+    $("#iframeMalla").attr("src", pdfUrl);
+    $("#modalVerMalla").modal("show");
+
+    // Guardar el ID actual para actualizar
+    $("#btnActualizarMalla").data("id", id);
+});
+
+
+// Actualizar PDF
+$("#btnActualizarMalla").on("click", function () {
+    let id = $(this).data("id");
+    let archivo = $("#nuevoPdf")[0].files[0];
+    // console.log(archivo);
+    if (!archivo) {
+        mensajeAlerta("Selecciona un archivo PDF para actualizar.", "error");
+        return;
+    }
+
+    let formData = new FormData();
+    formData.append("malla_curricular", archivo);
+    formData.append("id", id);
+    // console.log(formData);
+    $("#btnActualizarMalla").prop("disabled", true);
+
+    crud(
+        `admin/malla/${id}/actualizar_malla`,
+        "POST",
+        null,
+        formData,
+        function (error, response) {
+            $("#btnActualizarMalla").prop("disabled", false);
+            // console.log(response);
+
+            if (response.tipo != "exito") {
+                mensajeAlerta(response.mensaje, response.tipo);
+                return;
+            }
+
+            //si todo esta correcto muestra el mensaje de correcto
+            $("#modalVerMalla").modal("hide");
+            mensajeAlerta(response.mensaje, response.tipo);
+            actualizarTabla();
+        }
+    );
+});
+
+
+$("#nuevoPdf").on("change", function () {
+    let archivo = this.files[0];
+    if (validarArchivos(archivo, "pdf") == false) {
+        $(this).val(""); // Limpiar input
+    }
+});
+
+
+
+// Validar al seleccionar pdf
 $("#malla_curricular").on("change", function () {
-     let archivo = this.files[0];
+    let archivo = this.files[0];
     if (validarArchivos(archivo, "pdf") == false) {
         $(this).val(""); // Limpiar input
     }

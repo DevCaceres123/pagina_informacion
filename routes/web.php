@@ -72,6 +72,7 @@ Route::prefix('/admin')->middleware([Autenticados::class])->group(function () {
         Route::resource('carrera', Controlador_carrera::class);
         Route::get('listarCarreras', 'listarCarreras')->name('carrera.listarCarreras');
         Route::put('cambiarEstado/{id_carrera}', 'cambiarEstado')->name('carrera.cambiarEstado');
+        Route::post('malla/{id_carrera}/actualizar_malla', 'actualizar_malla')->name('carrera.actualizar_malla');
     });
 
 

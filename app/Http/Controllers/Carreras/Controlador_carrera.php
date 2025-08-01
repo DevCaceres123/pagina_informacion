@@ -12,7 +12,6 @@ use Intervention\Image\Drivers\Gd\Driver;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\Carrera\CarrerasRequest;
 
-
 class Controlador_carrera extends Controller
 {
     /**
@@ -72,7 +71,7 @@ class Controlador_carrera extends Controller
      */
     public function store(CarrerasRequest $request)
     {
-        
+
         DB::beginTransaction();
 
         try {
@@ -91,7 +90,7 @@ class Controlador_carrera extends Controller
                 $archivosGuardados[] = $rutaPdf; // guardar para rollback
             }
 
-            
+
             $carrera->save();
 
 
@@ -115,7 +114,7 @@ class Controlador_carrera extends Controller
 
     public function cambiarEstado(Request $request, string $id)
     {
-        
+
         DB::beginTransaction();
         try {
 
@@ -159,17 +158,98 @@ class Controlador_carrera extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $carrera = Carrera::with([
+            'sede' => function ($query) {
+                $query->select(['id','nombre']); // CORREGIDO
+            },
+        ])->select('id', 'nombre', 'modalidad', 'vinculo_web', 'sede_id')->first();
+
+        if (!$carrera) {
+            $this->mensaje('error', 'Sede no encontrada');
+            return response()->json($this->mensaje, 200);
+        }
+        $this->mensaje("exito", $carrera);
+
+        return response()->json($this->mensaje, 200);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, string $id_carrera)
     {
-        //
+        DB::beginTransaction();
+        try {
+
+            // Encontrar el usuario por ID
+            $carrera = Carrera::find($id_carrera);
+            if (!$carrera) {
+                throw new Exception('Carrera no encontrado');
+            }
+
+            $carrera->nombre = $request->nombre;
+            $carrera->modalidad	= $request->modalidad;
+            $carrera->sede_id = $request->sede_id;
+            $carrera->vinculo_web = $request->vinculo_web;
+
+            $carrera->save();
+            DB::commit();
+
+            $this->mensaje("exito", "Carrera editada Correctamente");
+
+            return response()->json($this->mensaje, 200);
+        } catch (Exception $e) {
+            // Revertir los cambios si hay algún error
+            DB::rollBack();
+
+            $this->mensaje("error", "error" . $e->getMessage());
+
+            return response()->json($this->mensaje, 200);
+        }
     }
 
+    public function actualizar_malla(Request $request)
+    {
+        DB::beginTransaction();
+
+        try {
+            $carrera = Carrera::findOrFail($request->id); // más seguro
+            $borrarArchivo=$carrera->malla_curricular_pdf;
+            $nombreArchivo = null;
+
+            if ($request->hasFile('malla_curricular')) {
+
+               
+                // Guardar nuevo archivo
+                $archivo = $request->file('malla_curricular');
+                $ruta = $archivo->store('mallas_curriculares', 'public');
+                $nombreArchivo = basename($ruta);
+
+                // Asignar nuevo nombre de archivo
+                $carrera->malla_curricular_pdf = $nombreArchivo;
+                $carrera->save();                                
+            }
+
+            DB::commit();
+
+             // Eliminar archivo anterior si se guardo una nueva mmalla
+            Storage::disk('public')->delete('mallas_curriculares/' . $borrarArchivo);
+            
+            $this->mensaje('exito', 'Malla Curricular actualizada correctamente');
+            return response()->json($this->mensaje, 200);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            // // Si se subió un nuevo archivo, eliminarlo manualmente
+            if ($nombreArchivo) {
+                Storage::disk('public')->delete('mallas_curriculares/' . $nombreArchivo);
+            }
+
+            $this->mensaje('error', 'Error al actualizar la malla curricular: ' . $e->getMessage());
+            return response()->json($this->mensaje, 200);
+        }
+    }
 
     public function guardarPdf(Request $request)
     {
@@ -188,7 +268,7 @@ class Controlador_carrera extends Controller
      */
     public function destroy(string $id)
     {
-         DB::beginTransaction();
+        DB::beginTransaction();
         try {
             $carrera = Carrera::find($id);
             if (!$carrera) {
