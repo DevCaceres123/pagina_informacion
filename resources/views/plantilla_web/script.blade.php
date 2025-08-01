@@ -10,3 +10,4 @@
 <script src="{{ asset('pagina_template/assets/lib/gsap/gsap.js') }}"></script>
 <script src="{{ asset('pagina_template/assets/lib/gsap/customEase.js') }}"></script>
 <script src="{{ asset('pagina_template/assets/js/theme.js') }}"></script>
+<script src="{{ asset('admin_template/libs/jquery/jquery-3.7.1.min.js') }}"></script>

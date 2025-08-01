@@ -8,4 +8,8 @@ class ImgSede extends Model
 {
     protected $table = 'img_sedes';
     //
+
+    public function sede(){
+        return $this->belongsTo('App\Models\Sede');
+    }
 }

@@ -24,5 +24,9 @@ class Sede extends Model
     {
         return $this->hasMany('App\Models\Convocatoria');
     }
+
+    public function imagenesSede(){
+        return $this->hasMany('App\Models\ImgSede');
+    }
 }
 

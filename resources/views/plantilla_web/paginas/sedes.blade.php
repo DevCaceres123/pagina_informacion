@@ -2,6 +2,8 @@
 @section('sedes', 'SEDES')
 
 @section('contenido')
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.11.1/baguetteBox.min.css" />
+
     <div class="container my-5">
 
         {{-- Título principal --}}
@@ -18,10 +20,8 @@
                     <option value="{{ $sede->id }}">{{ $sede->nombre }}</option>
                 @endforeach
 
-
             </select>
         </div>
-
         {{-- Información de la sede --}}
         <div class="card shadow-sm p-4 mb-5">
             <h2 id="nombreSede" class="fw-bold mb-3 text-uppercase">{{ $sedeUnica->nombre }}</h2>
@@ -36,8 +36,10 @@
 
             {{-- Botón galería --}}
             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#galeriaModal">
-                📸 Ver Galería de Imágenes
+                📸 Galería de Imágenes
             </button>
+
+
         </div>
 
         {{-- Resolución de la sede --}}
@@ -52,62 +54,35 @@
         {{-- Carreras --}}
         <div class="card shadow-sm p-4">
             <h3 class="fw-bold mb-4">Carreras disponibles en esta sede</h3>
-            <input type="text" id="buscadorCarreras" class="form-control mb-4" placeholder="🔍 Buscar carrera...">
+            <div class="d-flex gap-2 align-items-center mb-3">
+                <input type="text" id="buscadorCarreras" class="form-control form-sm" placeholder="🔍 Buscar carrera...">
+                <button class="btn btn-danger flex-shrink-0" id="listarTodo"> Listar Todo</button>
+            </div>
 
-            <div class="row g-3" id="listaCarreras">
-                <div class="col-md-4">
+
+            <div class="row g-3" id="contenedorCarreras">
+                <div class="col-12 col-sm-6 col-md-4">
                     <div class="card h-100 shadow-sm">
                         <div class="card-body d-flex flex-column justify-content-between">
-                            <h5 class="card-title">💻 Ingeniería de Sistemas</h5>
+                            <h5 class="card-title"><i class="fas fa-laptop-code me-2 text-primary"></i> Ingeniería de
+                                Sistemas</h5>
+
                             <div class="mt-3">
                                 <a href="{{ asset('mallas/ingenieria_sistemas.pdf') }}"
-                                    class="btn btn-outline-primary btn-sm mb-1 w-100" download>
-                                    📥 Descargar Malla
+                                    class="btn btn-danger btn-sm mb-2 w-100 d-flex align-items-center justify-content-center gap-2"
+                                    download>
+                                    <i class="fas fa-download"></i> Descargar Malla
                                 </a>
                                 <a href="https://example.com/ingenieria-sistemas" target="_blank"
-                                    class="btn btn-outline-secondary btn-sm w-100">
-                                    🌐 Ver Página
+                                    class="btn btn-outline-dark btn-sm w-100 d-flex align-items-center justify-content-center gap-2">
+                                    <i class="fas fa-globe"></i> Ver Página
                                 </a>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="col-md-4">
-                    <div class="card h-100 shadow-sm">
-                        <div class="card-body d-flex flex-column justify-content-between">
-                            <h5 class="card-title">📊 Administración de Empresas</h5>
-                            <div class="mt-3">
-                                <a href="{{ asset('mallas/administracion_empresas.pdf') }}"
-                                    class="btn btn-outline-primary btn-sm mb-1 w-100" download>
-                                    📥 Descargar Malla
-                                </a>
-                                <a href="https://example.com/administracion-empresas" target="_blank"
-                                    class="btn btn-outline-secondary btn-sm w-100">
-                                    🌐 Ver Página
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
-                <div class="col-md-4">
-                    <div class="card h-100 shadow-sm">
-                        <div class="card-body d-flex flex-column justify-content-between">
-                            <h5 class="card-title">🧮 Contaduría Pública</h5>
-                            <div class="mt-3">
-                                <a href="{{ asset('mallas/contaduria_publica.pdf') }}"
-                                    class="btn btn-outline-primary btn-sm mb-1 w-100" download>
-                                    📥 Descargar Malla
-                                </a>
-                                <a href="https://example.com/contaduria-publica" target="_blank"
-                                    class="btn btn-outline-secondary btn-sm w-100">
-                                    🌐 Ver Página
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
                 {{-- Agrega más carreras aquí --}}
             </div>
         </div>
@@ -120,21 +95,21 @@
         </h5>
         <div class="d-flex justify-content-center gap-3 mt-2">
             {{-- WhatsApp --}}
-            <a href="https://api.whatsapp.com/send?phone={{$sedeUnica->whatsapp}}&text=Hola%20me%20gustaria%20que%20me%20ayuden%20%20en%20una%20duda" target="_blank"
-                class="btn btn-success rounded-circle d-flex align-items-center justify-content-center"
+            <a href="https://api.whatsapp.com/send?phone={{ $sedeUnica->whatsapp }}&text=Hola%20me%20gustaria%20que%20me%20ayuden%20%20en%20una%20duda"
+                target="_blank" class="btn btn-success rounded-circle d-flex align-items-center justify-content-center"
                 style="width: 70px; height: 70px;" title="WhatsApp">
                 <i class="fab fa-whatsapp fa-lg"></i>
             </a>
 
             {{-- Facebook --}}
-            <a href="{{$sedeUnica->facebook}}" target="_blank"
+            <a href="{{ $sedeUnica->facebook }}" target="_blank"
                 class="btn btn-primary rounded-circle d-flex align-items-center justify-content-center"
                 style="width: 70px; height: 70px;" title="Facebook">
                 <i class="fab fa-facebook-f fa-lg"></i>
             </a>
 
             {{-- YouTube --}}
-            <a href="{{$sedeUnica->youtobe}}" target="_blank"
+            <a href="{{ $sedeUnica->youtobe }}" target="_blank"
                 class="btn btn-danger rounded-circle d-flex align-items-center justify-content-center"
                 style="width: 70px; height: 70px;" title="YouTube">
                 <i class="fab fa-youtube fa-lg"></i>
@@ -142,54 +117,48 @@
         </div>
     </div>
 
+
+
+
     {{-- Modal Galería --}}
     <div class="modal fade" id="galeriaModal" tabindex="-1" aria-labelledby="galeriaModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
             <div class="modal-content shadow">
                 <div class="modal-header">
                     <h5 class="modal-title">Galería de Imágenes de la Sede</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                 </div>
                 <div class="modal-body p-0">
-                    <div id="carouselGaleria" class="carousel slide" data-bs-ride="carousel">
-                        <div class="carousel-inner">
-                            <div class="carousel-item active">
-                                <img src="{{ asset('img/sede1_foto1.jpg') }}" class="d-block w-100 rounded"
-                                    alt="...">
-                            </div>
-                            <div class="carousel-item">
-                                <img src="{{ asset('img/sede1_foto2.jpg') }}" class="d-block w-100 rounded"
-                                    alt="...">
-                            </div>
-                            <div class="carousel-item">
-                                <img src="{{ asset('img/sede1_foto3.jpg') }}" class="d-block w-100 rounded"
-                                    alt="...">
-                            </div>
+
+                    <div class="container gallery mt-3 p-5">
+                        <div class="row">
+                            @foreach ($sedeUnica->imagenesSede as $img)
+                                <div class="col-6 col-sm-4 col-md-3 col-lg-4 mb-3">
+                                    <a href="{{ asset('storage/galeria_sedes/' . $img->imagen) }}" class="lightbox">
+                                        <img src="{{ asset('storage/galeria_sedes/' . $img->imagen) }}"
+                                            class="img-fluid rounded shadow-sm border border-1 rounded" alt="Imagen Sede"
+                                            style="width: 350px; height: 200px; object-fit: cover;">
+                                    </a>
+                                </div>
+                            @endforeach
                         </div>
-                        <button class="carousel-control-prev" type="button" data-bs-target="#carouselGaleria"
-                            data-bs-slide="prev">
-                            <span class="carousel-control-prev-icon"></span>
-                            <span class="visually-hidden">Anterior</span>
-                        </button>
-                        <button class="carousel-control-next" type="button" data-bs-target="#carouselGaleria"
-                            data-bs-slide="next">
-                            <span class="carousel-control-next-icon"></span>
-                            <span class="visually-hidden">Siguiente</span>
-                        </button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
+
+    <!-- Antes de cerrar </body> -->
+
+@endsection
+
+
+@section('script')
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.11.1/baguetteBox.min.js"></script>
     <script>
-        document.getElementById('buscadorCarreras').addEventListener('input', function() {
-            const filtro = this.value.toLowerCase();
-            const cards = document.querySelectorAll('#listaCarreras .card');
-            cards.forEach(function(card) {
-                const titulo = card.querySelector('.card-title').textContent.toLowerCase();
-                card.parentElement.style.display = titulo.includes(filtro) ? '' : 'none';
-            });
-        });
+        baguetteBox.run('.gallery');
     </script>
+
+    <script src="{{ asset('js/modulos/pagina/sedes.js') }}" type="module"></script>
 @endsection
