@@ -75,12 +75,29 @@
                                 <li class="nav-item">
                                     <a class="nav-link" href="{{ route('carrera.index') }}">Carreras</a>
                                 </li><!--end nav-item-->
-                              
+
                             </ul><!--end nav-->
                         </div><!--end startbarApplications-->
                     </li><!--end nav-item-->
 
+                    <li class="menu-label mt-2">
+                        <small class="label-border">
+                            <div class="border_left hidden-xs"></div>
+                            <div class="border_right"></div>
+                        </small>
+                        <span>SEGUIMIENTO</span>
+                    </li>
 
+                     <li class="nav-item">
+                        <a class="nav-link" href="{{route('infraestructura.index')}}" role="button"
+                            aria-expanded="false" aria-controls="sedesCarreras">
+                            <i class="fas fa-university  menu-icon"></i>
+                            <span>INFRAESTRUCTURA</span>
+                        </a>                       
+                    </li>
+                    
+                   
+                    <!--end nav-item-->
                     {{-- <li class="nav-item">
                         <a class="nav-link" href="#sidebarElements" data-bs-toggle="collapse" role="button"
                             aria-expanded="false" aria-controls="sidebarElements">

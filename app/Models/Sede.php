@@ -28,5 +28,9 @@ class Sede extends Model
     public function imagenesSede(){
         return $this->hasMany('App\Models\ImgSede');
     }
+
+    public function infraestructura(){
+        return $this->hasOne('App\Models\ImgSede');
+    }
 }
 

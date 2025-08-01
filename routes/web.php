@@ -8,6 +8,7 @@ use App\Http\Controllers\Usuario\Controlador_user;
 use App\Http\Controllers\Usuario\Controlador_usuario;
 use App\Http\Controllers\Sedes\Controlador_sedes;
 use App\Http\Controllers\Carreras\Controlador_carrera;
+use App\Http\Controllers\Infraestructuras\Controlador_infraestructura;
 use App\Http\Middleware\Autenticados;
 use App\Http\Middleware\No_autenticados;
 use Illuminate\Support\Facades\Route;
@@ -75,6 +76,13 @@ Route::prefix('/admin')->middleware([Autenticados::class])->group(function () {
         Route::put('cambiarEstado/{id_carrera}', 'cambiarEstado')->name('carrera.cambiarEstado');
         Route::post('malla/{id_carrera}/actualizar_malla', 'actualizar_malla')->name('carrera.actualizar_malla');
     });
+
+     // CONTROLADOR PARA LAS INFRAESTRUCTURAS
+    Route::controller(Controlador_infraestructura::class)->group(function () {
+        Route::resource('infraestructura', Controlador_infraestructura::class);
+        Route::get('listarInfraestructuras', 'listarInfraestructuras')->name('infraestructura.listarInfraestructuras');
+    });
+
 
 
 
