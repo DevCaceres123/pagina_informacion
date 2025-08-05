@@ -130,52 +130,51 @@
         <div class="container">
             <div class="row">
                 <div class="col-sm-6 col-lg-3" data-zanim-timeline="{}" data-zanim-trigger="scroll">
-                    <div class="ring-icon mx-auto bg-danger" data-zanim-xs='{"delay":0}'>
+                    <div class="ring-icon mx-auto" data-zanim-xs='{"delay":0}' style="background-color: #880000;">
                         <p class="fs-1 text-light">45</p>
                         <span class="fas fa-users text-light" style="margin-top:-28px"></span>
-
                     </div>
-                    <h5 class="" data-zanim-xs='{"delay":0.1}'>Estudiantes</h5>
-                    <p class="mb-0 mt-3 px-3" data-zanim-xs='{"delay":0.2}'>Solution for every business related
-                        problems, readily <br /> and skillfully.</p>
+                    <h5 data-zanim-xs='{"delay":0.1}' class="mt-1">Estudiantes</h5>
+                    <p class="mb-0 mt-3 px-3 mb-2" data-zanim-xs='{"delay":0.2}'>
+                        Jóvenes comprometidos con su formación y el desarrollo académico, listos para transformar el futuro.
+                    </p>
                 </div>
 
                 <div class="col-sm-6 col-lg-3" data-zanim-timeline="{}" data-zanim-trigger="scroll">
-                    <div class="ring-icon mx-auto bg-danger" data-zanim-xs='{"delay":0}'>
+                    <div class="ring-icon mx-auto" data-zanim-xs='{"delay":0}' style="background-color: #880000;">
                         <p class="fs-1 text-light">45</p>
                         <span class="fas fa-building text-light" style="margin-top:-28px"></span>
-
                     </div>
-                    <h5 class="" data-zanim-xs='{"delay":0.1}'>Sedes</h5>
-                    <p class="mb-0 mt-3 px-3" data-zanim-xs='{"delay":0.2}'>Solution for every business related
-                        problems, readily <br /> and skillfully.</p>
+                    <h5 data-zanim-xs='{"delay":0.1}' class="mt-1">Sedes</h5>
+                    <p class="mb-0 mt-3 px-3 mb-2" data-zanim-xs='{"delay":0.2}'>
+                        Infraestructura moderna y accesible, diseñada para ofrecer un entorno de aprendizaje óptimo.
+                    </p>
                 </div>
 
                 <div class="col-sm-6 col-lg-3" data-zanim-timeline="{}" data-zanim-trigger="scroll">
-                    <div class="ring-icon mx-auto bg-danger" data-zanim-xs='{"delay":0}'>
+                    <div class="ring-icon mx-auto" data-zanim-xs='{"delay":0}' style="background-color: #880000;">
                         <p class="fs-1 text-light">45</p>
                         <span class="fas fa-house-user text-light" style="margin-top:-28px"></span>
-
                     </div>
-                    <h5 class="" data-zanim-xs='{"delay":0.1}'>Carreras</h5>
-                    <p class="mb-0 mt-3 px-3" data-zanim-xs='{"delay":0.2}'>Solution for every business related
-                        problems, readily <br /> and skillfully.</p>
+                    <h5 data-zanim-xs='{"delay":0.1}' class="mt-1">Carreras</h5>
+                    <p class="mb-0 mt-3 px-3 mb-2" data-zanim-xs='{"delay":0.2}'>
+                        Programas académicos variados y actualizados que preparan a profesionales competentes y
+                        responsables.
+                    </p>
                 </div>
-
 
                 <div class="col-sm-6 col-lg-3" data-zanim-timeline="{}" data-zanim-trigger="scroll">
-                    <div class="ring-icon mx-auto bg-danger" data-zanim-xs='{"delay":0}'>
+                    <div class="ring-icon mx-auto" data-zanim-xs='{"delay":0}' style="background-color: #880000;">
                         <p class="fs-1 text-light">45</p>
                         <span class="fas fa-user-graduate text-light" style="margin-top:-28px"></span>
-
                     </div>
-                    <h5 class="" data-zanim-xs='{"delay":0.1}'>Titulados</h5>
-                    <p class="mb-0 mt-3 px-3" data-zanim-xs='{"delay":0.2}'>Solution for every business related
-                        problems, readily <br /> and skillfully.</p>
+                    <h5 data-zanim-xs='{"delay":0.1}' class="mt-1">Titulados</h5>
+                    <p class="mb-0 mt-3 px-3 mb-2" data-zanim-xs='{"delay":0.2}'>
+                        Profesionales exitosos que contribuyen al desarrollo de la sociedad con ética y conocimiento.
+                    </p>
                 </div>
-
-
             </div>
+
         </div>
     </section>
     <!-- Final info sedes ============================-->
@@ -226,8 +225,8 @@
                             </div>
                             <div class="overflow-hidden">
                                 <div data-zanim-xs='{"delay":0.2}'>
-                                    <a class="d-flex align-items-center"
-                                       href="{{ route('noticias.show', 1) }}" target="_blank">
+                                    <a class="d-flex align-items-center" href="{{ route('noticias.show', 1) }}"
+                                        target="_blank">
                                         Ver Detalle
                                         <div class="overflow-hidden ms-2">
                                             <span class="d-inline-block"
@@ -323,59 +322,42 @@
     <section class="bg-white position-relative"
         style="background-image: url('pagina_template/assets/img/perfil2.png'); background-attachment: fixed; background-size: cover; background-position: center;">
         <div class="container position-relative p-5" style="z-index: 1;">
-            <h4 class="text-center text-light bg-danger rounded p-2" style="margin-top:-95px">NUESTAS AUTORIDADES
+            <h4 class="text-center text-light rounded p-2" style="margin-top:-95px; background-color: #880000;">NUESTAS
+                AUTORIDADES
             </h4>
-            <div class="swiper theme-slider" data-swiper='{"loop":true,"slidesPerView":1,"autoplay":{"delay":5000}}'
-                style="margin-top:60px">
-                <div class="swiper-wrapper">
-                    <div class="swiper-slide">
-                        <div class="row px-lg-8">
-                            <div class="col-4 col-md-3 mx-auto"><img class="rounded-3 mx-auto img-fluid"
-                                    src="assets/img/Imagen10.webp" alt="Member" /></div>
-                            <div class="col-md-9 mt-4 mt-md-0 px-4 px-sm-3">
-                                <p class="lead text-light">El Dr. Carlos Condori fue galardonado como mejor
-                                    autoridad del
-                                    Sistema Universitario. Fue posesionado como nuevo Rector de la Universidad
-                                    Pública de El Alto (UPEA)23. El acto de posesión estuvo a cargo del Honorable
-                                    Consejo Universitario (HCU).</p>
-                                <span class="fs-0 mb-1 mt-5 bg-primary text-light p-2 rounded"><b>DR. CARLOS
-                                        CONDORI TITIRICO</b></span>
-                                <p class=" text-400 mt-3 text-light ">RECTOR UNIVERSIDAD PUBLICA DE EL ALTO</p>
-                            </div>
-                        </div>
+            <div class="container py-1" style="margin-top:60px">
+                <div class="row d-flex flex-wrap justify-content-center">
+                    <!-- AUTORIDAD 1 -->
+                    <div class="col-12 col-md-4 d-flex flex-column align-items-center text-center">
+                        <img class="rounded-3 img-fluid mb-2"
+                            src="{{ asset('assets/autoridades/rector_upea.webp') }}" alt="Rector">
+                        <span class=" fw-bold text-light p-2 rounded mt-1"  style='background-color: #880000;'> DR. CARLOS CONDORI
+                            TITIRICO</span>
+                         <p class="text-light mb-0 mt-1  bg-lightp-2 rounded mt-1" >RECTOR UNIVERSIDAD PÚBLICA DE EL ALTO</p>
                     </div>
-                    <div class="swiper-slide">
-                        <div class="row px-lg-8">
-                            <div class="col-4 col-md-3 mx-auto"><img class="rounded-3 mx-auto img-fluid"
-                                    src="assets/img/Imagen14.webp" alt="Member" /></div>
-                            <div class="col-md-9 mt-4 mt-md-0 px-4 px-sm-3">
-                                <p class="lead">"Los niños tienen un corazón muy tierno, esperemos tenerlos
-                                    pronto estudiando y siendo profesionales consecuentes con su país".</p>
-                                <h6 class="fs-0 mb-1 mt-4">DR. EFRAIN CHAMBI VARGAS PH. D.</h6>
-                                <p class="mb-0 text-500">VICERRECTOR UNIVERSIDAD PÚBLICA DE EL ALTO</p>
-                            </div>
-                        </div>
+
+                    <!-- AUTORIDAD 2 -->
+                    <div class="col-12 col-md-4 d-flex flex-column align-items-center text-center">
+                        <img class="rounded-3 img-fluid mb-2"
+                            src="{{ asset('assets/autoridades/vice_rector.webp') }}" alt="Vicerrector">
+                      <span class=" fw-bold text-light p-2 rounded mt-1"  style='background-color: #880000;'>DR. EFRAIN CHAMBI VARGAS
+                            PH.D.</span>
+                        <p class="text-light mb-0 mt-1" >VICERRECTOR UNIVERSIDAD PÚBLICA DE EL ALTO</p>
                     </div>
-                    <div class="swiper-slide">
-                        <div class="row px-lg-8">
-                            <div class="col-4 col-md-3 mx-auto"><img class="rounded-3 mx-auto img-fluid"
-                                    src="assets/img/Imagen12.webp" alt="Member" /></div>
-                            <div class="col-md-9 mt-4 mt-md-0 px-4 px-sm-3">
-                                <p class="lead"> Trabajando junto a ti !!.</p>
-                                <h6 class="fs-0 mb-1 mt-4">Sillo Corina</h6>
-                                <p class="mb-0 text-500">DIRECTORA DISBEDC</p>
-                                <p class="mb-0 text-500">UNIVERSIDAD PÚBLICA DE EL ALTO</p>
-                            </div>
-                        </div>
+
+                    <!-- AUTORIDAD 3 -->
+                    <div class="col-12 col-md-4 d-flex flex-column align-items-center text-center">
+                        <img class="rounded-3 img-fluid mb-2"
+                            src="{{ asset('assets/autoridades/vice_rector.webp') }}" alt="Directora">
+                         <span class=" fw-bold text-light p-2 rounded mt-1"  style='background-color: #880000;'> SILLO CORINA</span>
+                        <p class="text-light mb-0 mt-1" >DIRECTORA DISBEDC UNIVERSIDAD PÚBLICA DE EL ALTO</p>
+
+
+
                     </div>
-                </div>
-                <div class="swiper-nav">
-                    <div class="swiper-button-prev icon-item icon-item-lg"><span class="fas fa-chevron-left fs--2"></span>
-                    </div>
-                    <div class="swiper-button-next icon-item icon-item-lg"><span
-                            class="fas fa-chevron-right fs--2"></span></div>
                 </div>
             </div>
+
         </div><!-- end of .container-->
     </section>
     <!-- FINAL DE AUTORIDADES -->
