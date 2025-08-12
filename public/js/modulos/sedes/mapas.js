@@ -352,3 +352,34 @@ map.on('draw:deleted', function (e) {
 
     });
 });
+var customIcon = L.icon({
+    iconUrl: 'https://cdn-icons-png.flaticon.com/512/684/684908.png', // URL del icono
+    iconSize: [38, 38],
+    iconAnchor: [19, 38], // Punto de anclaje
+    popupAnchor: [0, -38]
+});
+
+
+document.getElementById('formBuscarUbicacion').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    var lat = parseFloat(document.getElementById('latitud').value);
+    var lng = parseFloat(document.getElementById('longitud').value);
+
+    if (!isNaN(lat) && !isNaN(lng)) {
+        // Mover mapa
+        map.setView([lat, lng], 16);
+
+         // Agregar marcador con tooltip permanente
+        marker = L.marker([lat, lng], { icon: customIcon })
+            .addTo(map)
+            .bindTooltip("📍 Ubicación", { 
+                permanent: true, 
+                direction: "top", 
+                offset: [0, -10] // lo levanta un poquito para que no se encime
+            })
+            .openTooltip(); 
+    } else {
+       mensajeAlerta("Por favor, ingrese coordenadas válidas.", "error");
+    }
+});

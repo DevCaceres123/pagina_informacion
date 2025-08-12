@@ -13,8 +13,40 @@
             <div class="alert alert-success">{{ session('success') }}</div>
         @endif
 
-        <form id="guardarUbicaciones">
+        <div class="row">
+            <div class="card mb-3">
+                <div class="card-body">
+                    <div class="row">
+                        <form action="" id="formBuscarUbicacion" class="row">
+                            <div class="col-12 col-md-4">
+                                <div class="">
+                                    <label class="form-label">Ingrese Latitud (X)</label>
+                                    <input type="text" name="latitud" id="latitud" class="form-control">                                    
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-4">
+                                <div class="">
+                                    <label class="form-label">Ingrese Longitud (Y)</label>
+                                    <input type="text" name="longitud" id="longitud" class="form-control">                                    
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-4 d-flex align-items-end">
+                                <div>
+                                    <button type="submit" class="btn btn-primary btn-md">
+                                        Buscar Ubicación
+                                    </button>
+                                </div>
+                            </div>
 
+                        </form>
+
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+        <form id="guardarUbicaciones">
             <div class="row">
                 <!-- MAPA -->
                 <div class="col-md-8 mb-3">
@@ -49,7 +81,7 @@
                     </div>
 
                     <div class="card">
-                        <div class="card-header bg-danger text-light text-uppercase">Información Registrada</div>                        
+                        <div class="card-header bg-danger text-light text-uppercase">Información Registrada</div>
                         <div class="card-body">
                             <h6>Puntos agregados</h6>
                             <hr>
@@ -62,6 +94,8 @@
                     </div>
                 </div>
             </div>
+
+
 
             <input type="hidden" name="geojson" id="geojson">
 
