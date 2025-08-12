@@ -453,7 +453,7 @@ $("#formNuevaSedeEdit").on("submit", function (e) {
         vaciar_formulario("formNuevaSedeEdit");
         mensajeAlerta(response.mensaje, response.tipo);
         actualizarTabla();
-    });            
+    });
 });
 
 // Mostrar vistas previas al seleccionar imágenes
@@ -598,3 +598,34 @@ function validarArchivos(archivos, tipo) {
     }
     return true; // Si pasa todas las validaciones
 }
+
+
+
+$(document).on("click", ".ver-carreras", function () {
+    let carreras = $(this).data("carreras"); // viene de data-carreras en el botón
+    let lista = $("#listaCarreras");
+
+    lista.empty(); // limpiar antes de agregar
+
+    if (carreras && carreras.length > 0) {
+        carreras.forEach(carrera => {
+            lista.append(`
+        <li class="list-group-item d-flex justify-content-between align-items-center border rounded mb-2">
+            <span class="fw-semibold">${carrera.nombre}</span>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" checked disabled>
+            </div>
+        </li>
+    `);
+        });
+    } else {
+        lista.append(`
+            <li class="list-group-item text-muted text-center">
+                <i class="fas fa-info-circle me-1"></i> No hay carreras registradas en esta sede.
+            </li>
+        `);
+    }
+
+    let modal = new bootstrap.Modal(document.getElementById("modalCarreras"));
+    modal.show();
+});

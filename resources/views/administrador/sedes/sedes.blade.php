@@ -285,7 +285,7 @@
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    
+
 
                     {{-- Formulario de subida --}}
                     <form id="formSubirImagenes" enctype="multipart/form-data">
@@ -322,7 +322,7 @@
 
 
 
-      <!-- MODAL EDITAR-->
+    <!-- MODAL EDITAR-->
     <div class="modal fade" id="modalSedeEdit" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
         aria-labelledby="modalSedeLabel" aria-hidden="true">
         <div class="modal-dialog modal-center modal-lg" role="document">
@@ -338,7 +338,7 @@
                         aria-label="Cerrar"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="formNuevaSedeEdit" >
+                    <form id="formNuevaSedeEdit">
 
                         <div class="container">
 
@@ -370,7 +370,8 @@
                                         <i class="fas fa-align-left me-1"></i> DESCRIPCIÓN <strong
                                             class="text-danger">(*)</strong>
                                     </label>
-                                    <textarea name="descripcion_edit" id="descripcion_edit" rows="2" class="form-control rounded text-uppercase" required></textarea>
+                                    <textarea name="descripcion_edit" id="descripcion_edit" rows="2" class="form-control rounded text-uppercase"
+                                        required></textarea>
                                     <div id="_descripcion_edit">
 
                                     </div>
@@ -395,8 +396,8 @@
                                         name="resolucion_numero_edit" id="resolucion_numero_edit" required>
                                     <div id="_resolucion_numero_edit">
                                     </div>
-                                </div>                              
-                            </div>                        
+                                </div>
+                            </div>
 
                         </div>
 
@@ -412,8 +413,8 @@
                                 <label class="form-label">
                                     <i class="fab fa-facebook me-1"></i> URL DE FACEBOOK
                                 </label>
-                                <input type="url" class="form-control rounded" name="facebook_edit" id="facebook_edit"
-                                    placeholder="https://facebook.com/tu_pagina">
+                                <input type="url" class="form-control rounded" name="facebook_edit"
+                                    id="facebook_edit" placeholder="https://facebook.com/tu_pagina">
                                 <div id="_facebook_edit">
 
                                 </div>
@@ -436,8 +437,8 @@
                                 <label class="form-label">
                                     <i class="fab fa-whatsapp me-1"></i> NÚMERO DE WHATSAPP
                                 </label>
-                                <input type="text" class="form-control rounded" name="whatsapp_edit" id="whatsapp_edit"
-                                    placeholder="Ej:1234567">
+                                <input type="text" class="form-control rounded" name="whatsapp_edit"
+                                    id="whatsapp_edit" placeholder="Ej:1234567">
                                 <div id="_whatsapp_edit">
                                 </div>
                             </div>
@@ -460,6 +461,28 @@
         </div>
     </div>
 
+
+    <!-- Modal Ver Carreras -->
+    <div class="modal fade" id="modalCarreras" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content shadow-lg">
+                <div class="modal-header bg-dark text-white">
+                    <h5 class="modal-title"><i class="fas fa-graduation-cap me-2"></i> Carreras de la Sede</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <ul id="listaCarreras" class="list-group list-group-flush text-capitalize p-2">
+                        <!-- Carreras se llenan dinámicamente -->
+                    </ul>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-bs-dismiss="modal"><i class="fas fa-times me-1"></i>
+                        Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @section('scripts')
