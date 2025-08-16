@@ -164,7 +164,27 @@ class Controlador_infraestructura extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        DB::beginTransaction();
+        try {
+            $infraestructura = Infraestructura::find($id);
+            if (!$infraestructura) {
+                throw new Exception('infraestructura no encontrado');
+            }
+
+            $infraestructura->delete();
+
+            DB::commit();
+
+            $this->mensaje("exito", "infraestructura eliminada correctamente");
+
+            return response()->json($this->mensaje, 200);
+        } catch (Exception $e) {
+            DB::rollBack();
+
+            $this->mensaje("error", "error" . $e->getMessage());
+
+            return response()->json($this->mensaje, 200);
+        }
     }
 
 

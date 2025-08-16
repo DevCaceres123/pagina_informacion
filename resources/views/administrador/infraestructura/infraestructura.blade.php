@@ -149,7 +149,7 @@
                                     <select name="estado_inmueble" class="form-select" required>
                                         <option value="" disabled selected>Seleccione...</option>
                                         <option value="bueno">Bueno</option>
-                                        <option value="mediano">Mediano</option>
+                                        <option value="regular">Regular</option>
                                         <option value="malo">Malo</option>
                                     </select>
                                     <div id="_estado_inmueble"></div>

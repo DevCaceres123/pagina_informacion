@@ -72,7 +72,7 @@ function listar_infraestructuras() {
                          ${
                              permisosGlobal.eliminar
                                  ? `
-                        <a class="btn btn-sm btn-outline-danger px-2 d-inline-flex align-items-center eliminar_sede me-1" data-id="${row.id}" title="Eliminar Infraestructura">
+                        <a class="btn btn-sm btn-outline-danger px-2 d-inline-flex align-items-center eliminar_infraestructura me-1" data-id="${row.id}" title="Eliminar Infraestructura">
                             <i class="fas fa-window-close fs-16"></i>
                         </a>
                             `
@@ -264,3 +264,38 @@ function validarArchivos(archivos, tipo) {
     }
     return true; // Si pasa todas las validaciones
 }
+
+$(document).on("click", ".eliminar_infraestructura", function () {
+    let id = $(this).data("id");
+
+    Swal.fire({
+        title: "NOTA!",
+        text: "¿Está seguro de Eliminar la Infraestructura?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Sí, Estoy seguro",
+        cancelButtonText: "Cancelar",
+    }).then(async function (result) {
+        if (result.isConfirmed) {
+            crud("admin/infraestructura", "DELETE", id, null, function (error, response) {
+                console.log(response);
+                // Verificamos que no haya un error o que todos los campos sean llenados
+                if (response.tipo === "errores") {
+                    mensajeAlerta(response.mensaje, "errores");
+                    return;
+                }
+                if (response.tipo != "exito") {
+                    mensajeAlerta(response.mensaje, response.tipo);
+                    return;
+                }
+                // si todo esta correcto muestra el mensaje de correcto
+                mensajeAlerta(response.mensaje, response.tipo);
+                actualizarTabla();
+            });
+        } else {
+            alerta_top("error", "Se canceló la eliminacion");
+        }
+    });
+});

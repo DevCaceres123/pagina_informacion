@@ -16,13 +16,14 @@ return new class extends Migration
             $table->string('propiedad',150);
             $table->string('uso_asignado',150);
             $table->string('contrato',150);        
-            $table->enum('estado_inmueble', ['bueno', 'mediano','malo']);
+            $table->enum('estado_inmueble', ['bueno', 'regular','malo']);
             $table->enum('estado', ['inicial', 'proceso','finalizado']);
             $table->string('observacion_estado');
             $table->date('fecha_inicio');
             $table->date('fecha_final');    
             $table->string('numero_nota',50)->nullable();
             $table->unsignedBigInteger('usuario_id');
+            $table->timestamp('deleted_at')->nullable();
             $table->unsignedBigInteger('sede_id');
             $table->foreign('sede_id')
                 ->references('id')

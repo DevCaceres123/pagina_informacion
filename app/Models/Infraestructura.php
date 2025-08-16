@@ -3,10 +3,10 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-
+use Illuminate\Database\Eloquent\SoftDeletes;
 class Infraestructura extends Model
 {
-    
+    use SoftDeletes;
     public function sede(){
        return $this->belongsTo('App\Models\Sede');
     }

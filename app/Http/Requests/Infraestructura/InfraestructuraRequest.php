@@ -28,7 +28,7 @@ class InfraestructuraRequest extends BasePrincipalRequest
                 return [
                     'propiedad' => 'required|min:3|max:100',
                     'uso_asignado' => 'required|max:100|min:5',
-                    'estado_inmueble' => 'required|in:bueno,mediano,malo',      
+                    'estado_inmueble' => 'required|in:bueno,regular,malo',      
                     'observacion_estado' => 'required|min:5|max:255',       
                     'fecha_inicio' => 'required|date',
                     'fecha_final' => 'required|date|after:fecha_inicio',
