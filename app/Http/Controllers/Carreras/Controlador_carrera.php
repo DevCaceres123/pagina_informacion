@@ -26,11 +26,7 @@ class Controlador_carrera extends Controller
 
     public function listarCarreras(Request $request)
     {
-        $query = Carrera::with([
-            'sede' => function ($query) {
-                $query->select(['nombre', 'id']); // CORREGIDO
-            },
-        ])->select('id', 'nombre', 'modalidad', 'estado', 'malla_curricular_pdf', 'sede_id')->orderBy('id', 'desc');
+        $query = Carrera::select('id', 'nombre', 'modalidad', 'estado', 'malla_curricular_pdf', 'vinculo_web');
 
         if (!empty($request->search['value'])) {
             $query->where(function ($q) use ($request) {
@@ -81,7 +77,6 @@ class Controlador_carrera extends Controller
             $carrera->modalidad = $request->modalidad;
             $carrera->estado = 'activo';
             $carrera->usuario_id = auth()->user()->id;
-            $carrera->sede_id = $request->sede_id;
             $carrera->vinculo_web = $request->vinculo_web;
             // Guardar el PDF si se envió
             $rutaPdf = $this->guardarPdf($request);
@@ -93,6 +88,10 @@ class Controlador_carrera extends Controller
 
             $carrera->save();
 
+            // asiganar carreras a sedes
+            if ($request->has('sede_id') && is_array($request->sede_id)) {
+                $carrera->sedes()->attach($request->sede_id);
+            }
 
             DB::commit();
 
@@ -133,6 +132,8 @@ class Controlador_carrera extends Controller
             $carrera->save();
             DB::commit();
 
+
+
             $this->mensaje("exito", "Estado cambiado Correctamente");
 
             return response()->json($this->mensaje, 200);
@@ -158,11 +159,9 @@ class Controlador_carrera extends Controller
      */
     public function edit(string $id)
     {
-        $carrera = Carrera::with([
-            'sede' => function ($query) {
-                $query->select(['id','nombre']); // CORREGIDO
-            },
-        ])->select('id', 'nombre', 'modalidad', 'vinculo_web', 'sede_id')->first();
+        $carrera = Carrera::with(['sedes' => function ($query) {
+            $query->select(['sedes.id', 'nombre']); // Selecciona solo los campos necesarios
+        }])->select('id', 'nombre', 'modalidad', 'estado', 'malla_curricular_pdf', 'vinculo_web')->first();
 
         if (!$carrera) {
             $this->mensaje('error', 'Sede no encontrada');
@@ -189,7 +188,7 @@ class Controlador_carrera extends Controller
 
             $carrera->nombre = $request->nombre;
             $carrera->modalidad	= $request->modalidad;
-            $carrera->sede_id = $request->sede_id;
+
             $carrera->vinculo_web = $request->vinculo_web;
 
             $carrera->save();
@@ -214,12 +213,12 @@ class Controlador_carrera extends Controller
 
         try {
             $carrera = Carrera::findOrFail($request->id); // más seguro
-            $borrarArchivo=$carrera->malla_curricular_pdf;
+            $borrarArchivo = $carrera->malla_curricular_pdf;
             $nombreArchivo = null;
 
             if ($request->hasFile('malla_curricular')) {
 
-               
+
                 // Guardar nuevo archivo
                 $archivo = $request->file('malla_curricular');
                 $ruta = $archivo->store('mallas_curriculares', 'public');
@@ -227,14 +226,14 @@ class Controlador_carrera extends Controller
 
                 // Asignar nuevo nombre de archivo
                 $carrera->malla_curricular_pdf = $nombreArchivo;
-                $carrera->save();                                
+                $carrera->save();
             }
 
             DB::commit();
 
-             // Eliminar archivo anterior si se guardo una nueva mmalla
+            // Eliminar archivo anterior si se guardo una nueva mmalla
             Storage::disk('public')->delete('mallas_curriculares/' . $borrarArchivo);
-            
+
             $this->mensaje('exito', 'Malla Curricular actualizada correctamente');
             return response()->json($this->mensaje, 200);
 
@@ -291,6 +290,59 @@ class Controlador_carrera extends Controller
         }
     }
 
+
+    public function listarSedesCarrera($id_carrera)
+    {
+        try {
+            $carrera = Carrera::with('sedes')->find($id_carrera);
+
+            if (!$carrera) {
+                throw new Exception('Carrera no encontrado');
+            }
+
+
+            // Todas las sedes disponibles
+            $todasSedes = Sede::all();
+
+            // IDs de las sedes que tiene esta carrera
+            $sedesCarreraIds = $carrera->sedes->pluck('id')->toArray();
+
+            // Armamos una lista con un campo extra "asignada"
+            $sedesConEstado = $todasSedes->map(function ($sede) use ($sedesCarreraIds) {
+                return [
+                    'id' => $sede->id,
+                    'nombre' => $sede->nombre,
+                    'asignada' => in_array($sede->id, $sedesCarreraIds)
+                ];
+            });
+
+
+            $this->mensaje('exito', $sedesConEstado);
+            return response()->json($this->mensaje, 200);
+        } catch (\Exception $e) {
+            $this->mensaje('error', 'Error al obtener las sedes: ' . $e->getMessage());
+            return response()->json($this->mensaje, 200);
+        }
+    }
+
+    /**
+     * Asignar una sede a una carrera
+     */
+
+    public function asignarSede(Request $request, string $carreraId)
+    {
+        
+        $carrera = Carrera::findOrFail($carreraId);
+        $carrera->sedes()->attach($request->sede_id);
+        return response()->json(['tipo' => 'exito', 'mensaje' => 'Sede asignada correctamente']);
+    }
+
+    public function quitarSede(Request $request, string $carreraId)
+    {
+        $carrera = Carrera::findOrFail($carreraId);
+        $carrera->sedes()->detach($request->sede_id);
+        return response()->json(['tipo' => 'exito', 'mensaje' => 'Sede quitada correctamente']);
+    }
 
     // Mensaje para mostrar al usuario
     public function mensaje($titulo, $mensaje)

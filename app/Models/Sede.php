@@ -10,7 +10,7 @@ class Sede extends Model
     //
     public function carreras()
     {
-        return $this->hasMany('App\Models\Carrera');
+        return $this->belongsToMany('App\Models\Carrera','carrera_sede','sede_id', 'carrera_id');
     }
     public function ubicacionSedes()
     {

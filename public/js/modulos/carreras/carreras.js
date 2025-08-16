@@ -53,10 +53,14 @@ function listar_carreras() {
                 },
             },
             {
-                data: "sede.nombre",
+                data: "sedes",
                 className: "table-td text-uppercase text-center",
-                render: function (data) {
-                    return data;
+                render: function (data, type, row, meta) {
+                    return `
+                    <button type="button" class="btn btn-sm btn-warning rounded ver_sedes" data-sedes='${row.id}'>
+                        <i class="fas fa-university  me-1"></i> Ver Sedes
+                    </button>
+                `;
                 },
             },
 
@@ -229,29 +233,30 @@ $("#tabla_listar_carreras").on("click", ".cambiar_estado_carrera", function (e) 
 // mostrar modal editar
 $(document).on("click", ".editar_carrera", function () {
 
-    const idImagen = $(this).data("id");
-    let id_carrera = $(this).data('id'); // Obtener el id del alumno desde el data-id
-
+    const id_carrera = $(this).data('id'); // Obtener el id de la carrera
 
     crud("admin/carrera", "GET", id_carrera + '/edit', null, function (error, response) {
 
-        // console.log(response);
+        if (error || !response) {
+            mensajeAlerta("Error al cargar la información", "error");
+            return;
+        }
 
         if (response.tipo != "exito") {
             mensajeAlerta(response.mensaje, response.tipo);
             return;
         }
 
+
+        // Asignar el resto de los campos
         $('#id_carrera').val(response.mensaje.id);
         $('#nombre_edit').val(response.mensaje.nombre);
         $('#modalidad_edit').val(response.mensaje.modalidad);
-        $('#sede_id_edit').val(response.mensaje.sede.id);
         $('#vinculo_web_edit').val(response.mensaje.vinculo_web);
 
+        // Abrir el modal
         $('#modalCarreraEditar').modal('show');
-
-        // si todo esta correcto muestra el mensaje de correcto
-    })
+    });
 });
 
 
@@ -425,3 +430,84 @@ function validarArchivos(archivos, tipo) {
     }
     return true; // Si pasa todas las validaciones
 }
+
+
+
+$(document).on("click", ".ver_sedes", function () {
+    let id_carrera = $(this).data("sedes"); // viene de data-carreras en el botón
+    $("#id_carreraEdit").val(id_carrera);
+
+
+    crud("admin/listarSedesCarrera", "GET", id_carrera, null, function (error, response) {
+
+        // console.log(response);
+
+        // Verificamos que no haya un error o que todos los campos sean llenados
+        if (response.tipo === "errores") {
+            mensajeAlerta(response.mensaje, "errores");
+            return;
+        }
+        if (response.tipo != "exito") {
+            mensajeAlerta(response.mensaje, response.tipo);
+            return;
+        }
+
+
+        let lista = $("#listarSedes");
+        let carreras = response.mensaje;
+        lista.empty(); // limpiar antes de agregar
+
+        if (carreras && carreras.length > 0) {
+            carreras.forEach(carrera => {
+                lista.append(`
+            <li class="list-group-item d-flex justify-content-between align-items-center border rounded mb-2">
+                <span class="fw-semibold">${carrera.nombre}</span>
+                <div class="form-check">
+                    <input 
+                        class="form-check-input sede-checkbox" 
+                        type="checkbox"
+                        data-sede-id="${carrera.id}" 
+                        ${carrera.asignada ? 'checked' : ''} 
+                    >
+                </div>
+            </li>
+        `);
+            });
+        } 
+        let modal = new bootstrap.Modal(document.getElementById("modalSedes"));
+        modal.show();
+
+    });
+});
+
+// Evento para marcar/desmarcar sedes
+$(document).off("change", ".sede-checkbox").on("change", ".sede-checkbox", function () {
+    let sedeId = $(this).data("sede-id");
+    let checked = $(this).is(":checked");
+    
+    let carreraId = $("#id_carreraEdit").val(); // id carrera actual
+    
+    let url= checked 
+        ? `admin/asignar_sede` 
+        : `admin/quitar_sede`;
+
+    let datos = {
+        sede_id: sedeId,        
+    };
+
+    crud(url, "PUT", carreraId, datos, function (error, response) {
+        
+        // Verificamos que no haya un error o que todos los campos sean llenados
+        if (response.tipo === "errores") {
+            mensajeAlerta(response.mensaje, "errores");
+            return;
+        }
+        if (response.tipo != "exito") {
+            mensajeAlerta(response.mensaje, response.tipo);
+            return;
+        }
+        mensajeAlerta(response.mensaje, response.tipo);
+
+    });
+
+});

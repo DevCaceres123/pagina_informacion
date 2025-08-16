@@ -24,7 +24,7 @@
                                     <th>Nº</th>
                                     <th>CARRERA</th>
                                     <th>MODALIDAD</th>
-                                    <th>SEDE</th>
+                                    <th>SEDES</th>
                                     <th>ESTADO</th>
                                     <th>ACCION</th>
                                 </tr>
@@ -54,10 +54,11 @@
                         {{-- SELECCIONAR SEDE --}}
                         <div class="mb-3">
                             <label class="form-label">
-                                <i class="fas fa-school me-1"></i> SELECCIONAR SEDE <strong class="text-danger">(*)</strong>
+                                <i class="fas fa-school me-1"></i> SELECCIONAR SEDES <strong
+                                    class="text-danger">(*)</strong>
                             </label>
-                            <select name="sede_id" id="sede_id" class="form-select text-capitalize" required>
-                                <option selected disabled>seleccionar</option>
+                            <select name="sede_id[]" id="sede_id" class=" text-capitalize" multiple required>
+
                                 @foreach ($sedes as $sede)
                                     <option class="text-capitalize" value="{{ $sede->id }}">{{ $sede->nombre }}</option>
                                 @endforeach
@@ -137,23 +138,23 @@
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body p-4">
-                    <form id="formCarreraEditar">                        
+                    <form id="formCarreraEditar">
 
                         {{-- SELECCIONAR SEDE --}}
-                        <div class="mb-3">
+                        {{-- <div class="mb-3">
                             <label class="form-label">
                                 <i class="fas fa-school me-1"></i> SELECCIONAR SEDE <strong
                                     class="text-danger">(*)</strong>
                             </label>
-                            <select name="sede_id_edit" id="sede_id_edit" class="form-select text-capitalize" required>
-                                <option selected disabled>seleccionar</option>
+                            <select name="sede_id_edit[]" id="sede_id_edit" class="form-select text-capitalize" required
+                                multiple>
+
                                 @foreach ($sedes as $sede)
-                                    <option class="text-capitalize" value="{{ $sede->id }}">{{ $sede->nombre }}
-                                    </option>
+                                    <option value="{{ (string)$sede->id }}">{{ $sede->nombre }}</option>
                                 @endforeach
                             </select>
                             <div id="_sede_id_edit" class="text-danger small"></div>
-                        </div>
+                        </div> --}}
 
                         {{-- NOMBRE DE LA CARRERA --}}
                         <div class="mb-3">
@@ -162,8 +163,8 @@
                                     class="text-danger">(*)</strong>
                             </label>
                             <input type="hidden" name="id_carrera" id="id_carrera">
-                            <input type="text" name="nombre_edit" id="nombre_edit" class="form-control text-uppercase"
-                                required>
+                            <input type="text" name="nombre_edit" id="nombre_edit"
+                                class="form-control text-uppercase" required>
                             <div id="_nombre_edit" class="text-danger small"></div>
                         </div>
 
@@ -178,7 +179,7 @@
                                 <option value="anual">Anual</option>
                             </select>
                             <div id="_modalidad_edit" class="text-danger small"></div>
-                        </div>                     
+                        </div>
 
                         {{-- VINCULO WEB --}}
                         <div class="mb-3">
@@ -205,13 +206,13 @@
     </div>
 
 
-     {{-- modal para ver la malla curicular --}}
+    {{-- modal para ver la malla curicular --}}
     <div class="modal fade" id="modalVerMalla" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-xl modal-dialog-centered">
             <div class="modal-content shadow rounded-3">
                 <div class="modal-header bg-dark text-white">
                     <h5 class="modal-title">
-                        <i class="fas fa-file-pdf me-2"></i> Visualización de Resolución
+                        <i class="fas fa-file-pdf me-2"></i> Visualización de Malla Curricular
                     </h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
@@ -244,8 +245,50 @@
         </div>
     </div>
 
+
+
+    <!-- Modal Ver Sedes -->
+    <div class="modal fade" id="modalSedes" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-md">
+            <div class="modal-content shadow-lg">
+                <div class="modal-header bg-dark text-white">
+                    <h5 class="modal-title"><i class="fas fa-graduation-cap me-2"></i>Sedes Asignadas</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="id_carreraEdit" id="id_carreraEdit">
+                    <ul id="listarSedes" class="list-group list-group-flush text-capitalize p-2">
+                        <!-- Carreras se llenan dinámicamente -->
+                    </ul>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-bs-dismiss="modal"><i class="fas fa-times me-1"></i>
+                        Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @section('scripts')
+    <script>
+        // Inicialización de Selectr
+        document.addEventListener('DOMContentLoaded', function() {
+            const selectElement = document.getElementById('sede_id');
+            const selectElement2 = document.getElementById('sede_id_edit');
+
+            let selectrInstanceSede = new Selectr(selectElement, {
+                searchable: true,
+                placeholder: 'Busca o selecciona una opción...'
+            });
+
+    
+
+        });
+    </script>
+
     <script src="{{ asset('js/modulos/carreras/carreras.js') }}" type="module"></script>
+
+
 @endsection

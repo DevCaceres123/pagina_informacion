@@ -24,6 +24,8 @@
 <!-- App Main Script -->
 <script src="{{ asset('admin_template/js/app.js') }}"></script>
 
+{{-- Para dar funcionalidad al selector js --}}
+<script src="{{ asset('admin_template/libs/mobius1-selectr/selectr.min.js') }}"></script>
 
 <script>
     //token

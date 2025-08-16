@@ -75,6 +75,10 @@ Route::prefix('/admin')->middleware([Autenticados::class])->group(function () {
         Route::get('listarCarreras', 'listarCarreras')->name('carrera.listarCarreras');
         Route::put('cambiarEstado/{id_carrera}', 'cambiarEstado')->name('carrera.cambiarEstado');
         Route::post('malla/{id_carrera}/actualizar_malla', 'actualizar_malla')->name('carrera.actualizar_malla');
+        Route::get('listarSedesCarrera/{id_carrera}', 'listarSedesCarrera')->name('carrera.listarSedesCarrera');
+        Route::put('asignar_sede/{id_carrera}', 'asignarSede')->name('carrera.asignarSede');
+        Route::put('quitar_sede/{id_carrera}', 'quitarSede')->name('carrera.quitarSede');
+
     });
 
      // CONTROLADOR PARA LAS INFRAESTRUCTURAS

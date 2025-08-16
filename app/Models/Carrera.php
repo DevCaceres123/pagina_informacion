@@ -7,9 +7,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Carrera extends Model
 {
     use SoftDeletes;
-    public function sede()
+    public function sedes()
     {
-        return $this->belongsTo('App\Models\Sede');
+        return $this->belongsToMany('App\Models\Sede', 'carrera_sede','carrera_id', 'sede_id');
     }
     public function estudiantes()
     {
