@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
 use Illuminate\Support\Facades\Storage;
+use App\Http\Requests\Infraestructura\InfraestructuraRequest;
 use Exception;
 
 class Controlador_infraestructura extends Controller
@@ -71,7 +72,7 @@ class Controlador_infraestructura extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(InfraestructuraRequest $request)
     {
 
         DB::beginTransaction();

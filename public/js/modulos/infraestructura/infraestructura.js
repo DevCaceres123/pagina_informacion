@@ -117,13 +117,13 @@ function actualizarTabla() {
 
 $('#formInfraestructura').on('submit', function(e) {
     e.preventDefault();
-      //$("#btnGuardarInfraestructura").prop("disabled", true);
+      $("#btnGuardarInfraestructura").prop("disabled", true);
       let formData = new FormData(this);
-      console.log(formData);
-      //vaciar_errores("formInfraestructura");
+      
+      vaciar_errores("formInfraestructura");
       crud("admin/infraestructura", "POST", null, formData, function (error, response) {
-          //$("#btnGuardarInfraestructura").prop("disabled", false);
-          console.log(response);
+          $("#btnGuardarInfraestructura").prop("disabled", false);
+          
   
           // Verificamos que no haya un error o que todos los campos sean llenados
           if (response.tipo === "errores") {
@@ -186,3 +186,81 @@ $("#guardarEstadoBtn").on("click", function () {
     // Simulamos cierre
     $("#modalCambiarEstado").modal("hide");
 });
+
+
+// Validar al seleccionar imágenes
+$("#planos").on("change", function () {
+    let archivo = this.files;
+    if (validarArchivos(archivo, "imagen") == false) {
+        $(this).val(""); // Limpiar input
+    }
+
+});
+
+// Validar al seleccionar PDF
+$("#contrato").on("change", function () {
+    let archivo = this.files[0];
+
+    if (validarArchivos(archivo, "pdf") == false) {
+        $(this).val(""); // Limpiar input
+    }
+
+
+});
+
+
+
+// funcion que nos servira para validar imagenes y pdf
+function validarArchivos(archivos, tipo) {
+
+    const maxSizeImagen = 3 * 1024 * 1024; // 3 MB
+    const maxSizePdf = 2 * 1024 * 1024; // 2 MB
+
+    if (tipo === "imagen") {
+
+
+        for (let i = 0; i < archivos.length; i++) {
+            const file = archivos[i];
+
+            if (!file.type.match("image.*")) {
+                mensajeAlerta(`El archivo "${file.name}" no es una imagen.`, "error");
+
+                return false;
+            }
+
+            if (file.size > maxSizeImagen) {
+                mensajeAlerta(
+                    `La imagen "${file.name}" excede el tamaño máximo de 3 MB.`,
+                    "error"
+                );
+
+                return false;
+            }
+        }
+    }
+
+    if (tipo === "pdf") {
+
+
+        if (!archivos) {
+            mensajeAlerta("No se seleccionó ningún archivo.", "error");
+            return false;
+        }
+
+        if (archivos.type !== "application/pdf") {
+            mensajeAlerta(`El archivo "${archivos.name}" no es un PDF.`, "error");
+
+            return false;
+        }
+
+        if (archivos.size > maxSizePdf) {
+            mensajeAlerta(
+                `El archivo "${archivos.name}" excede el tamaño máximo de 2 MB.`,
+                "error"
+            );
+
+            return false;
+        }
+    }
+    return true; // Si pasa todas las validaciones
+}

@@ -75,6 +75,9 @@
                                             <option value="{{ $sede->id }}">{{ $sede->nombre }}</option>
                                         @endforeach
                                     </select>
+                                    <div id="_sede_id">
+
+                                    </div>
                                 </div>
 
                             </div>
@@ -94,7 +97,10 @@
                                             class="text-danger">(*)</strong>
                                     </label>
                                     
-                                        <input type="text" class="form-control" id="propiedad" name="propiedad" placeholder="Propiedad" required>                                    
+                                        <input type="text" class="form-control" id="propiedad" name="propiedad" placeholder="Propiedad" required>  
+                                    <div id="_propiedad">
+
+                                    </div>                                  
                                 </div>
 
                                 <div class="col-md-12 mt-2 mb-2">
@@ -103,7 +109,11 @@
                                             class="text-danger">(*)</strong>
                                     </label>
                                     
-                                        <input type="text" class="form-control" id="uso_asignado" name="uso_asignado" placeholder="Propiedad" required>                                    
+                                        <input type="text" class="form-control" id="uso_asignado" name="uso_asignado" placeholder="Propiedad" required>     
+                                        
+                                    <div id="_uso_asignado">
+
+                                    </div> 
                                 </div>
 
                                  <div class="col-md-12 mt-2">
@@ -112,6 +122,10 @@
                                             class="text-danger">(*)</strong>
                                     </label>
                                     <input type="file" class="form-control" name="planos[]" id="planos" accept="image/*" required multiple>
+                                    
+                                     <div id="_planos">
+
+                                    </div> 
                                 </div>
 
                                
@@ -138,6 +152,7 @@
                                         <option value="mediano">Mediano</option>
                                         <option value="malo">Malo</option>
                                     </select>
+                                    <div id="_estado_inmueble"></div>
                                 </div>
 
                                 <div class="col-md-12 mt-2 mb-2">
@@ -150,6 +165,8 @@
                                         <textarea class="form-control" placeholder="Leave a comment here" id="observacion_estado" style="height: 100px" name="observacion_estado"></textarea>
                                         <label for="observacion_estado">Ingrese alguna observacion del inmueble</label>
                                     </div>
+
+                                    <div id="_observacion_estado"></div>
                                 </div>
                             </div>
 
@@ -169,6 +186,7 @@
                                             class="text-danger">(*)</strong>
                                     </label>
                                     <input type="date" class="form-control" name="fecha_inicio" required>
+                                    <div id="_fecha_inicio"></div>
                                 </div>
 
                                 <div class="col-md-6 mt-2">
@@ -177,6 +195,7 @@
                                             class="text-danger">(*)</strong>
                                     </label>
                                     <input type="date" class="form-control" name="fecha_final" required>
+                                     <div id="_fecha_final"></div>
                                 </div>
 
                                 <div class="col-md-12 mt-2">
@@ -185,6 +204,7 @@
                                             class="text-danger">(*)</strong>
                                     </label>
                                     <input type="file" class="form-control" name="contrato" id="contrato" accept=".pdf" required>
+                                    <div id="_contrato"></div>
                                 </div>
                             </div>
                         </div>

@@ -44,15 +44,33 @@ const notificaciones = {
   'errores': (obj) => {
 
     try {
-      // console.log(obj);
+      //console.log("🔴 Errores recibidos:", obj);
+
       for (let key in obj) {
-        // console.log(key);
-        document.getElementById('_' + key).innerHTML = `<p class="text-danger">${obj[key]}</p>`;
+        let elementId;
+
+        // Si el key tiene un índice (ej: 'planos.0', 'files.2')
+        if (key.includes('.')) {
+          // Tomamos solo la parte del array antes del punto
+          const baseKey = key.split('.')[0];
+          elementId = '_' + baseKey; // todos los errores del array van en el mismo div
+        } else {
+          elementId = '_' + key;
+        }
+
+        const element = document.getElementById(elementId);
+
+        if (element) {
+          console.log(`✅ Mostrando error en: ${elementId} (key: ${key})`);
+          // Si ya hay errores anteriores, los concatenamos
+          element.innerHTML += `<p class="text-danger">${obj[key]}</p>`;
+        } else {
+          console.warn(`⚠️ No se encontró el elemento con id para: ${key}`);
+        }
       }
     } catch (error) {
-     console.log(error)
+      console.error("❌ Error procesando los errores:", error);
     }
-
   }
   // Puedes agregar más tipos según sea necesario
 };
