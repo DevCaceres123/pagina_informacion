@@ -10,4 +10,9 @@ class Infraestructura extends Model
     public function sede(){
        return $this->belongsTo('App\Models\Sede');
     }
+
+    public function planosInfraestructura()
+    {
+        return $this->hasMany('App\Models\PlanosInfraestructura', 'infraestructura_id');
+    }
 }

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Sede;
 use App\Models\Infraestructura;
+use App\Models\PlanosInfraestructura;
 use Illuminate\Support\Facades\DB;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
@@ -31,7 +32,7 @@ class Controlador_infraestructura extends Controller
             'sede' => function ($query) {
                 $query->select(['id','nombre']); // CORREGIDO
             },
-        ])->select('id', 'estado_inmueble', 'estado', 'ubicacion', 'distrito','sede_id')->orderBy('id', 'desc');
+        ])->select('id', 'estado_inmueble', 'estado', 'sede_id')->orderBy('id', 'desc');
 
         if (!empty($request->search['value'])) {
             $query->where(function ($q) use ($request) {
@@ -72,7 +73,65 @@ class Controlador_infraestructura extends Controller
      */
     public function store(Request $request)
     {
-        //
+
+        DB::beginTransaction();
+
+        try {
+            // Guardar la sede
+            $infraestructura = new Infraestructura();
+            $infraestructura->propiedad = $request->propiedad;
+            $infraestructura->uso_asignado = $request->uso_asignado;
+
+
+            $infraestructura->estado_inmueble = $request->estado_inmueble;
+            ;
+            $infraestructura->estado = 'inicial';
+            $infraestructura->observacion_estado = $request->observacion_estado;
+            $infraestructura->fecha_inicio = $request->fecha_inicio;
+            $infraestructura->fecha_final = $request->fecha_final;
+            $infraestructura->sede_id = $request->sede_id;
+
+
+            $infraestructura->usuario_id = auth()->user()->id;
+
+            $archivosGuardados = [];
+            // Guardar el PDF si se envió
+            $rutaPdf = $this->guardarPdf($request);
+            if ($rutaPdf) {
+                $infraestructura->contrato = $rutaPdf;
+                $archivosGuardados[] = $rutaPdf; // guardar para rollback
+            }
+            $infraestructura->save();
+
+            // Guardar la galería de imágenes si se envió
+            $rutasGaleria = $this->guardarGaleria($request);
+            if (!empty($rutasGaleria)) {
+                foreach ($rutasGaleria as $ruta) {
+                    $PlanosInfraestructura = new PlanosInfraestructura();
+                    $PlanosInfraestructura->nombre = $ruta; // ruta relativa
+                    $PlanosInfraestructura->infraestructura_id = $infraestructura->id; // ID de la sede recién creada
+                    $PlanosInfraestructura->save();
+
+                    $archivosGuardados[] = $ruta; // guardar para rollback
+                }
+            }
+
+            DB::commit();
+            $this->mensaje('exito', 'Infraestructura registrada correctamente');
+            return response()->json($this->mensaje, 200);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            // Eliminar archivos si ocurre error
+            foreach ($archivosGuardados as $ruta) {
+                if (Storage::exists($ruta)) {
+                    Storage::delete($ruta);
+                }
+            }
+
+
+            $this->mensaje('error', 'error' . $e->getMessage());
+            return response()->json($this->mensaje, 200);
+        }
     }
 
     /**
@@ -105,5 +164,82 @@ class Controlador_infraestructura extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+
+
+    // guardamos el pdf o resolucion
+    public function guardarPdf(Request $request)
+    {
+        if ($request->hasFile('contrato')) {
+            $archivo = $request->file('contrato');
+            // Guarda en storage/app/contratos
+            $ruta = $archivo->store('contratos', 'private');
+            // Retorna la ruta relativa: contratos/archivo.pdf
+            return $ruta;
+        }
+        return null;
+    }
+    // guardarmos las imagenes
+
+    public function guardarGaleria(Request $request)
+    {
+        $rutas = [];
+
+        // Inicializar el gestor de imágenes con el driver GD
+        $manager = new ImageManager(new Driver());
+
+        // Recorrer todos los archivos recibidos
+        foreach ($request->allFiles() as $inputName => $files) {
+            // Asegurar que sea un array para permitir múltiples archivos por input
+            $files = is_array($files) ? $files : [$files];
+
+            foreach ($files as $imagen) {
+                // Validar que sea imagen antes de procesar
+                if (str_starts_with($imagen->getMimeType(), 'image/')) {
+                    // Leer la imagen
+                    $img = $manager->read($imagen->getPathname());
+
+                    // Redimensionar (máx 1200px en cualquier lado)
+                    $img->scaleDown(1200);
+
+
+                    // Redimensionar manteniendo proporción
+                    //$img->resize(height: 1200);
+
+                    // Convertir a WEBP con calidad 80
+                    $encoded = $img->toWebp(70);
+
+                    // Generar nombre único
+                    $nombre = uniqid() . '.webp';
+
+                    // Carpeta dentro del disco private
+                    $carpeta = 'planos';
+
+                    // Ruta de guardado en el sistema de archivos
+                    $ruta = storage_path("app/private/{$carpeta}/{$nombre}");
+
+                
+
+                    // Guardar imagen procesada
+                    $encoded->save($ruta);
+
+                    // Guardar solo el nombre para BD
+                   $rutas[] = "{$carpeta}/{$nombre}";
+                }
+            }
+        }
+
+        return $rutas;
+    }
+
+
+    // Mensaje para mostrar al usuario
+    public function mensaje($titulo, $mensaje)
+    {
+        $this->mensaje = [
+            'tipo' => $titulo,
+            'mensaje' => $mensaje,
+        ];
     }
 }

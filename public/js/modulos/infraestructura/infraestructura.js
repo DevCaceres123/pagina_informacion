@@ -61,20 +61,7 @@ function listar_infraestructuras() {
                     `;
                 },
             },
-            {
-                data: "ubicacion",
-                className: "table-td text-uppercase",
-                render: function (data) {
-                    return data;
-                },
-            },
-            {
-                data: "distrito",
-                className: "table-td text-uppercase",
-                render: function (data) {
-                    return data;
-                },
-            },
+             
 
             {
                 data: null,
@@ -126,6 +113,36 @@ function listar_infraestructuras() {
 function actualizarTabla() {
     tabla_infraestructura.ajax.reload(null, false); // Recarga los datos sin resetear el paginado
 }
+
+
+$('#formInfraestructura').on('submit', function(e) {
+    e.preventDefault();
+      //$("#btnGuardarInfraestructura").prop("disabled", true);
+      let formData = new FormData(this);
+      console.log(formData);
+      //vaciar_errores("formInfraestructura");
+      crud("admin/infraestructura", "POST", null, formData, function (error, response) {
+          //$("#btnGuardarInfraestructura").prop("disabled", false);
+          console.log(response);
+  
+          // Verificamos que no haya un error o que todos los campos sean llenados
+          if (response.tipo === "errores") {
+              mensajeAlerta(response.mensaje, "errores");
+              return;
+          }
+          if (response.tipo != "exito") {
+              mensajeAlerta(response.mensaje, response.tipo);
+              return;
+          }
+  
+          //si todo esta correcto muestra el mensaje de correcto
+          $("#modalInfraestructura").modal("hide");
+          vaciar_formulario("formInfraestructura");
+          mensajeAlerta(response.mensaje, response.tipo);
+          actualizarTabla();
+      });
+
+});
 
 $(document).on("click", ".btnCambiarEstado", function (e) {
     

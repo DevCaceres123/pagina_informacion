@@ -12,9 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('infraestructuras', function (Blueprint $table) {
-            $table->id();
-            $table->string('ubicacion',100);
-            $table->string('distrito',150);
+            $table->id();            
+            $table->string('propiedad',150);
+            $table->string('uso_asignado',150);
             $table->string('contrato',150);        
             $table->enum('estado_inmueble', ['bueno', 'mediano','malo']);
             $table->enum('estado', ['inicial', 'proceso','finalizado']);
@@ -22,6 +22,7 @@ return new class extends Migration
             $table->date('fecha_inicio');
             $table->date('fecha_final');    
             $table->string('numero_nota',50)->nullable();
+            $table->unsignedBigInteger('usuario_id');
             $table->unsignedBigInteger('sede_id');
             $table->foreign('sede_id')
                 ->references('id')

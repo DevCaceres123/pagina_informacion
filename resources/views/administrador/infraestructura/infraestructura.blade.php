@@ -25,8 +25,7 @@
                                     <th>SEDE</th>
                                     <th>ESTADO INMUEBLE</th>
                                     <th>TRAMITE</th>
-                                    <th>UBICACION</th>
-                                    <th>DISTRITO</th>
+                                                                  
                                     <th>ACCION</th>
 
                                 </tr>
@@ -34,8 +33,6 @@
                         </table>
                     </div>
                 </div>
-
-                
             </div>
         </div>
     </div>
@@ -79,14 +76,54 @@
                                         @endforeach
                                     </select>
                                 </div>
-                                
+
                             </div>
+
+                            {{-- SECCIÓN 2: DATOS DEL INMUEBLE --}}
+                            <div class="row border border-3 rounded m-auto position-relative mt-3 p-2">
+                                <div class="position-absolute" style="top:0px; left:33%; margin-top: -15px;">
+                                    <div class="d-inline p-1 border rounded border-danger bg-danger text-light">
+                                        <i class="fas fa-home me-1"></i> DATOS DEL INMUEBLE
+                                    </div>
+                                </div>
+
+                               
+                                <div class="col-md-12 mt-2 mb-2">
+                                    <label class="form-label">
+                                        <i class="fas fa-comment-alt me-1"></i> PROPIEDAD <strong
+                                            class="text-danger">(*)</strong>
+                                    </label>
+                                    
+                                        <input type="text" class="form-control" id="propiedad" name="propiedad" placeholder="Propiedad" required>                                    
+                                </div>
+
+                                <div class="col-md-12 mt-2 mb-2">
+                                    <label class="form-label">
+                                        <i class="fas fa-comment-alt me-1"></i> USO ASIGNADO <strong
+                                            class="text-danger">(*)</strong>
+                                    </label>
+                                    
+                                        <input type="text" class="form-control" id="uso_asignado" name="uso_asignado" placeholder="Propiedad" required>                                    
+                                </div>
+
+                                 <div class="col-md-12 mt-2">
+                                    <label class="form-label">
+                                        <i class="fas fa-upload me-1"></i> PLANOS E UBICACION (IMAGEN) <strong
+                                            class="text-danger">(*)</strong>
+                                    </label>
+                                    <input type="file" class="form-control" name="planos[]" id="planos" accept="image/*" required multiple>
+                                </div>
+
+                               
+                            </div>
+
+
 
                             {{-- SECCIÓN 2: ESTADO DEL INMUEBLE --}}
                             <div class="row border border-3 rounded m-auto position-relative mt-3 p-2">
                                 <div class="position-absolute" style="top:0px; left:33%; margin-top: -15px;">
                                     <div class="d-inline p-1 border rounded border-danger bg-danger text-light">
-                                        <i class="fas fa-home me-1"></i> DATOS DEL INMUEBLE
+                                        <i class="fas fa-home me-1"></i> ESTADO DEL INMUEBLE
                                     </div>
                                 </div>
 
@@ -110,7 +147,7 @@
                                     </label>
 
                                     <div class="form-floating">
-                                        <textarea class="form-control" placeholder="Leave a comment here" id="observacion_estado"  style="height: 100px"></textarea>
+                                        <textarea class="form-control" placeholder="Leave a comment here" id="observacion_estado" style="height: 100px" name="observacion_estado"></textarea>
                                         <label for="observacion_estado">Ingrese alguna observacion del inmueble</label>
                                     </div>
                                 </div>
@@ -147,7 +184,7 @@
                                         <i class="fas fa-upload me-1"></i> CONTRATO (PDF) <strong
                                             class="text-danger">(*)</strong>
                                     </label>
-                                    <input type="file" class="form-control" name="contrato" accept=".pdf" required>
+                                    <input type="file" class="form-control" name="contrato" id="contrato" accept=".pdf" required>
                                 </div>
                             </div>
                         </div>
@@ -157,7 +194,7 @@
                                 <button type="reset" class="btn btn-secondary btn-sm">
                                     <i class="fas fa-eraser me-1"></i> Cerrar
                                 </button>
-                                <button type="submit" class="btn btn-success btn-sm">
+                                <button type="submit" class="btn btn-success btn-sm" id="btnGuardarInfraestructura">
                                     <i class="fas fa-save me-1"></i> Guardar
                                 </button>
                             </div>
@@ -211,56 +248,58 @@
 
 
     <!-- Modal de cambio de estado -->
-<div class="modal fade" id="modalCambiarEstado" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-md">
-        <div class="modal-content border-2 border-primary">
-            <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title">
-                    <i class="fas fa-retweet me-2"></i> Cambiar Estado
-                </h5>
-                <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-            </div>
+    <div class="modal fade" id="modalCambiarEstado" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-md">
+            <div class="modal-content border-2 border-primary">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title">
+                        <i class="fas fa-retweet me-2"></i> Cambiar Estado
+                    </h5>
+                    <button type="button" class="btn-close bg-white" data-bs-dismiss="modal"
+                        aria-label="Cerrar"></button>
+                </div>
 
-            <div class="modal-body">
-                <form id="formCambioEstado">
-                    <input type="hidden" id="idElementoEstado" name="id">
+                <div class="modal-body">
+                    <form id="formCambioEstado">
+                        <input type="hidden" id="idElementoEstado" name="id">
 
-                    <div class="row border border-3 rounded m-auto position-relative mt-3 p-2">
-                        <div class="position-absolute" style="top:0px; left:35%; margin-top: -15px;">
-                            <div class="d-inline p-1 border rounded border-primary bg-primary text-light">
-                                <i class="fas fa-cogs me-1"></i> CAMBIO DE ESTADO
+                        <div class="row border border-3 rounded m-auto position-relative mt-3 p-2">
+                            <div class="position-absolute" style="top:0px; left:35%; margin-top: -15px;">
+                                <div class="d-inline p-1 border rounded border-primary bg-primary text-light">
+                                    <i class="fas fa-cogs me-1"></i> CAMBIO DE ESTADO
+                                </div>
+                            </div>
+
+                            <div class="form-group py-2 col-md-12 mt-3">
+                                <label class="form-label">
+                                    <i class="fas fa-toggle-on me-1"></i> Estado <strong class="text-danger">(*)</strong>
+                                </label>
+                                <select class="form-select" name="estado" id="estado_select" required>
+                                    <option value="">-- Seleccione --</option>
+                                    <option value="inicial">Inicial</option>
+                                    <option value="proceso">En Proceso</option>
+                                    <option value="finalizado">Finalizado</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group py-2 col-md-6 mt-3 d-none" id="nota_input_group">
+                                <label class="form-label">
+                                    <i class="fas fa-sticky-note me-1"></i> Número de Nota <strong
+                                        class="text-danger">(*)</strong>
+                                </label>
+                                <input type="text" class="form-control" name="numero_nota" id="numero_nota_input">
                             </div>
                         </div>
+                    </form>
+                </div>
 
-                        <div class="form-group py-2 col-md-12 mt-3">
-                            <label class="form-label">
-                                <i class="fas fa-toggle-on me-1"></i> Estado <strong class="text-danger">(*)</strong>
-                            </label>
-                            <select class="form-select" name="estado" id="estado_select" required>
-                                <option value="">-- Seleccione --</option>
-                                <option value="inicial">Inicial</option>
-                                <option value="proceso">En Proceso</option>
-                                <option value="finalizado">Finalizado</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group py-2 col-md-6 mt-3 d-none" id="nota_input_group">
-                            <label class="form-label">
-                                <i class="fas fa-sticky-note me-1"></i> Número de Nota <strong class="text-danger">(*)</strong>
-                            </label>
-                            <input type="text" class="form-control" name="numero_nota" id="numero_nota_input">
-                        </div>
-                    </div>
-                </form>
-            </div>
-
-            <div class="modal-footer">
-                <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button class="btn btn-primary" id="guardarEstadoBtn">Guardar</button>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button class="btn btn-primary" id="guardarEstadoBtn">Guardar</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
 
 
