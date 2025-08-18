@@ -33,11 +33,21 @@ class Controlador_infraestructura extends Controller
             'sede' => function ($query) {
                 $query->select(['id','nombre']); // CORREGIDO
             },
-        ])->select('id', 'estado_inmueble', 'estado', 'sede_id')->orderBy('id', 'desc');
+        ])->select('id', 'estado_inmueble', 'estado_tramite', 'sede_id')->orderBy('id', 'desc');
+
 
         if (!empty($request->search['value'])) {
-            $query->where(function ($q) use ($request) {
-                $q->where('nombre', 'like', '%' . $request->search['value'] . '%')->orWhere('resolucion', 'like', '%' . $request->search['value'] . '%');
+            $search = $request->search['value'];
+
+            $query->where(function ($q) use ($search) {
+                // Buscar en relación 'sede'
+                $q->whereHas('sede', function ($sub) use ($search) {
+                    $sub->where('nombre', 'like', "%{$search}%");
+                })
+                // Buscar en estado_inmueble
+                ->orWhere('estado_inmueble', 'like', "%{$search}%")
+                // Buscar en estado_tramite
+                ->orWhere('estado_tramite', 'like', "%{$search}%");
             });
         }
 
@@ -86,10 +96,9 @@ class Controlador_infraestructura extends Controller
 
             $infraestructura->estado_inmueble = $request->estado_inmueble;
             ;
-            $infraestructura->estado = 'inicial';
+            $infraestructura->estado_tramite = 'inicial';
             $infraestructura->observacion_estado = $request->observacion_estado;
-            $infraestructura->fecha_inicio = $request->fecha_inicio;
-            $infraestructura->fecha_final = $request->fecha_final;
+
             $infraestructura->sede_id = $request->sede_id;
 
 
@@ -97,9 +106,9 @@ class Controlador_infraestructura extends Controller
 
             $archivosGuardados = [];
             // Guardar el PDF si se envió
-            $rutaPdf = $this->guardarPdf($request);
+            $rutaPdf = $this->guardarPdf($request, 'solicitud', 'S');
             if ($rutaPdf) {
-                $infraestructura->contrato = $rutaPdf;
+                $infraestructura->solicitud = $rutaPdf;
                 $archivosGuardados[] = $rutaPdf; // guardar para rollback
             }
             $infraestructura->save();
@@ -189,18 +198,28 @@ class Controlador_infraestructura extends Controller
 
 
 
-    // guardamos el pdf o resolucion
-    public function guardarPdf(Request $request)
+    public function guardarPdf(Request $request, string $nombre_campo, string $prefijo = '')
     {
-        if ($request->hasFile('contrato')) {
-            $archivo = $request->file('contrato');
-            // Guarda en storage/app/contratos
-            $ruta = $archivo->store('contratos', 'private');
-            // Retorna la ruta relativa: contratos/archivo.pdf
-            return $ruta;
+        if ($request->hasFile($nombre_campo)) {
+            $archivo = $request->file($nombre_campo);
+
+            // extensión (normalmente pdf)
+            $extension = $archivo->getClientOriginalExtension();
+
+            // nombre único (similar al que genera Laravel con store)
+            $nombreUnico = uniqid() . '.' . $extension;
+
+            // agregamos el prefijo al inicio
+            $nombreFinal = $prefijo . $nombreUnico;
+
+            // guardamos con storeAs para controlar el nombre
+            $ruta = $archivo->storeAs('documentos_infraestructura', $nombreFinal, 'private');
+
+            return $ruta; // ej: documentos_infraestructura/S66bfa2c52d3e1.pdf
         }
         return null;
     }
+
     // guardarmos las imagenes
 
     public function guardarGaleria(Request $request)
@@ -240,13 +259,11 @@ class Controlador_infraestructura extends Controller
                     // Ruta de guardado en el sistema de archivos
                     $ruta = storage_path("app/private/{$carpeta}/{$nombre}");
 
-                
-
                     // Guardar imagen procesada
                     $encoded->save($ruta);
 
                     // Guardar solo el nombre para BD
-                   $rutas[] = "{$carpeta}/{$nombre}";
+                    $rutas[] = "{$carpeta}/{$nombre}";
                 }
             }
         }

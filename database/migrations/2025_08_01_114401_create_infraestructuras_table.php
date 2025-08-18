@@ -15,16 +15,18 @@ return new class extends Migration
             $table->id();            
             $table->string('propiedad',150);
             $table->string('uso_asignado',150);
-            $table->string('contrato',150);        
-            $table->enum('estado_inmueble', ['bueno', 'regular','malo']);
-            $table->enum('estado', ['inicial', 'proceso','finalizado']);
-            $table->string('observacion_estado');
-            $table->date('fecha_inicio');
-            $table->date('fecha_final');    
+            $table->string('solicitud',150);
+            $table->string('nota',150)->nullable();
             $table->string('numero_nota',50)->nullable();
-            $table->unsignedBigInteger('usuario_id');
-            $table->timestamp('deleted_at')->nullable();
+            $table->string('contrato',150)->nullable();        
+            $table->enum('estado_inmueble', ['bueno', 'regular','malo']);
+            $table->enum('estado_tramite', ['inicial', 'proceso','finalizado']);
+            $table->string('observacion_estado');
+            $table->date('fecha_inicio')->nullable();
+            $table->date('fecha_final')->nullable();                
+            $table->unsignedBigInteger('usuario_id');            
             $table->unsignedBigInteger('sede_id');
+            $table->timestamp('deleted_at')->nullable();
             $table->foreign('sede_id')
                 ->references('id')
                 ->on('sedes')

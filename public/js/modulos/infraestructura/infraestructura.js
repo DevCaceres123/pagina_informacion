@@ -36,7 +36,7 @@ function listar_infraestructuras() {
             },
             {
                 data: "sede.nombre",
-                className: "table-td text-uppercase",
+                className: "table-td text-capitalize",
                 render: function (data) {
                     return `                            
                         ${data}
@@ -48,16 +48,16 @@ function listar_infraestructuras() {
                 className: "table-td text-uppercase",
                 render: function (data) {
                     return `                            
-                       <span class="badge rounded-pill bg-primary-subtle text-primary p-1 fs-6">${data}</span>
+                       <span class="badge rounded-pill bg-primary-subtle text-primary p-1 fs-7 p-2">${data}</span>
                     `;
                 },
             },
             {
-                data: "estado",
+                data: "estado_tramite",
                 className: "table-td text-uppercase",
                 render: function (data) {
                     return `                            
-                       <span class="badge rounded-pill bg-primary-subtle text-success p-1 fs-6">${data}</span>
+                       <span class="badge rounded-pill bg-primary-subtle text-success p-2 fs-7">${data}</span>
                     `;
                 },
             },

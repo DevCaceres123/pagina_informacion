@@ -24,8 +24,7 @@
                                     <th>Nº</th>
                                     <th>SEDE</th>
                                     <th>ESTADO INMUEBLE</th>
-                                    <th>TRAMITE</th>
-                                                                  
+                                    <th>ESTADO TRAMITE</th>                                                             
                                     <th>ACCION</th>
 
                                 </tr>
@@ -170,8 +169,24 @@
                                 </div>
                             </div>
 
-                            {{-- SECCIÓN 3: CONTRATO --}}
-                            <div class="row border border-3 rounded m-auto position-relative mt-3 p-2">
+                            {{-- SECCIÓN 3: SOLICITUD --}}
+
+                               <div class="row border border-3 rounded m-auto position-relative mt-3 p-2">
+                                <div class="position-absolute" style="top:0px; left:33%; margin-top: -15px;">
+                                    <div class="d-inline p-1 border rounded border-danger bg-danger text-light">
+                                        <i class="fas fa-file-contract me-1"></i> ESTADO TRAMITE <b> (INICIAL)</b>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 mt-2">
+                                    <label class="form-label">
+                                        <i class="fas fa-upload me-1"></i> SOLICITUD (PDF) <strong
+                                            class="text-danger">(*)</strong>
+                                    </label>
+                                    <input type="file" class="form-control" name="solicitud" id="solicitud" accept=".pdf" required>
+                                    <div id="_solicitud"></div>
+                                </div>
+                            </div>
+                            {{-- <div class="row border border-3 rounded m-auto position-relative mt-3 p-2">
                                 <div class="position-absolute" style="top:0px; left:33%; margin-top: -15px;">
                                     <div class="d-inline p-1 border rounded border-danger bg-danger text-light">
                                         <i class="fas fa-file-contract me-1"></i> DATOS DEL CONTRATO
@@ -206,7 +221,7 @@
                                     <input type="file" class="form-control" name="contrato" id="contrato" accept=".pdf" required>
                                     <div id="_contrato"></div>
                                 </div>
-                            </div>
+                            </div> --}}
                         </div>
 
                         <div class="modal-footer">
