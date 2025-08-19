@@ -286,11 +286,11 @@
     <div class="modal fade" id="modalCambiarEstado" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-md">
             <div class="modal-content border-2 border-primary">
-                <div class="modal-header bg-primary text-white">
+                <div class="modal-header bg-dark text-white">
                     <h5 class="modal-title">
                         <i class="fas fa-retweet me-2"></i> Cambiar Estado
                     </h5>
-                    <button type="button" class="btn-close bg-white" data-bs-dismiss="modal"
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
                         aria-label="Cerrar"></button>
                 </div>
 
@@ -299,38 +299,30 @@
                         <input type="hidden" id="idElementoEstado" name="id">
 
                         <div class="row border border-3 rounded m-auto position-relative mt-3 p-2">
-                            <div class="position-absolute" style="top:0px; left:35%; margin-top: -15px;">
-                                <div class="d-inline p-1 border rounded border-primary bg-primary text-light">
-                                    <i class="fas fa-cogs me-1"></i> CAMBIO DE ESTADO
+                            <div class="position-absolute" style="top:0px; left:25%; margin-top: -15px;">
+                                <div class="d-inline p-1 border rounded border-danger bg-danger text-light">
+                                    <i class="fas fa-cogs me-1"></i>ESTADO DE TRAMITE
                                 </div>
                             </div>
-
                             <div class="form-group py-2 col-md-12 mt-3">
                                 <label class="form-label">
                                     <i class="fas fa-toggle-on me-1"></i> Estado <strong class="text-danger">(*)</strong>
                                 </label>
                                 <select class="form-select" name="estado" id="estado_select" required>
-                                    <option value="">-- Seleccione --</option>
+                                    <option disabled>-- Seleccione --</option>
                                     <option value="inicial">Inicial</option>
                                     <option value="proceso">En Proceso</option>
                                     <option value="finalizado">Finalizado</option>
                                 </select>
                             </div>
-
-                            <div class="form-group py-2 col-md-6 mt-3 d-none" id="nota_input_group">
-                                <label class="form-label">
-                                    <i class="fas fa-sticky-note me-1"></i> Número de Nota <strong
-                                        class="text-danger">(*)</strong>
-                                </label>
-                                <input type="text" class="form-control" name="numero_nota" id="numero_nota_input">
-                            </div>
+                            
                         </div>
                     </form>
                 </div>
 
                 <div class="modal-footer">
-                    <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button class="btn btn-primary" id="guardarEstadoBtn">Guardar</button>
+                    <button class="btn btn-secondary btn-sm" data-bs-dismiss="modal"><i class="fas fa-eraser me-1"></i>Cancelar</button>
+                    <button class="btn btn-primary btn-sm" id="guardarEstadoBtn"><i class="fas fa-save me-1"></i>Guardar</button>
                 </div>
             </div>
         </div>

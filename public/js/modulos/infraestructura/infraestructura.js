@@ -61,7 +61,7 @@ function listar_infraestructuras() {
                     `;
                 },
             },
-             
+
 
             {
                 data: null,
@@ -69,38 +69,34 @@ function listar_infraestructuras() {
                 render: function (data, type, row) {
                     return ` <div class="d-flex justify-content-center">
 
-                         ${
-                             permisosGlobal.eliminar
-                                 ? `
+                         ${permisosGlobal.eliminar
+                            ? `
                         <a class="btn btn-sm btn-outline-danger px-2 d-inline-flex align-items-center eliminar_infraestructura me-1" data-id="${row.id}" title="Eliminar Infraestructura">
                             <i class="fas fa-window-close fs-16"></i>
                         </a>
                             `
-                                 : ``
-                         }
+                            : ``
+                        }
                       
-                             ${
-                                 permisosGlobal.eliminar
-                                     ? ` <a class="btn btn-sm btn-outline-warning px-2 d-inline-flex align-items-center editar_sede me-1" data-id="${row.id}" title="Editar Infraestructura">
+                             ${permisosGlobal.eliminar
+                            ? ` <a class="btn btn-sm btn-outline-warning px-2 d-inline-flex align-items-center editar_sede me-1" data-id="${row.id}" title="Editar Infraestructura">
                             <i class="fas fa-pencil-alt fs-16"></i>
                         </a>`
-                                     : ``
-                             }
+                            : ``
+                        }
                       
-                        ${
-                            permisosGlobal.eliminar
-                                ? ` <a class="btn btn-sm btn-outline-info px-2 d-inline-flex align-items-center ver_resolucion me-1" data-id="${row.id}" data-resolucion="${row.resolucion_pdf}"  title="Ver Contrato">
+                        ${permisosGlobal.eliminar
+                            ? ` <a class="btn btn-sm btn-outline-info px-2 d-inline-flex align-items-center ver_resolucion me-1" data-id="${row.id}" data-resolucion="${row.resolucion_pdf}"  title="Ver Contrato">
                             <i class="fas fa-file-pdf fs-16 fs-16"></i>
                         </a>`
-                                : ``
+                            : ``
                         }                
-                          ${
-                              permisosGlobal.eliminar
-                                  ? ` <a href='' class="btn btn-sm btn-outline-success px-2 d-inline-flex align-items-center me-1 btnCambiarEstado" data-id="${row.id}" title="Cambiar de estado">
+                          ${permisosGlobal.eliminar
+                            ? ` <a href='' class="btn btn-sm btn-outline-success px-2 d-inline-flex align-items-center me-1 btnCambiarEstado" data-id="${row.id}" title="Cambiar de estado">
                             <i class="fas fa-retweet fs-16"></i>
                         </a>`
-                                  : ``
-                          }
+                            : ``
+                        }
                          
                         </div>`;
                 },
@@ -115,76 +111,86 @@ function actualizarTabla() {
 }
 
 
-$('#formInfraestructura').on('submit', function(e) {
+$('#formInfraestructura').on('submit', function (e) {
     e.preventDefault();
-      $("#btnGuardarInfraestructura").prop("disabled", true);
-      let formData = new FormData(this);
-      
-      vaciar_errores("formInfraestructura");
-      crud("admin/infraestructura", "POST", null, formData, function (error, response) {
-          $("#btnGuardarInfraestructura").prop("disabled", false);
-          
-  
-          // Verificamos que no haya un error o que todos los campos sean llenados
-          if (response.tipo === "errores") {
-              mensajeAlerta(response.mensaje, "errores");
-              return;
-          }
-          if (response.tipo != "exito") {
-              mensajeAlerta(response.mensaje, response.tipo);
-              return;
-          }
-  
-          //si todo esta correcto muestra el mensaje de correcto
-          $("#modalInfraestructura").modal("hide");
-          vaciar_formulario("formInfraestructura");
-          mensajeAlerta(response.mensaje, response.tipo);
-          actualizarTabla();
-      });
+    $("#btnGuardarInfraestructura").prop("disabled", true);
+    let formData = new FormData(this);
+
+    vaciar_errores("formInfraestructura");
+    crud("admin/infraestructura", "POST", null, formData, function (error, response) {
+        $("#btnGuardarInfraestructura").prop("disabled", false);
+
+
+        // Verificamos que no haya un error o que todos los campos sean llenados
+        if (response.tipo === "errores") {
+            mensajeAlerta(response.mensaje, "errores");
+            return;
+        }
+        if (response.tipo != "exito") {
+            mensajeAlerta(response.mensaje, response.tipo);
+            return;
+        }
+
+        //si todo esta correcto muestra el mensaje de correcto
+        $("#modalInfraestructura").modal("hide");
+        vaciar_formulario("formInfraestructura");
+        mensajeAlerta(response.mensaje, response.tipo);
+        actualizarTabla();
+    });
 
 });
 
 $(document).on("click", ".btnCambiarEstado", function (e) {
-    
+
     e.preventDefault();
-
     const id = $(this).data("id");
-    $("#idElementoEstado").val(id);
-    $("#estado_select").val("");
-    $("#numero_nota_input").val("").removeAttr("required");
-    $("#nota_input_group").addClass("d-none");
+  //  $("#guardarEstadoBtn").prop("disabled", true);
+    crud("admin/estadoTramite", "GET", id, null, function (error, response) {
+    //    $("#guardarEstadoBtn").prop("disabled", true);
+        // Verificamos que no haya un error o que todos los campos sean llenados
+        if (response.tipo === "errores") {
+            mensajeAlerta(response.mensaje, "errores");
+            return;
+        }
+        if (response.tipo != "exito") {
+            mensajeAlerta(response.mensaje, response.tipo);
+            return;
+        }
 
-    $("#modalCambiarEstado").modal("show");
-});
+        $("#idElementoEstado").val(response.mensaje.id);
+        $("#estado_select").val(response.mensaje.estado_tramite);
+        $("#modalCambiarEstado").modal("show");
+    });
 
-// Mostrar campo de nota solo si selecciona "proceso"
-$("#estado_select").on("change", function () {
-    if ($(this).val() === "proceso") {
-        $("#nota_input_group").removeClass("d-none");
-        $("#numero_nota_input").attr("required", true);
-    } else {
-        $("#nota_input_group").addClass("d-none");
-        $("#numero_nota_input").removeAttr("required").val("");
-    }
+
 });
 
 // Guardar (solo ejemplo de lógica, debes hacer tu AJAX aquí)
 $("#guardarEstadoBtn").on("click", function () {
     const id = $("#idElementoEstado").val();
     const estado = $("#estado_select").val();
-    const nota = $("#numero_nota_input").val();
 
-    // Validación simple
-    if (!estado) {
-        alert("Selecciona un estado válido.");
-        return;
-    }
 
-    // Aquí podrías enviar por AJAX...
-    console.log("Enviando: ", { id, estado, nota });
+    let datos = {
+        id: id,
+        estado: estado,
+    };
+    crud("admin/cambiarEstadoTramite", "POST", null, datos, function (error, response) {
 
-    // Simulamos cierre
-    $("#modalCambiarEstado").modal("hide");
+        // Verificamos que no haya un error o que todos los campos sean llenados
+        if (response.tipo === "errores") {
+            mensajeAlerta(response.mensaje, "errores");
+            return;
+        }
+        if (response.tipo != "exito") {
+            mensajeAlerta(response.mensaje, response.tipo);
+            return;
+        }
+        actualizarTabla();
+        mensajeAlerta(response.mensaje, response.tipo);
+
+        $("#modalCambiarEstado").modal("hide");
+    });
 });
 
 

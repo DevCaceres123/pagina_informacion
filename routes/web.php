@@ -85,6 +85,8 @@ Route::prefix('/admin')->middleware([Autenticados::class])->group(function () {
     Route::controller(Controlador_infraestructura::class)->group(function () {
         Route::resource('infraestructura', Controlador_infraestructura::class);
         Route::get('listarInfraestructuras', 'listarInfraestructuras')->name('infraestructura.listarInfraestructuras');
+        Route::get('estadoTramite/{id_infraestructura}', 'estadoTramite')->name('infraestructura.estadoTramite');
+        Route::post('cambiarEstadoTramite', 'cambiarEstadoTramite')->name('infraestructura.cambiarEstadoTramite');
     });
 
 

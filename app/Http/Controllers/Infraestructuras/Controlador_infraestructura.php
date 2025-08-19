@@ -197,6 +197,65 @@ class Controlador_infraestructura extends Controller
     }
 
 
+    public function estadoTramite(string $idInfraestructura)
+    {
+        
+        
+        try {
+            $infraestructura = Infraestructura::select('id', 'estado_tramite')->where('id', $idInfraestructura)->first();
+            if (!$infraestructura) {
+                throw new Exception('infraestructura no encontrado');
+            }
+
+        
+            DB::commit();
+
+            $this->mensaje("exito", $infraestructura);
+
+            return response()->json($this->mensaje, 200);
+        } catch (Exception $e) {
+            
+
+            $this->mensaje("error", "error" . $e->getMessage());
+
+            return response()->json($this->mensaje, 200);
+        }
+    }
+
+
+    public function cambiarEstadoTramite(Request $request)
+    {
+        
+        DB::beginTransaction();
+        try {
+            $infraestructura = Infraestructura::find($request->id);
+            if (!$infraestructura) {
+                throw new Exception('infraestructura no encontrado');
+            }
+
+            // Validar el estado
+            if (!in_array($request->estado, ['inicial', 'proceso', 'finalizado'])) {
+                throw new Exception('Estado inválido');
+            }
+
+            // Actualizar el estado
+            $infraestructura->estado_tramite = $request->estado;
+            $infraestructura->save();
+
+            DB::commit();
+
+            $this->mensaje("exito", "Estado de trámite actualizado correctamente");
+
+            return response()->json($this->mensaje, 200);
+        } catch (Exception $e) {
+            DB::rollBack();
+
+            $this->mensaje("error", "error" . $e->getMessage());
+
+            return response()->json($this->mensaje, 200);
+        }
+    }
+
 
     public function guardarPdf(Request $request, string $nombre_campo, string $prefijo = '')
     {
