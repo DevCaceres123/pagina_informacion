@@ -256,6 +256,28 @@ class Controlador_infraestructura extends Controller
         }
     }
 
+    public function docuementosInfraestructura(string $idInfraestructura)
+    {
+        try {
+            $infraestructura = Infraestructura::with('planosInfraestructura')
+                ->where('id', $idInfraestructura)
+                ->first();
+
+            if (!$infraestructura) {
+                throw new Exception('infraestructura no encontrado');
+            }
+
+            return view('administrador.infraestructura.docuementosInfraestructura', compact('infraestructura'));
+
+            return response()->json($this->mensaje, 200);
+        } catch (Exception $e) {
+            DB::rollBack();
+
+            $this->mensaje("error", "error" . $e->getMessage());
+
+            return response()->json($this->mensaje, 200);
+        }
+    }
 
     public function guardarPdf(Request $request, string $nombre_campo, string $prefijo = '')
     {

@@ -86,7 +86,7 @@ function listar_infraestructuras() {
                         }
                       
                         ${permisosGlobal.eliminar
-                            ? ` <a class="btn btn-sm btn-outline-info px-2 d-inline-flex align-items-center ver_resolucion me-1" data-id="${row.id}" data-resolucion="${row.resolucion_pdf}"  title="Ver Contrato">
+                            ? ` <a href='docuementosInfraestructura/${row.id}' class="btn btn-sm btn-outline-info px-2 d-inline-flex align-items-center ver_resolucion me-1"  title="Ver Documentos">
                             <i class="fas fa-file-pdf fs-16 fs-16"></i>
                         </a>`
                             : ``
