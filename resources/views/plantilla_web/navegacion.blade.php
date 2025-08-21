@@ -37,22 +37,21 @@
                             <ul class="dropdown-menu">
                                 @foreach ($sedes as $sede)
                                     <li><a class="dropdown-item" href="/sedes/{{$sede->id}}">{{$sede->nombre}}</a></li>
-                                @endforeach
-                                
-                                
+                                @endforeach                                                            
                             </ul>
-                        </li>
-                        <li class="nav-item dropdown"><a class="nav-link dropdown-toggle dropdown-indicator"
-                                href="JavaScript:void(0)" role="button" data-bs-toggle="dropdown"
-                                aria-expanded="false">Registro</a>
+                        </li>   
+                         <li class="nav-item dropdown"><a class="nav-link" href="/inicio"
+                                role="button">Noticias</a>
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="news/newsroom.html">Docentes</a></li>
-                                <li><a class="dropdown-item" href="news/news.html">Estudiantes</a></li>
+                            
                             </ul>
-                        </li>
-
-                        <li class="nav-item dropdown"><a class="nav-link" href="contact.html"
-                                role="button">Contact</a></li>
+                        </li>                                          
+                          <li class="nav-item dropdown"><a class="nav-link" href="/convocatorias"
+                                role="button">Convocatorias</a>
+                            <ul class="dropdown-menu">
+                            
+                            </ul>
+                        </li> 
                     </ul><a
                         class="btn btn-outline-danger rounded-pill btn-sm border-2 d-block d-lg-inline-block ms-auto my-3 my-lg-0"
                         href="/login" target="_blank">Ingresar</a>

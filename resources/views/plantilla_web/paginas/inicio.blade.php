@@ -204,7 +204,7 @@
             <div class="row g-0 position-relative mb-4 mb-lg-0">
                 <div class="col-lg-6 py-3 py-lg-0 mb-0 position-relative" style="min-height:400px;">
                     <div class="bg-holder rounded-ts-lg rounded-te-lg rounded-lg-te-0  "
-                        style="background-image:url(pagina_template/assets/img/portrait-6.jpg);"></div>
+                        style="background-image:url(assets/noticias/feria_cientifica.jpg);"></div>
                     <!--/.bg-holder-->
                 </div>
                 <div
@@ -225,7 +225,7 @@
                             </div>
                             <div class="overflow-hidden">
                                 <div data-zanim-xs='{"delay":0.2}'>
-                                    <a class="d-flex align-items-center" href="{{ route('noticias.show', 1) }}"
+                                    <a class="d-flex align-items-center" href="{{ route('noticia.show', 1) }}"
                                         target="_blank">
                                         Ver Detalle
                                         <div class="overflow-hidden ms-2">
@@ -243,7 +243,7 @@
             <div class="row g-0 position-relative mb-4 mb-lg-0">
                 <div class="col-lg-6 py-3 py-lg-0 mb-0 position-relative order-lg-2" style="min-height:400px;">
                     <div class="bg-holder rounded-ts-lg rounded-te-lg rounded-lg-te-0  rounded-lg-ts-0"
-                        style="background-image:url(pagina_template/assets/img/portrait-6.jpg);"></div>
+                        style="background-image:url(assets/noticias/arte_upea.jpg);"></div>
                     <!--/.bg-holder-->
                 </div>
                 <div
@@ -263,7 +263,7 @@
                             <div class="overflow-hidden">
                                 <div data-zanim-xs='{"delay":0.2}'>
                                     <a class="d-flex align-items-center"
-                                        href="https://www.facebook.com/share/p/1HTPVrcEiB/" target="_blank">
+                                        href={{ route('noticia.show', 1) }} target="_blank">
                                         Ver Detalle
                                         <div class="overflow-hidden ms-2">
                                             <span class="d-inline-block"
@@ -280,7 +280,7 @@
             <div class="row g-0 position-relative mb-4 mb-lg-0">
                 <div class="col-lg-6 py-3 py-lg-0 mb-0 position-relative" style="min-height:400px;">
                     <div class="bg-holder rounded-ts-lg rounded-te-lg rounded-lg-te-0 rounded-lg-ts-0 rounded-bs-0 rounded-lg-bs-lg "
-                        style="background-image:url(pagina_template/assets/img/portrait-6.jpg);"></div>
+                        style="background-image:url(assets/noticias/campeonato.jpg);"></div>
                     <!--/.bg-holder-->
                 </div>
                 <div class="col-lg-6 px-lg-5 py-lg-6 p-4 my-lg-0 bg-white rounded-bs-lg rounded-lg-bs-0 rounded-be-lg  ">
@@ -298,7 +298,7 @@
                             <div class="overflow-hidden">
                                 <div data-zanim-xs='{"delay":0.2}'>
                                     <a class="d-flex align-items-center"
-                                        href="https://www.facebook.com/share/p/1EbjKaGrkJ/" target="_blank">
+                                        href={{ route('noticia.show', 1) }} target="_blank">
                                         Ver Detalle
                                         <div class="overflow-hidden ms-2">
                                             <span class="d-inline-block"
@@ -312,6 +312,15 @@
                     </div>
                 </div>
             </div>
+
+            <div class="text-center mt-4">
+                <a href="/noticias" target="_blank"
+                    class="btn btn-outline-danger px-4 py-2 rounded-pill fw-semibold position-relative overflow-hidden">
+                    Ver más noticias
+                    <span class="ms-2">&xrarr;</span>
+                </a>
+            </div>
+
         </div>
     </section>
 
@@ -322,35 +331,50 @@
     <section class="bg-white position-relative"
         style="background-image: url('pagina_template/assets/img/perfil2.png'); background-attachment: fixed; background-size: cover; background-position: center;">
         <div class="container position-relative p-5" style="z-index: 1;">
-            <h4 class="text-center text-light rounded p-2" style="margin-top:-95px; background-color: #880000;">NUESTAS
+            <h4 class="text-center text-light rounded p-2" style="margin-top:-95px; background-color: #880000;">NUESTRAS
                 AUTORIDADES
             </h4>
             <div class="container py-1" style="margin-top:60px">
                 <div class="row d-flex flex-wrap justify-content-center">
                     <!-- AUTORIDAD 1 -->
-                    <div class="col-12 col-md-4 d-flex flex-column align-items-center text-center">
-                        <img class="rounded-3 img-fluid mb-2"
-                            src="{{ asset('assets/autoridades/rector_upea.webp') }}" alt="Rector">
-                        <span class=" fw-bold text-light p-2 rounded mt-1"  style='background-color: #880000;'> DR. CARLOS CONDORI
+                    <div class="col-12 col-md-3 d-flex flex-column align-items-center text-center">
+                        <img class="rounded-3 img-fluid mb-2" src="{{ asset('assets/autoridades/rector_upea.webp') }}"
+                            alt="Rector">
+                        <span class=" fw-bold text-light p-2 rounded mt-1" style='background-color: #880000;'> DR. CARLOS
+                            CONDORI
                             TITIRICO</span>
-                         <p class="text-light mb-0 mt-1  bg-lightp-2 rounded mt-1" >RECTOR UNIVERSIDAD PÚBLICA DE EL ALTO</p>
+                        <p class="text-light mb-0 mt-1  bg-lightp-2 rounded mt-1">RECTOR UNIVERSIDAD PÚBLICA DE EL ALTO</p>
                     </div>
 
                     <!-- AUTORIDAD 2 -->
-                    <div class="col-12 col-md-4 d-flex flex-column align-items-center text-center">
-                        <img class="rounded-3 img-fluid mb-2"
-                            src="{{ asset('assets/autoridades/vice_rector.webp') }}" alt="Vicerrector">
-                      <span class=" fw-bold text-light p-2 rounded mt-1"  style='background-color: #880000;'>DR. EFRAIN CHAMBI VARGAS
+                    <div class="col-12 col-md-3 d-flex flex-column align-items-center text-center">
+                        <img class="rounded-3 img-fluid mb-2" src="{{ asset('assets/autoridades/vice_rector.webp') }}"
+                            alt="Vicerrector">
+                        <span class=" fw-bold text-light p-2 rounded mt-1" style='background-color: #880000;'>DR. EFRAIN
+                            CHAMBI VARGAS
                             PH.D.</span>
-                        <p class="text-light mb-0 mt-1" >VICERRECTOR UNIVERSIDAD PÚBLICA DE EL ALTO</p>
+                        <p class="text-light mb-0 mt-1">VICERRECTOR UNIVERSIDAD PÚBLICA DE EL ALTO</p>
                     </div>
 
                     <!-- AUTORIDAD 3 -->
-                    <div class="col-12 col-md-4 d-flex flex-column align-items-center text-center">
-                        <img class="rounded-3 img-fluid mb-2"
-                            src="{{ asset('assets/autoridades/vice_rector.webp') }}" alt="Directora">
-                         <span class=" fw-bold text-light p-2 rounded mt-1"  style='background-color: #880000;'> SILLO CORINA</span>
-                        <p class="text-light mb-0 mt-1" >DIRECTORA DISBEDC UNIVERSIDAD PÚBLICA DE EL ALTO</p>
+                    <div class="col-12 col-md-3 d-flex flex-column align-items-center text-center">
+                        <img class="rounded-3 img-fluid mb-2" src="{{ asset('assets/autoridades/directora_disbet.jpg') }}"
+                            alt="Directora">
+                        <span class=" fw-bold text-light p-2 rounded mt-1" style='background-color: #880000;'>LIC. HERMINIA SILLO
+                            CORINA</span>
+                        <p class="text-light mb-0 mt-1">DIRECTORA DISBEDC UNIVERSIDAD PÚBLICA DE EL ALTO</p>
+
+
+
+                    </div>
+
+                    <!-- AUTORIDAD 4 -->
+                    <div class="col-12 col-md-3 d-flex flex-column align-items-center text-center">
+                        <img class="rounded-3 img-fluid mb-2" src="{{ asset('assets/autoridades/cordinador_sedes.jpg') }}"
+                            alt="Directora">
+                        <span class=" fw-bold text-light p-2 rounded mt-1" style='background-color: #880000;'> LIC. PRIMITIVO HUAYHUA CAYO
+                            CORINA</span>
+                        <p class="text-light mb-0 mt-1">CORDINADOR DE SEDES UNIVERSIDAD PÚBLICA DE EL ALTO</p>
 
 
 

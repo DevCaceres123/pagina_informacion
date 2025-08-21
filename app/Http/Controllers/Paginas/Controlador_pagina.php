@@ -8,9 +8,19 @@ use App\Models\Sede;
 
 class Controlador_pagina extends Controller
 {
-    public function noticias($id)
+    public function noticias()
     {
         return view('plantilla_web.paginas.noticias');
+    }
+
+    public function noticia($id)
+    {
+        return view('plantilla_web.paginas.noticia');
+    }
+
+    public function convocatorias()
+    {
+        return view('plantilla_web.paginas.convocatorias');
     }
     public function sedes($id)
     {
