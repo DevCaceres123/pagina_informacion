@@ -23,6 +23,7 @@ Route::controller(Controlador_pagina::class)->group(function () {
     Route::get('/noticias', 'noticias')->name('noticias.show');
     Route::get('/noticia/{id}', 'noticia')->name('noticia.show');
     Route::get('/convocatorias', 'convocatorias')->name('convocatorias.show');
+    Route::get('/convocatoria', 'convocatoria')->name('convocatoria.show');
     Route::get('/sedes/{id}', 'sedes')->name('pagina.sedes');
     Route::get('/inicio', 'inicio')->name('pagina.inicio');
     Route::post('/buscarCarrera', 'buscarCarrera')->name('pagina.buscarCarrera');

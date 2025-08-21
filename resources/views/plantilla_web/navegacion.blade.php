@@ -40,7 +40,7 @@
                                 @endforeach                                                            
                             </ul>
                         </li>   
-                         <li class="nav-item dropdown"><a class="nav-link" href="/inicio"
+                         <li class="nav-item dropdown"><a class="nav-link" href="/noticias"
                                 role="button">Noticias</a>
                             <ul class="dropdown-menu">
                             

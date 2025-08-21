@@ -22,6 +22,11 @@ class Controlador_pagina extends Controller
     {
         return view('plantilla_web.paginas.convocatorias');
     }
+
+    public function convocatoria()
+    {
+        return view('plantilla_web.paginas.convocatoria');
+    }
     public function sedes($id)
     {
         $sedeUnica = Sede::with([
