@@ -199,22 +199,22 @@ class Controlador_infraestructura extends Controller
 
     public function estadoTramite(string $idInfraestructura)
     {
-        
-        
+
+
         try {
             $infraestructura = Infraestructura::select('id', 'estado_tramite')->where('id', $idInfraestructura)->first();
             if (!$infraestructura) {
                 throw new Exception('infraestructura no encontrado');
             }
 
-        
+
             DB::commit();
 
             $this->mensaje("exito", $infraestructura);
 
             return response()->json($this->mensaje, 200);
         } catch (Exception $e) {
-            
+
 
             $this->mensaje("error", "error" . $e->getMessage());
 
@@ -225,7 +225,7 @@ class Controlador_infraestructura extends Controller
 
     public function cambiarEstadoTramite(Request $request)
     {
-        
+
         DB::beginTransaction();
         try {
             $infraestructura = Infraestructura::find($request->id);
@@ -352,6 +352,97 @@ class Controlador_infraestructura extends Controller
         return $rutas;
     }
 
+
+
+    public function verDocumentos($tipo, $id)
+    {
+
+
+        // Obtener el registro
+        $infraestructura = Infraestructura::findOrFail($id);
+        
+        
+        // Determinar qué campo usar según el tipo
+        switch ($tipo) {
+            case 'solicitud':
+                $path = $infraestructura->solicitud;
+                break;
+            case 'nota':
+                $path = $infraestructura->nota;
+                break;
+            case 'contrato':
+                $path = $infraestructura->contrato;
+                break;
+            default:
+                abort(404, 'Documento no encontrado');
+        }
+
+        $allowedMimes = ['application/pdf', 'image/jpeg', 'image/png'];
+
+        $mime = Storage::disk('private')->mimeType($path);
+
+        if (!in_array($mime, $allowedMimes)) {
+            abort(403, 'Tipo de archivo no permitido');
+        }
+
+        return response()->file(
+            Storage::disk('private')->path($path),
+            [
+                'Content-Type' => $mime,
+                'Content-Disposition' => 'inline; filename="'.basename($path).'"'
+            ]
+        );
+    }
+
+    public function guardarDocumentos(Request $request)
+    {
+        
+        $archivosGuardados = [];
+        $tipo = $request->tipo;
+        DB::beginTransaction();
+        try {
+            $infraestructura = Infraestructura::find($request->idInfraestructura);
+            if (!$infraestructura) {
+                throw new Exception('infraestructura no encontrado');
+            }
+
+            $nombreArchivo = $infraestructura->$tipo;
+       
+            // Guardar el PDF si se envió
+            $rutaPdf = $this->guardarPdf($request, $request->tipo, strtoupper(substr($request->tipo, 0, 1)));
+            if ($rutaPdf) {
+                $infraestructura->$tipo = $rutaPdf;
+                $archivosGuardados[] = $rutaPdf; // guardar para rollback
+            }
+
+            // Guardar número de nota si es tipo nota
+            if ($request->tipo === 'nota') {
+                $infraestructura->numero_nota = $request->numero_nota ?? null;
+            }
+
+            $infraestructura->save();
+
+            DB::commit();
+            // ELIMINAR EL ARCHIVO ANTERIOR
+            if (Storage::exists($nombreArchivo)) {
+                Storage::delete($nombreArchivo);
+            }
+            $this->mensaje('exito', 'Documentos actualizados correctamente');
+            return response()->json($this->mensaje, 200);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            // Eliminar archivos si ocurre error
+            foreach ($archivosGuardados as $ruta) {
+                if (Storage::exists($ruta)) {
+                    Storage::delete($ruta);
+                }
+            }
+
+            $this->mensaje('error', 'error' . $e->getMessage());
+            return response()->json($this->mensaje, 200);
+        }
+    }
 
     // Mensaje para mostrar al usuario
     public function mensaje($titulo, $mensaje)

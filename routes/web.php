@@ -91,6 +91,9 @@ Route::prefix('/admin')->middleware([Autenticados::class])->group(function () {
         Route::get('estadoTramite/{id_infraestructura}', 'estadoTramite')->name('infraestructura.estadoTramite');
         Route::post('cambiarEstadoTramite', 'cambiarEstadoTramite')->name('infraestructura.cambiarEstadoTramite');
         route::get('docuementosInfraestructura/{id_infraestructura}', 'docuementosInfraestructura')->name('infraestructura.docuementosInfraestructura');
+        Route::get('verDocumentos/{tipo}{id}', 'verDocumentos')->name('infraestructura.verDocumentos');
+        Route::post('guardarDocumentos', 'guardarDocumentos')->name('infraestructura.guardarDocumentos');
+
     });
 
 

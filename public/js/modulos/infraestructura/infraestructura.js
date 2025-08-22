@@ -305,3 +305,5 @@ $(document).on("click", ".eliminar_infraestructura", function () {
         }
     });
 });
+
+
