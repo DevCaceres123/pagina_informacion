@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Sede;
 use App\Models\Infraestructura;
+use App\Models\DatosInfraestructura;
 use App\Models\PlanosInfraestructura;
 use Illuminate\Support\Facades\DB;
 use Intervention\Image\ImageManager;
@@ -360,8 +361,8 @@ class Controlador_infraestructura extends Controller
 
         // Obtener el registro
         $infraestructura = Infraestructura::findOrFail($id);
-        
-        
+
+
         // Determinar qué campo usar según el tipo
         switch ($tipo) {
             case 'solicitud':
@@ -396,7 +397,7 @@ class Controlador_infraestructura extends Controller
 
     public function guardarDocumentos(Request $request)
     {
-        
+
         $archivosGuardados = [];
         $tipo = $request->tipo;
         DB::beginTransaction();
@@ -407,7 +408,7 @@ class Controlador_infraestructura extends Controller
             }
 
             $nombreArchivo = $infraestructura->$tipo;
-       
+
             // Guardar el PDF si se envió
             $rutaPdf = $this->guardarPdf($request, $request->tipo, strtoupper(substr($request->tipo, 0, 1)));
             if ($rutaPdf) {
@@ -443,6 +444,64 @@ class Controlador_infraestructura extends Controller
             return response()->json($this->mensaje, 200);
         }
     }
+
+    public function datosUbicacion(Request $request)
+    {
+
+        try {
+            $datosinfraestructura = DatosInfraestructura::where('infraestructura_id', $request->infraestructura_id)->first();
+
+            DB::commit();
+
+            $this->mensaje("exito", $datosinfraestructura);
+
+            return response()->json($this->mensaje, 200);
+        } catch (Exception $e) {
+            DB::rollBack();
+
+            $this->mensaje("error", "error" . $e->getMessage());
+
+            return response()->json($this->mensaje, 200);
+        }
+    }
+
+
+    public function guardarDatosUbicacion(InfraestructuraRequest $request)
+    {
+        
+        DB::beginTransaction();
+        try {
+          
+            $datosinfraestructura = DatosInfraestructura::updateOrCreate(
+                ['infraestructura_id' => $request->infraestructura_id],
+                [
+                    'distrito' => $request->distrito,
+                    'ubicacion' => $request->ubicacion,
+                    'urb' => $request->urb,
+                    'manzano' => $request->manzano,
+                    'lote' => $request->lote,
+                    'sup_test' => $request->sup_test,
+                    'sup_lev' => $request->sup_lev,
+                    'sup_adju' => $request->sup_adju,
+                    'sup_util' => $request->sup_util,
+                    
+                ]
+            );
+            DB::commit();
+
+            $this->mensaje("exito", "Datos de ubicación actualizados correctamente");
+
+            return response()->json($this->mensaje, 200);
+        } catch (Exception $e) {
+            DB::rollBack();
+
+            $this->mensaje("error", "error" . $e->getMessage());
+
+            return response()->json($this->mensaje, 200);
+        }
+    }
+
+
 
     // Mensaje para mostrar al usuario
     public function mensaje($titulo, $mensaje)

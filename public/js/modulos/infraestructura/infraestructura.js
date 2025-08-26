@@ -62,6 +62,19 @@ function listar_infraestructuras() {
                 },
             },
 
+            {
+                data: null,
+                className: "table-td text-uppercase text-center",
+                render: function (data, type, row, meta) {
+                    return `
+                    <button type="button" class="btn btn-sm btn-success rounded ver-planos" data-carreras='
+                    '>
+                        <i class="fas fa-university me-1"></i> Ver Planos
+                    </button>
+                `;
+                },
+            },
+
 
             {
                 data: null,
@@ -94,6 +107,13 @@ function listar_infraestructuras() {
                           ${permisosGlobal.eliminar
                             ? ` <a href='' class="btn btn-sm btn-outline-success px-2 d-inline-flex align-items-center me-1 btnCambiarEstado" data-id="${row.id}" title="Cambiar de estado">
                             <i class="fas fa-retweet fs-16"></i>
+                        </a>`
+                            : ``
+                        }
+
+                        ${permisosGlobal.eliminar
+                            ? ` <a href='' class="btn btn-sm btn-outline-primary px-2 d-inline-flex align-items-center me-1 actualizarUbicacion" data-id="${row.id}" title="Datos de ubicacion">
+                            <i class="fas fa-university fs-16"></i>
                         </a>`
                             : ``
                         }
@@ -306,4 +326,68 @@ $(document).on("click", ".eliminar_infraestructura", function () {
     });
 });
 
+
+//obtener datos de ubicacion
+$(document).on("click", ".actualizarUbicacion", function (e) {
+    e.preventDefault();
+    $("#datosUbicacionModal").modal("show");
+    const id = $(this).data("id");
+    let datos = { infraestructura_id: id };
+
+    crud("admin/datosUbicacion", "POST", null, datos, function (error, response) {
+        if (response.tipo === "errores") {
+            mensajeAlerta(response.mensaje, "errores");
+            return;
+        }
+        if (response.tipo != "exito") {
+            mensajeAlerta(response.mensaje, response.tipo);
+            return;
+        }
+
+        // ✅ Poblar el formulario
+        let data = response.mensaje;
+        //console.log(data);
+        $("#infraestructura_id").val(id);
+        $("#distrito").val(data.distrito);
+        $("#ubicacion").val(data.ubicacion);
+        $("#urb").val(data.urb);
+        $("#manzano").val(data.manzano);
+        $("#lote").val(data.lote);
+
+        $("#sup_test").val(data.sup_test);
+        $("#sup_lev").val(data.sup_lev);
+        $("#sup_adju").val(data.sup_adju);
+        $("#sup_util").val(data.sup_util);
+    });
+});
+
+
+//guardar datos de ubicacion
+$('#formInfraestructuraUbicacion').on('submit', function (e) {
+    e.preventDefault();
+    $("#btnGuardarInfraestructuraubicacion").prop("disabled", true);
+    let formData = new FormData(this);
+
+    vaciar_errores("formInfraestructuraUbicacion");
+    crud("admin/guardarDatosUbicacion", "POST", null, formData, function (error, response) {
+     $("#btnGuardarInfraestructuraubicacion").prop("disabled", false);
+
+
+        // Verificamos que no haya un error o que todos los campos sean llenados
+        if (response.tipo === "errores") {
+            mensajeAlerta(response.mensaje, "errores");
+            return;
+        }
+        if (response.tipo != "exito") {
+            mensajeAlerta(response.mensaje, response.tipo);
+            return;
+        }
+
+        //si todo esta correcto muestra el mensaje de correcto
+        $("#datosUbicacionModal").modal("hide");        
+        mensajeAlerta(response.mensaje, response.tipo);
+        
+    });
+
+});
 

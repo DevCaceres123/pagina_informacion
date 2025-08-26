@@ -15,4 +15,9 @@ class Infraestructura extends Model
     {
         return $this->hasMany('App\Models\PlanosInfraestructura', 'infraestructura_id');
     }
+
+    public function datosInfraestructuras()
+    {
+        return $this->hasMany('App\Models\DatosInfraestructura', 'infraestructura_id');
+    }
 }

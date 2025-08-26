@@ -93,12 +93,10 @@ Route::prefix('/admin')->middleware([Autenticados::class])->group(function () {
         route::get('docuementosInfraestructura/{id_infraestructura}', 'docuementosInfraestructura')->name('infraestructura.docuementosInfraestructura');
         Route::get('verDocumentos/{tipo}{id}', 'verDocumentos')->name('infraestructura.verDocumentos');
         Route::post('guardarDocumentos', 'guardarDocumentos')->name('infraestructura.guardarDocumentos');
+        Route::post('datosUbicacion', 'datosUbicacion')->name('infraestructura.datosUbicacion');
+        Route::post('guardarDatosUbicacion', 'guardarDatosUbicacion')->name('infraestructura.guardarDatosUbicacion');
 
     });
-
-
-
-
 
 
     //PARA LOS PERMISOS

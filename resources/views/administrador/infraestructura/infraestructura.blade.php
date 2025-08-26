@@ -24,7 +24,8 @@
                                     <th>Nº</th>
                                     <th>SEDE</th>
                                     <th>ESTADO INMUEBLE</th>
-                                    <th>ESTADO TRAMITE</th>                                                             
+                                    <th>ESTADO TRAMITE</th>
+                                    <th>PLANOS</th>
                                     <th>ACCION</th>
 
                                 </tr>
@@ -89,17 +90,18 @@
                                     </div>
                                 </div>
 
-                               
+
                                 <div class="col-md-12 mt-2 mb-2">
                                     <label class="form-label">
                                         <i class="fas fa-comment-alt me-1"></i> PROPIEDAD <strong
                                             class="text-danger">(*)</strong>
                                     </label>
-                                    
-                                        <input type="text" class="form-control" id="propiedad" name="propiedad" placeholder="Propiedad" required>  
+
+                                    <input type="text" class="form-control" id="propiedad" name="propiedad"
+                                        placeholder="Propiedad" required>
                                     <div id="_propiedad">
 
-                                    </div>                                  
+                                    </div>
                                 </div>
 
                                 <div class="col-md-12 mt-2 mb-2">
@@ -107,27 +109,29 @@
                                         <i class="fas fa-comment-alt me-1"></i> USO ASIGNADO <strong
                                             class="text-danger">(*)</strong>
                                     </label>
-                                    
-                                        <input type="text" class="form-control" id="uso_asignado" name="uso_asignado" placeholder="Propiedad" required>     
-                                        
+
+                                    <input type="text" class="form-control" id="uso_asignado" name="uso_asignado"
+                                        placeholder="Propiedad" required>
+
                                     <div id="_uso_asignado">
 
-                                    </div> 
+                                    </div>
                                 </div>
 
-                                 <div class="col-md-12 mt-2">
+                                <div class="col-md-12 mt-2">
                                     <label class="form-label">
                                         <i class="fas fa-upload me-1"></i> PLANOS E UBICACION (IMAGEN) <strong
                                             class="text-danger">(*)</strong>
                                     </label>
-                                    <input type="file" class="form-control" name="planos[]" id="planos" accept="image/*" required multiple>
-                                    
-                                     <div id="_planos">
+                                    <input type="file" class="form-control" name="planos[]" id="planos"
+                                        accept="image/*" required multiple>
 
-                                    </div> 
+                                    <div id="_planos">
+
+                                    </div>
                                 </div>
 
-                               
+
                             </div>
 
 
@@ -161,7 +165,8 @@
                                     </label>
 
                                     <div class="form-floating">
-                                        <textarea class="form-control" placeholder="Leave a comment here" id="observacion_estado" style="height: 100px" name="observacion_estado"></textarea>
+                                        <textarea class="form-control" placeholder="Leave a comment here" id="observacion_estado" style="height: 100px"
+                                            name="observacion_estado"></textarea>
                                         <label for="observacion_estado">Ingrese alguna observacion del inmueble</label>
                                     </div>
 
@@ -171,7 +176,7 @@
 
                             {{-- SECCIÓN 3: SOLICITUD --}}
 
-                               <div class="row border border-3 rounded m-auto position-relative mt-3 p-2">
+                            <div class="row border border-3 rounded m-auto position-relative mt-3 p-2">
                                 <div class="position-absolute" style="top:0px; left:33%; margin-top: -15px;">
                                     <div class="d-inline p-1 border rounded border-danger bg-danger text-light">
                                         <i class="fas fa-file-contract me-1"></i> ESTADO TRAMITE <b> (INICIAL)</b>
@@ -182,46 +187,12 @@
                                         <i class="fas fa-upload me-1"></i> SOLICITUD (PDF) <strong
                                             class="text-danger">(*)</strong>
                                     </label>
-                                    <input type="file" class="form-control" name="solicitud" id="solicitud" accept=".pdf" required>
+                                    <input type="file" class="form-control" name="solicitud" id="solicitud"
+                                        accept=".pdf" required>
                                     <div id="_solicitud"></div>
                                 </div>
                             </div>
-                            {{-- <div class="row border border-3 rounded m-auto position-relative mt-3 p-2">
-                                <div class="position-absolute" style="top:0px; left:33%; margin-top: -15px;">
-                                    <div class="d-inline p-1 border rounded border-danger bg-danger text-light">
-                                        <i class="fas fa-file-contract me-1"></i> DATOS DEL CONTRATO
-                                    </div>
-                                </div>
 
-
-
-                                <div class="col-md-6 mt-2">
-                                    <label class="form-label">
-                                        <i class="fas fa-calendar-alt me-1"></i> FECHA DE INICIO <strong
-                                            class="text-danger">(*)</strong>
-                                    </label>
-                                    <input type="date" class="form-control" name="fecha_inicio" required>
-                                    <div id="_fecha_inicio"></div>
-                                </div>
-
-                                <div class="col-md-6 mt-2">
-                                    <label class="form-label">
-                                        <i class="fas fa-calendar-day me-1"></i> FECHA FINAL <strong
-                                            class="text-danger">(*)</strong>
-                                    </label>
-                                    <input type="date" class="form-control" name="fecha_final" required>
-                                     <div id="_fecha_final"></div>
-                                </div>
-
-                                <div class="col-md-12 mt-2">
-                                    <label class="form-label">
-                                        <i class="fas fa-upload me-1"></i> CONTRATO (PDF) <strong
-                                            class="text-danger">(*)</strong>
-                                    </label>
-                                    <input type="file" class="form-control" name="contrato" id="contrato" accept=".pdf" required>
-                                    <div id="_contrato"></div>
-                                </div>
-                            </div> --}}
                         </div>
 
                         <div class="modal-footer">
@@ -236,46 +207,6 @@
                         </div>
 
                     </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-    {{-- modal para ver la resolución --}}
-    <div class="modal fade" id="modalVerResolucion" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-xl modal-dialog-centered">
-            <div class="modal-content shadow rounded-3">
-                <div class="modal-header bg-dark text-white">
-                    <h5 class="modal-title">
-                        <i class="fas fa-file-pdf me-2"></i> Visualización de Resolución
-                    </h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
-
-                <div class="modal-body">
-                    <div class="border rounded shadow-sm overflow-hidden mb-3" style="height:600px;">
-                        <iframe id="iframeResolucion" src="" width="100%" height="100%"
-                            style="border: none;"></iframe>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="nuevoPdf" class="form-label fw-bold">
-                            <i class="ri-upload-cloud-line me-1"></i> Seleccionar nuevo archivo de Resolución (PDF)
-                        </label>
-                        <input type="file" id="nuevoPdf" name="nuevoPdf" class="form-control"
-                            accept="application/pdf">
-                        <div id="nombreArchivoSeleccionado" class="text-muted mt-1"></div>
-                    </div>
-                </div>
-
-                <div class="modal-footer d-flex justify-content-between">
-                    <button class="btn btn-secondary" data-bs-dismiss="modal">
-                        <i class="ri-close-line me-1"></i> Cerrar
-                    </button>
-                    <button id="btnActualizarPdf" class="btn btn-success">
-                        <i class="ri-upload-cloud-line me-1"></i> Subir nuevo PDF
-                    </button>
                 </div>
             </div>
         </div>
@@ -315,14 +246,145 @@
                                     <option value="finalizado">Finalizado</option>
                                 </select>
                             </div>
-                            
+
                         </div>
                     </form>
                 </div>
 
                 <div class="modal-footer">
-                    <button class="btn btn-secondary btn-sm" data-bs-dismiss="modal"><i class="fas fa-eraser me-1"></i>Cancelar</button>
-                    <button class="btn btn-primary btn-sm" id="guardarEstadoBtn"><i class="fas fa-save me-1"></i>Guardar</button>
+                    <button class="btn btn-secondary btn-sm" data-bs-dismiss="modal"><i
+                            class="fas fa-eraser me-1"></i>Cancelar</button>
+                    <button class="btn btn-primary btn-sm" id="guardarEstadoBtn"><i
+                            class="fas fa-save me-1"></i>Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Modal para agregar datos de ubicación -->
+
+    <div class="modal fade" id="datosUbicacionModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="modalSedeLabel" aria-hidden="true">
+        <div class="modal-dialog modal-center modal-lg" role="document">
+            <div class="modal-content shadow">
+                <div class="modal-header bg-black text-light">
+                    <h4 class="modal-title">
+                        <span class="badge badge-outline-light rounded">
+                            <i class="fas fa-university me-1"></i> UBICACION DE LA INFRAESTRUCTURA
+                        </span>
+                    </h4>
+                    <span class="ms-3">Campos obligatorios <strong class="text-danger">(*)</strong></span>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="formInfraestructuraUbicacion" enctype="multipart/form-data">
+                        <div class="container">
+
+                            {{-- 📍 SECCIÓN 1: DATOS DE LA UBICACIÓN --}}
+                            <div class="row border border-3 rounded m-auto position-relative mt-3 p-2">
+                                <div class="position-absolute" style="top:0px; left:33%; margin-top: -15px;">
+                                    <div class="d-inline p-1 border rounded border-danger bg-danger text-light">
+                                        <i class="fas fa-map-marker-alt me-1"></i> DATOS DE LA UBICACIÓN
+                                    </div>                                  
+                                </div>
+
+                                <div class="col-md-4 mt-2">
+                                    <label class="form-label">Distrito</label>
+                                    <input type="hidden" id="infraestructura_id" name="infraestructura_id">
+                                    <input type="text" class="form-control" id="distrito" name="distrito"
+                                        placeholder="Distrito">
+                                    <div id="_distrito">
+
+                                    </div>
+                                </div>
+
+                                <div class="col-md-8 mt-2">
+                                    <label class="form-label">Ubicación</label>
+                                    <input type="text" class="form-control" id="ubicacion" name="ubicacion"
+                                        placeholder="Ubicación">
+                                    <div id="_ubicacion">
+
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4 mt-2">
+                                    <label class="form-label">Urbanización</label>
+                                    <input type="text" class="form-control" id="urb" name="urb"
+                                        placeholder="Urb.">
+                                     <div id="_urb"></div>
+                                </div>
+
+                                <div class="col-md-4 mt-2">
+                                    <label class="form-label">Manzano</label>
+                                    <input type="text" class="form-control" id="manzano" name="manzano"
+                                        placeholder="Mzno.">
+                                    <div id="_manzano"></div>
+                                </div>
+
+                                <div class="col-md-4 mt-2">
+                                    <label class="form-label">Lote Nº</label>
+                                    <input type="text" class="form-control" id="lote" name="lote"
+                                        placeholder="Lote Nº">
+                                    <div id="_lote"></div>
+                                </div>
+                            </div>
+
+
+                            {{-- 📐 SECCIÓN 2: MEDIDAS DEL INMUEBLE --}}
+                            <div class="row border border-3 rounded m-auto position-relative mt-3 p-2">
+                                <div class="position-absolute" style="top:0px; left:33%; margin-top: -15px;">
+                                    <div class="d-inline p-1 border rounded border-danger bg-danger text-light">
+                                        <i class="fas fa-ruler-combined me-1"></i> MEDIDAS DEL INMUEBLE
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6 mt-2">
+                                <label class="form-label">Sup. S/Test (m<sup>2</sup>)</label>
+                                    <input type="text" class="form-control" id="sup_test" name="sup_test"
+                                        placeholder="Sup. S/Test">
+                                    <div id="_sup_test"></div>   
+                                </div>
+
+                                <div class="col-md-6 mt-2">
+                                    <label class="form-label">Sup. S/Lev  (m<sup>2</sup>)</label>
+                                    <input type="text" class="form-control" id="sup_lev" name="sup_lev"
+                                        placeholder="Sup. S/Lev">
+                                    <div id="_sup_lev"></div>      
+                                </div>
+
+                                <div class="col-md-6 mt-2">
+                                    <label class="form-label">Sup. Adjunta  (m<sup>2</sup>)</label>
+                                    <input type="text" class="form-control" id="sup_adju" name="sup_adju"
+                                        placeholder="Sup. Adjunta">
+                                    <div id="_sup_adju"></div>
+                                </div>
+
+                                <div class="col-md-6 mt-2">
+                                    <label class="form-label">Sup. Útil  (m<sup>2</sup>)</label>
+                                    <input type="text" class="form-control" id="sup_util" name="sup_util"
+                                        placeholder="Sup. Útil">
+                                    <div id="_sup_util"></div>    
+                                </div>                               
+                            </div>
+
+                        </div>
+
+
+                        <div class="modal-footer">
+                            <div class="mt-4 text-end">
+                                <button type="reset" class="btn btn-secondary btn-sm">
+                                    <i class="fas fa-eraser me-1"></i> Cerrar
+                                </button>
+                                <button type="submit" class="btn btn-success btn-sm" id="btnGuardarInfraestructuraubicacion">
+                                    <i class="fas fa-save me-1"></i> Guardar
+                                </button>
+                            </div>
+                        </div>
+
+                    </form>
                 </div>
             </div>
         </div>
