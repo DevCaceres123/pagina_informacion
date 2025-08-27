@@ -19,7 +19,7 @@ class Controlador_carrera extends Controller
      */
     public function index()
     {
-        $sedes = Sede::all()->where('estado', 'activo');
+        $sedes = Sede::select('id', 'nombre')->where('estado', 'activo')->get();
         return view('administrador.carreras.carreras', compact('sedes'));
     }
 

@@ -43,6 +43,16 @@ function listar_infraestructuras() {
                     `;
                 },
             },
+            
+            {
+                data: "created_at_formateado",
+                className: "table-td text-capitalize",
+                render: function (data) {
+                    return `                            
+                        ${data}
+                    `;
+                },
+            },
             {
                 data: "estado_inmueble",
                 className: "table-td text-uppercase",
@@ -344,6 +354,10 @@ $(document).on("click", ".actualizarUbicacion", function (e) {
             return;
         }
 
+        if (response.mensaje == null) {
+            vaciar_formulario("formInfraestructuraUbicacion");
+            return;
+        }
         // ✅ Poblar el formulario
         let data = response.mensaje;
         //console.log(data);
@@ -506,4 +520,58 @@ $(document).on("click", ".eliminar_imagen", function () {
 });
 
 
+// Editar datos de infraestructura
+$(document).on("click", ".editar_sede", function () {    
+    let id_infraestructura = $(this).data('id'); // Obtener el id del alumno desde el data-id
+    
+
+    crud("admin/infraestructura", "GET", id_infraestructura + '/edit', null, function (error, response) {
+
+        // console.log(response);
+
+        if (response.tipo != "exito") {
+            mensajeAlerta(response.mensaje, response.tipo);
+            return;
+        }
+        $('#id_infraestructuraEdit').val(response.mensaje.id);
+        $('#sede_idEdit').val(response.mensaje.sede_id);
+        $('#propiedadEdit').val(response.mensaje.propiedad);
+        $('#uso_asignadoEdit').val(response.mensaje.uso_asignado);
+        $('#estado_inmuebleEdit').val(response.mensaje.estado_inmueble);
+        $('#observacion_estadoEdit').val(response.mensaje.observacion_estado);
+        
+        $('#modalInfraestructuraEdit').modal('show')
+        // si todo esta correcto muestra el mensaje de correcto
+    })
+});
+
+
+
+$("#formInfraestructuraEdit").on("submit", function (e) {
+    e.preventDefault();
+   // $("#btnGuardarInfraestructuraEdit").prop("disabled", true);
+    let formData = new FormData(this);
+    //vaciar_errores("formNuevaSedeEdit");
+
+    crud("admin/actualizarInfraestructura", "POST", null, formData, function (error, response) {
+        //$("#btnGuardarInfraestructuraEdit").prop("disabled", false);
+        // console.log(response);
+
+        // Verificamos que no haya un error o que todos los campos sean llenados
+        if (response.tipo === "errores") {
+            mensajeAlerta(response.mensaje, "errores");
+            return;
+        }
+        if (response.tipo != "exito") {
+            mensajeAlerta(response.mensaje, response.tipo);
+            return;
+        }
+
+        // //si todo esta correcto muestra el mensaje de correcto
+        $("#modalInfraestructuraEdit").modal("hide");
+        vaciar_formulario("formInfraestructuraEdit");
+        mensajeAlerta(response.mensaje, response.tipo);
+        actualizarTabla();
+    });
+});
 

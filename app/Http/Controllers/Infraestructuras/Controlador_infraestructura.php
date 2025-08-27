@@ -22,7 +22,7 @@ class Controlador_infraestructura extends Controller
      */
     public function index()
     {
-        $sedes = Sede::all();
+        $sedes = Sede::select('id','nombre')->where('estado','activo')->get();
         return view('administrador.infraestructura.infraestructura', compact('sedes'));
     }
 
@@ -34,7 +34,7 @@ class Controlador_infraestructura extends Controller
             'sede' => function ($query) {
                 $query->select(['id','nombre']); // CORREGIDO
             },
-        ])->select('id', 'estado_inmueble', 'estado_tramite', 'sede_id')->orderBy('id', 'desc');
+        ])->select('id', 'estado_inmueble', 'estado_tramite', 'observacion_estado','sede_id','created_at')->orderBy('id', 'desc');
 
 
         if (!empty($request->search['value'])) {
@@ -158,7 +158,15 @@ class Controlador_infraestructura extends Controller
      */
     public function edit(string $id)
     {
-        //
+        
+        $infraestructura = Infraestructura::select('id','propiedad','uso_asignado','estado_inmueble','estado_inmueble','sede_id', 'observacion_estado')->where('id',$id)->first();
+        if (!$infraestructura) {
+            $this->mensaje('error', 'Infraestructura no encontrada');
+            return response()->json($this->mensaje, 200);
+        }
+        $this->mensaje("exito", $infraestructura);
+
+        return response()->json($this->mensaje, 200);
     }
 
     /**
@@ -607,6 +615,39 @@ class Controlador_infraestructura extends Controller
             DB::commit();
 
             $this->mensaje("exito", "Imagen eliminada correctamente");
+
+            return response()->json($this->mensaje, 200);
+        } catch (Exception $e) {
+            DB::rollBack();
+
+            $this->mensaje("error", "error" . $e->getMessage());
+
+            return response()->json($this->mensaje, 200);
+        }
+    }
+
+    public function actualizarInfraestructura(Request $request)
+    {
+        
+        DB::beginTransaction();
+        try {
+            $infraestructura = Infraestructura::find($request->id);
+            if (!$infraestructura) {
+                throw new Exception('infraestructura no encontrado');
+            }
+
+            // Actualizar los campos
+            $infraestructura->propiedad = $request->propiedadEdit;
+            $infraestructura->uso_asignado = $request->uso_asignadoEdit;
+            $infraestructura->estado_inmueble = $request->estado_inmuebleEdit;
+            $infraestructura->observacion_estado = $request->observacion_estadoEdit;
+            $infraestructura->sede_id = $request->sede_idEdit;
+
+            $infraestructura->save();
+
+            DB::commit();
+
+            $this->mensaje("exito", "Infraestructura actualizada correctamente");
 
             return response()->json($this->mensaje, 200);
         } catch (Exception $e) {

@@ -23,6 +23,7 @@
                                 <tr>
                                     <th>Nº</th>
                                     <th>SEDE</th>
+                                    <th>CREACION</th>
                                     <th>ESTADO INMUEBLE</th>
                                     <th>ESTADO TRAMITE</th>
                                     <th>PLANOS</th>
@@ -111,7 +112,7 @@
                                     </label>
 
                                     <input type="text" class="form-control" id="uso_asignado" name="uso_asignado"
-                                        placeholder="Propiedad" required>
+                                        placeholder="uso asignado" required>
 
                                     <div id="_uso_asignado">
 
@@ -448,6 +449,150 @@
         </div>
     </div>
 
+
+
+      <!-- MODAL PARA EDITAR INFRAESTRUCTURA-->
+    <div class="modal fade" id="modalInfraestructuraEdit" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="modalSedeLabel" aria-hidden="true">
+        <div class="modal-dialog modal-center modal-lg" role="document">
+            <div class="modal-content shadow">
+                <div class="modal-header bg-black text-light">
+                    <h4 class="modal-title">
+                        <span class="badge badge-outline-light rounded">
+                            <i class="fas fa-university me-1"></i> EDITAR INFRAESTRUCTURA
+                        </span>
+                    </h4>
+                    <span class="ms-3">Campos obligatorios <strong class="text-danger">(*)</strong></span>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="formInfraestructuraEdit" enctype="multipart/form-data">
+                        <div class="container">
+
+                            {{-- SECCIÓN 1: SEDE --}}
+                            <div class="row border border-3 rounded m-auto position-relative mt-3 p-2">
+                                <div class="position-absolute" style="top:0px; left:40%; margin-top: -15px;">
+                                    <div class="d-inline p-1 border rounded border-danger bg-danger text-light">
+                                        <i class="fas fa-building me-1"></i> SEDE
+                                    </div>
+                                </div>
+
+                                <div class="form-group py-2 col-12 col-md-12 mt-2">
+                                    <label class="form-label">
+                                        <i class="fas fa-location-dot me-1"></i> SELECCIONE UNA SEDE <strong
+                                            class="text-danger">(*)</strong>
+                                    </label>
+                                    <input type="hidden" id="id_infraestructuraEdit" name="id">
+                                    <select name="sede_idEdit" id="sede_idEdit" class="form-select text-capitalize" required>
+                                        <option value="" disabled selected>Seleccione una sede</option>
+                                        @foreach ($sedes as $sede)
+                                            <option value="{{ $sede->id }}">{{ $sede->nombre }}</option>
+                                        @endforeach
+                                    </select>
+                                    <div id="_sede_idEdit">
+
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            {{-- SECCIÓN 2: DATOS DEL INMUEBLE --}}
+                            <div class="row border border-3 rounded m-auto position-relative mt-3 p-2">
+                                <div class="position-absolute" style="top:0px; left:33%; margin-top: -15px;">
+                                    <div class="d-inline p-1 border rounded border-danger bg-danger text-light">
+                                        <i class="fas fa-home me-1"></i> DATOS DEL INMUEBLE
+                                    </div>
+                                </div>
+
+
+                                <div class="col-md-12 mt-2 mb-2">
+                                    <label class="form-label">
+                                        <i class="fas fa-comment-alt me-1"></i> PROPIEDAD <strong
+                                            class="text-danger">(*)</strong>
+                                    </label>
+
+                                    <input type="text" class="form-control" id="propiedadEdit" name="propiedadEdit"
+                                        placeholder="Propiedad" required>
+                                    <div id="_propiedadEdit">
+
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12 mt-2 mb-2">
+                                    <label class="form-label">
+                                        <i class="fas fa-comment-alt me-1"></i> USO ASIGNADO <strong
+                                            class="text-danger">(*)</strong>
+                                    </label>
+
+                                    <input type="text" class="form-control" id="uso_asignadoEdit" name="uso_asignadoEdit"
+                                        placeholder="Uso asignado" required>
+
+                                    <div id="_uso_asignadoEdit">
+
+                                    </div>
+                                </div>
+
+
+                            </div>
+
+
+
+                            {{-- SECCIÓN 2: ESTADO DEL INMUEBLE --}}
+                            <div class="row border border-3 rounded m-auto position-relative mt-3 p-2">
+                                <div class="position-absolute" style="top:0px; left:33%; margin-top: -15px;">
+                                    <div class="d-inline p-1 border rounded border-danger bg-danger text-light">
+                                        <i class="fas fa-home me-1"></i> ESTADO DEL INMUEBLE
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12 mt-2 mb-2">
+                                    <label class="form-label">
+                                        <i class="fas fa-warehouse me-1"></i> ESTADO DEL INMUEBLE <strong
+                                            class="text-danger">(*)</strong>
+                                    </label>
+                                    <select name="estado_inmuebleEdit"  id="estado_inmuebleEdit" class="form-select" required>
+                                        <option value="" disabled selected>Seleccione...</option>
+                                        <option value="bueno">Bueno</option>
+                                        <option value="regular">Regular</option>
+                                        <option value="malo">Malo</option>
+                                    </select>
+                                    <div id="_estado_inmuebleEdit"></div>
+                                </div>
+
+                                <div class="col-md-12 mt-2 mb-2">
+                                    <label class="form-label">
+                                        <i class="fas fa-comment-alt me-1"></i> OBSERVACIÓN <strong
+                                            class="text-danger">(*)</strong>
+                                    </label>
+
+                                    <div class="form-floating">
+                                        <textarea class="form-control" placeholder="Leave a comment here" id="observacion_estadoEdit" style="height: 100px"
+                                            name="observacion_estadoEdit"></textarea>
+                                        <label for="observacion_estadoEdit">Ingrese alguna observacion del inmueble</label>
+                                    </div>
+
+                                    <div id="_observacion_estadoEdit"></div>
+                                </div>
+                            </div>                          
+                        </div>
+
+                        <div class="modal-footer">
+                            <div class="mt-4 text-end">
+                                <button type="reset" class="btn btn-secondary btn-sm">
+                                    <i class="fas fa-eraser me-1"></i> Cerrar
+                                </button>
+                                <button type="submit" class="btn btn-success btn-sm" id="btnGuardarInfraestructuraEdit">
+                                    <i class="fas fa-save me-1"></i> Guardar
+                                </button>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
 
 @endsection
