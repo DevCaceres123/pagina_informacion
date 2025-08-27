@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('nombre', 150);
             $table->unsignedBigInteger('infraestructura_id');
+            $table->timestamp('deleted_at')->nullable();
             $table->foreign('infraestructura_id')
                 ->references('id')
                 ->on('infraestructuras')

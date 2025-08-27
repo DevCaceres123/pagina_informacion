@@ -67,7 +67,7 @@ function listar_infraestructuras() {
                 className: "table-td text-uppercase text-center",
                 render: function (data, type, row, meta) {
                     return `
-                    <button type="button" class="btn btn-sm btn-success rounded ver-planos" data-carreras='
+                    <button type="button" class="btn btn-sm btn-success rounded ver-planos" data-id='${row.id}
                     '>
                         <i class="fas fa-university me-1"></i> Ver Planos
                     </button>
@@ -164,9 +164,9 @@ $(document).on("click", ".btnCambiarEstado", function (e) {
 
     e.preventDefault();
     const id = $(this).data("id");
-  //  $("#guardarEstadoBtn").prop("disabled", true);
+    //  $("#guardarEstadoBtn").prop("disabled", true);
     crud("admin/estadoTramite", "GET", id, null, function (error, response) {
-    //    $("#guardarEstadoBtn").prop("disabled", true);
+        //    $("#guardarEstadoBtn").prop("disabled", true);
         // Verificamos que no haya un error o que todos los campos sean llenados
         if (response.tipo === "errores") {
             mensajeAlerta(response.mensaje, "errores");
@@ -370,7 +370,7 @@ $('#formInfraestructuraUbicacion').on('submit', function (e) {
 
     vaciar_errores("formInfraestructuraUbicacion");
     crud("admin/guardarDatosUbicacion", "POST", null, formData, function (error, response) {
-     $("#btnGuardarInfraestructuraubicacion").prop("disabled", false);
+        $("#btnGuardarInfraestructuraubicacion").prop("disabled", false);
 
 
         // Verificamos que no haya un error o que todos los campos sean llenados
@@ -384,10 +384,126 @@ $('#formInfraestructuraUbicacion').on('submit', function (e) {
         }
 
         //si todo esta correcto muestra el mensaje de correcto
-        $("#datosUbicacionModal").modal("hide");        
+        $("#datosUbicacionModal").modal("hide");
         mensajeAlerta(response.mensaje, response.tipo);
-        
+
     });
 
 });
+
+
+$(document).on("click", ".ver-planos", function () {
+    let id = $(this).data("id");
+    $("#modalPlanos").modal("show");
+    cargarGaleria(id);
+
+});
+
+
+// listar imagenes de planos
+function cargarGaleria(idInfraestructura) {
+    $("#id_infrastructura").val(idInfraestructura);
+    $("#galeriaContenedor").html(
+        '<div class="text-center w-100">Cargando...</div>'
+    );
+    crud("admin/listarImagenesPlanos", "GET", idInfraestructura, null, function (error, response) {
+        if (response.tipo != "exito") {
+            mensajeAlerta(response.mensaje, response.tipo);
+            return;
+        }
+
+        let html = "";
+        response.mensaje.forEach(element => {
+            html += `
+        <div class="col-6 col-md-3 position-relative" style="width: 220px; height: 180px;">
+            <img src="${element.url}" class="img-fluid rounded border" alt="${element.nombre}" style="width: 100%; height: 100%; object-fit: contain;">
+            <span class="badge bg-secondary position-absolute bottom-0 start-0 m-1">${element.mime}</span>
+            <button class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1 eliminar_imagen" data-id="${element.id}">
+                <i class="fas fa-window-close fs-16"></i>
+            </button>
+        </div>
+    `;
+        });
+        $("#galeriaContenedor").html(html || "<p>No hay imágenes.</p>");
+    });
+}
+
+
+//Validar al seleccionar imágenes
+$("#nuevasImagenes").on("change", function () {
+    let archivo = this.files;
+    if (validarArchivos(archivo, "imagen") == false) {
+        $(this).val(""); // Limpiar input
+    }
+});
+
+
+// Agregar nuevos archivos de imagenes del plano
+$("#formSubirImagenesPlanos").on("submit", function (e) {
+
+    e.preventDefault();
+
+    const input = document.getElementById("nuevasImagenes");
+    const files = input.files;
+
+    if (files.length === 0) {
+        mensajeAlerta("Selecciona imágenes para subir.", "error");
+        return;
+    }
+    vaciar_errores("formSubirImagenesPlanos");
+    let formData = new FormData(this);
+
+    const idInfraestructura = $("#id_infrastructura").val();
+
+    // Opcional: Desactivar botón para evitar doble clic    
+    const btn = $("#btnAgregarImagenes");
+    btn.prop("disabled", true).html('<i class="ri-loader-4-line spin"></i> Subiendo...');
+
+    crud("admin/agregarImagenesPlanos", "POST", idInfraestructura, formData, function (error, response) {
+        btn.prop("disabled", false).html('<i class="ri-upload-cloud-line me-1"></i> Subir Imágenes');
+
+        if (error) {
+            mensajeAlerta("Error al subir imágenes.", "error");
+            console.error(error);
+            return;
+        }
+
+        if (response.tipo != "exito") {
+            mensajeAlerta(response.mensaje, response.tipo);
+            return;
+        }
+        mensajeAlerta(response.mensaje, "exito");
+        $("#nuevasImagenes").val(""); // Limpiar input
+        cargarGaleria(idInfraestructura); // Recargar galería
+        $("#vistaPreviaGaleria").empty(); // Limpiar vista previa        
+    });
+});
+
+
+// Eliminar imagen de la galeria
+$(document).on("click", ".eliminar_imagen", function () {
+    const idImagen = $(this).data("id");
+
+    Swal.fire({
+        title: "¿Eliminar imagen?",
+        text: "Esta acción no se puede deshacer.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Sí, eliminar",
+        cancelButtonText: "Cancelar",
+    }).then((result) => {
+        if (result.isConfirmed) {
+            crud("admin/eliminarImagenPlano", "DELETE", idImagen, null, function (error, response) {
+                if (error) {
+                    mensajeAlerta("Error al eliminar imagen", "error");
+                    return;
+                }
+                mensajeAlerta(response.mensaje, response.tipo);
+                cargarGaleria($("#id_infrastructura").val()); // o mantener en variable el id actual
+            });
+        }
+    });
+});
+
+
 

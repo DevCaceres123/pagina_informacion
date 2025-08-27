@@ -49,6 +49,12 @@ class InfraestructuraRequest extends BasePrincipalRequest
                     'sup_adju' => 'nullable|numeric|regex:/^\d+(\.\d{1,2})?$/',
                     'sup_util' => 'nullable|numeric|regex:/^\d+(\.\d{1,2})?$/',
                 ];
+            case 'infraestructura.agregarImagenesPlanos':
+                return [
+                    'nuevasImagenes' => 'required|array',
+                    'nuevasImagenes.*' => 'image|mimes:jpeg,png,jpg,jpeg,webp|max:3072', // 3MB   
+                ];
+            
             default:
                 return [];
         }

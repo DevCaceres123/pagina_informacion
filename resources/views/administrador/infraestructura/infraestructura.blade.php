@@ -288,7 +288,7 @@
                                 <div class="position-absolute" style="top:0px; left:33%; margin-top: -15px;">
                                     <div class="d-inline p-1 border rounded border-danger bg-danger text-light">
                                         <i class="fas fa-map-marker-alt me-1"></i> DATOS DE LA UBICACIÓN
-                                    </div>                                  
+                                    </div>
                                 </div>
 
                                 <div class="col-md-4 mt-2">
@@ -314,7 +314,7 @@
                                     <label class="form-label">Urbanización</label>
                                     <input type="text" class="form-control" id="urb" name="urb"
                                         placeholder="Urb.">
-                                     <div id="_urb"></div>
+                                    <div id="_urb"></div>
                                 </div>
 
                                 <div class="col-md-4 mt-2">
@@ -342,32 +342,32 @@
                                 </div>
 
                                 <div class="col-md-6 mt-2">
-                                <label class="form-label">Sup. S/Test (m<sup>2</sup>)</label>
+                                    <label class="form-label">Sup. S/Test (m<sup>2</sup>)</label>
                                     <input type="text" class="form-control" id="sup_test" name="sup_test"
                                         placeholder="Sup. S/Test">
-                                    <div id="_sup_test"></div>   
+                                    <div id="_sup_test"></div>
                                 </div>
 
                                 <div class="col-md-6 mt-2">
-                                    <label class="form-label">Sup. S/Lev  (m<sup>2</sup>)</label>
+                                    <label class="form-label">Sup. S/Lev (m<sup>2</sup>)</label>
                                     <input type="text" class="form-control" id="sup_lev" name="sup_lev"
                                         placeholder="Sup. S/Lev">
-                                    <div id="_sup_lev"></div>      
+                                    <div id="_sup_lev"></div>
                                 </div>
 
                                 <div class="col-md-6 mt-2">
-                                    <label class="form-label">Sup. Adjunta  (m<sup>2</sup>)</label>
+                                    <label class="form-label">Sup. Adjunta (m<sup>2</sup>)</label>
                                     <input type="text" class="form-control" id="sup_adju" name="sup_adju"
                                         placeholder="Sup. Adjunta">
                                     <div id="_sup_adju"></div>
                                 </div>
 
                                 <div class="col-md-6 mt-2">
-                                    <label class="form-label">Sup. Útil  (m<sup>2</sup>)</label>
+                                    <label class="form-label">Sup. Útil (m<sup>2</sup>)</label>
                                     <input type="text" class="form-control" id="sup_util" name="sup_util"
                                         placeholder="Sup. Útil">
-                                    <div id="_sup_util"></div>    
-                                </div>                               
+                                    <div id="_sup_util"></div>
+                                </div>
                             </div>
 
                         </div>
@@ -378,7 +378,8 @@
                                 <button type="reset" class="btn btn-secondary btn-sm">
                                     <i class="fas fa-eraser me-1"></i> Cerrar
                                 </button>
-                                <button type="submit" class="btn btn-success btn-sm" id="btnGuardarInfraestructuraubicacion">
+                                <button type="submit" class="btn btn-success btn-sm"
+                                    id="btnGuardarInfraestructuraubicacion">
                                     <i class="fas fa-save me-1"></i> Guardar
                                 </button>
                             </div>
@@ -391,6 +392,61 @@
     </div>
 
 
+
+    <!-- Modal -->
+    <div class="modal fade" id="modalPlanos" tabindex="-1" aria-labelledby="imagenesModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content shadow-lg rounded-4">
+                <div class="modal-header bg-dark text-white">
+                    <h4 class="modal-title">
+                        <span class="badge badge-outline-light rounded">
+                            <i class="fas fa-file-image  me-1"></i> ADMINISTRAR IMÁGENES DE PLANOS
+                        </span>
+                    </h4>
+
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Cerrar"></button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="modal-body">
+                        {{-- Formulario de subida --}}
+                        <form id="formSubirImagenesPlanos" enctype="multipart/form-data">
+                            <div class="mb-3">
+                                <label for="nuevasImagenes" class="form-label">Agregar nuevas imágenes</label>
+                                <input type="hidden" id="id_infrastructura" name="infraestructura_id">
+                                <input type="file" id="nuevasImagenes" name="nuevasImagenes[]" class="form-control"
+                                    accept="image/*" multiple>
+
+                                <div id="_nuevasImagenes"></div>
+                                <button type="submit" id="btnAgregarImagenes" class="btn btn-success btn-sm mt-2">
+                                    <i class="fas fa-upload me-1"></i> Subir Imágenes
+                                </button>
+                            </div>
+                        </form>
+                        <hr>
+                        <label class="form-label">
+                            <i class="fas fa-file-image  me-1"></i>Imágenes cargadas:::
+                        </label>
+                        {{-- Contenedor de imágenes existentes --}}
+                        <div id="galeriaContenedor" class="row g-2">
+
+                        </div>
+                        <hr>
+                        {{-- Vista previa de nuevas imágenes seleccionadas --}}
+                        {{-- <div class="mt-3">
+                            <label class="form-label">
+                                <i class="fas fa-file-image  me-1"></i> Vista previa de imágenes seleccionadas::
+                            </label>
+                            <div id="vistaPreviaGaleria" class="row container d-flex"></div>
+                        </div> --}}
+                    </div>
+                </div>
+
+                
+            </div>
+        </div>
+    </div>
 
 
 

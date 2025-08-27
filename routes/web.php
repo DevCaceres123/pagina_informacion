@@ -95,6 +95,10 @@ Route::prefix('/admin')->middleware([Autenticados::class])->group(function () {
         Route::post('guardarDocumentos', 'guardarDocumentos')->name('infraestructura.guardarDocumentos');
         Route::post('datosUbicacion', 'datosUbicacion')->name('infraestructura.datosUbicacion');
         Route::post('guardarDatosUbicacion', 'guardarDatosUbicacion')->name('infraestructura.guardarDatosUbicacion');
+        Route::get('listarImagenesPlanos/{id_infraestructura}', 'listarImagenesPlanos')->name('infraestructura.listarImagenesPlanos');
+        Route::get('planos/{id_infraestructura}', 'verPlano')->name('infraestructura.planosVer');
+        Route::post('agregarImagenesPlanos/{id_infraestructura}', 'agregarImagenesPlanos')->name('infraestructura.agregarImagenesPlanos');
+        Route::delete('eliminarImagenPlano/{id_imagen}', 'eliminarImagenPlano')->name('infraestructura.eliminarImagenPlano');
 
     });
 

@@ -468,10 +468,10 @@ class Controlador_infraestructura extends Controller
 
     public function guardarDatosUbicacion(InfraestructuraRequest $request)
     {
-        
+
         DB::beginTransaction();
         try {
-          
+
             $datosinfraestructura = DatosInfraestructura::updateOrCreate(
                 ['infraestructura_id' => $request->infraestructura_id],
                 [
@@ -484,7 +484,7 @@ class Controlador_infraestructura extends Controller
                     'sup_lev' => $request->sup_lev,
                     'sup_adju' => $request->sup_adju,
                     'sup_util' => $request->sup_util,
-                    
+
                 ]
             );
             DB::commit();
@@ -502,7 +502,121 @@ class Controlador_infraestructura extends Controller
     }
 
 
+    public function listarImagenesPlanos($id_infraestructura)
+    {
+        $imagenes = PlanosInfraestructura::select('id', 'nombre')
+            ->where('infraestructura_id', $id_infraestructura)
+            ->get();
 
+        if ($imagenes->isEmpty()) {
+            return response()->json([
+                'tipo' => 'error',
+                'mensaje' => 'No hay planos registrados'
+            ]);
+        }
+
+        $galeria = $imagenes->map(function ($img) {
+            $path = $img->nombre;
+            if (!Storage::disk('private')->exists($path)) {
+                return null;
+            }
+            $mime = Storage::disk('private')->mimeType($path);
+            return [
+                'id' => $img->id,
+                'nombre' => $img->nombre,
+                'mime' => $mime,
+                // URL protegida a un endpoint que sirve la imagen
+                'url' => route('infraestructura.planosVer', $img->id),
+            ];
+        })->filter(); // quita los null
+
+        return response()->json([
+            'tipo' => 'exito',
+            'mensaje' => $galeria
+        ]);
+    }
+
+
+    // Endpoint para servir la imagen individual
+    public function verPlano($id)
+    {
+        $plano = PlanosInfraestructura::findOrFail($id);
+        $path = $plano->nombre;
+
+        if (!Storage::disk('private')->exists($path)) {
+            abort(404, 'Archivo no encontrado');
+        }
+
+        return response()->file(
+            storage_path("app/private/" . $path),
+            ['Content-Type' => Storage::disk('private')->mimeType($path)]
+        );
+    }
+
+
+
+    public function agregarImagenesPlanos(InfraestructuraRequest $request, string $id_infraestructura)
+    {
+        $archivosGuardados = [];
+        
+        DB::beginTransaction();
+
+        try {           
+
+            $rutasGaleria = $this->guardarGaleria($request);
+            if (!empty($rutasGaleria)) {
+                foreach ($rutasGaleria as $ruta) {
+                    $infraestructura = new PlanosInfraestructura();                    
+                    $infraestructura->nombre = $ruta; // ruta relativa
+                    $infraestructura->infraestructura_id = $id_infraestructura;
+                    $infraestructura->save();
+                    $archivosGuardados[] = $ruta; // guardar para rollback
+                }
+            }
+
+            DB::commit();
+
+            $this->mensaje('exito', 'Imágenes subidas correctamente');
+            return response()->json($this->mensaje, 200);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            foreach ($archivosGuardados as $ruta) {
+                if (Storage::exists($ruta)) {
+                    Storage::delete($ruta);
+                }
+            }
+            $this->mensaje('error', 'error' . $e->getMessage());
+            return response()->json($this->mensaje, 200);
+        }
+    }
+
+    public function eliminarImagenPlano($id_imagen)
+    {
+        DB::beginTransaction();
+        try {
+            $imagen = PlanosInfraestructura::find($id_imagen);
+            if (!$imagen) {
+                throw new Exception('Imagen no encontrada');
+            }
+                    
+            // Eliminar el registro de la base de datos
+            $imagen->delete();
+
+            DB::commit();
+
+            $this->mensaje("exito", "Imagen eliminada correctamente");
+
+            return response()->json($this->mensaje, 200);
+        } catch (Exception $e) {
+            DB::rollBack();
+
+            $this->mensaje("error", "error" . $e->getMessage());
+
+            return response()->json($this->mensaje, 200);
+        }
+    }
     // Mensaje para mostrar al usuario
     public function mensaje($titulo, $mensaje)
     {
