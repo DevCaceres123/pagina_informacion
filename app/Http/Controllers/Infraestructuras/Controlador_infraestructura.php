@@ -14,6 +14,7 @@ use Intervention\Image\Drivers\Gd\Driver;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\Infraestructura\InfraestructuraRequest;
 use Exception;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class Controlador_infraestructura extends Controller
 {
@@ -22,7 +23,7 @@ class Controlador_infraestructura extends Controller
      */
     public function index()
     {
-        $sedes = Sede::select('id','nombre')->where('estado','activo')->get();
+        $sedes = Sede::select('id', 'nombre')->where('estado', 'activo')->get();
         return view('administrador.infraestructura.infraestructura', compact('sedes'));
     }
 
@@ -34,7 +35,7 @@ class Controlador_infraestructura extends Controller
             'sede' => function ($query) {
                 $query->select(['id','nombre']); // CORREGIDO
             },
-        ])->select('id', 'estado_inmueble', 'estado_tramite', 'observacion_estado','sede_id','created_at')->orderBy('id', 'desc');
+        ])->select('id', 'estado_inmueble', 'estado_tramite', 'observacion_estado', 'sede_id', 'created_at')->orderBy('id', 'desc');
 
 
         if (!empty($request->search['value'])) {
@@ -158,8 +159,8 @@ class Controlador_infraestructura extends Controller
      */
     public function edit(string $id)
     {
-        
-        $infraestructura = Infraestructura::select('id','propiedad','uso_asignado','estado_inmueble','estado_inmueble','sede_id', 'observacion_estado')->where('id',$id)->first();
+
+        $infraestructura = Infraestructura::select('id', 'propiedad', 'uso_asignado', 'estado_inmueble', 'estado_inmueble', 'sede_id', 'observacion_estado')->where('id', $id)->first();
         if (!$infraestructura) {
             $this->mensaje('error', 'Infraestructura no encontrada');
             return response()->json($this->mensaje, 200);
@@ -566,15 +567,15 @@ class Controlador_infraestructura extends Controller
     public function agregarImagenesPlanos(InfraestructuraRequest $request, string $id_infraestructura)
     {
         $archivosGuardados = [];
-        
+
         DB::beginTransaction();
 
-        try {           
+        try {
 
             $rutasGaleria = $this->guardarGaleria($request);
             if (!empty($rutasGaleria)) {
                 foreach ($rutasGaleria as $ruta) {
-                    $infraestructura = new PlanosInfraestructura();                    
+                    $infraestructura = new PlanosInfraestructura();
                     $infraestructura->nombre = $ruta; // ruta relativa
                     $infraestructura->infraestructura_id = $id_infraestructura;
                     $infraestructura->save();
@@ -608,7 +609,7 @@ class Controlador_infraestructura extends Controller
             if (!$imagen) {
                 throw new Exception('Imagen no encontrada');
             }
-                    
+
             // Eliminar el registro de la base de datos
             $imagen->delete();
 
@@ -628,7 +629,7 @@ class Controlador_infraestructura extends Controller
 
     public function actualizarInfraestructura(Request $request)
     {
-        
+
         DB::beginTransaction();
         try {
             $infraestructura = Infraestructura::find($request->id);
@@ -650,6 +651,40 @@ class Controlador_infraestructura extends Controller
             $this->mensaje("exito", "Infraestructura actualizada correctamente");
 
             return response()->json($this->mensaje, 200);
+        } catch (Exception $e) {
+            DB::rollBack();
+
+            $this->mensaje("error", "error" . $e->getMessage());
+
+            return response()->json($this->mensaje, 200);
+        }
+    }
+
+
+    public function reporteInfraestructura($id_infraestructura)
+    {
+        try {
+
+            $planos = PlanosInfraestructura::select('id', 'nombre')
+                ->where('infraestructura_id', $id_infraestructura)
+                ->get();
+
+
+            foreach ($planos as $plano) {
+                $path = storage_path('app/private/'.$plano->nombre); // Ajusta a tu carpeta real
+                if (file_exists($path)) {
+                    $plano->base64 = 'data:image/png;base64,' . base64_encode(file_get_contents($path));
+                } else {
+                    $plano->base64 = null;
+                }
+            }
+
+            
+            $pdf = \PDF::loadView('administrador.infraestructura.reporteInfraestructura', compact('planos'));
+            return $pdf->stream('reporte_infraestructura.pdf');
+
+
+
         } catch (Exception $e) {
             DB::rollBack();
 

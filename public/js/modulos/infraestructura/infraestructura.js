@@ -128,6 +128,12 @@ function listar_infraestructuras() {
                             : ``
                         }
                          
+                         ${permisosGlobal.eliminar
+                            ? ` <a href='reporteInfraestructura/${row.id}' class="btn btn-sm btn-outline-primary px-2 d-inline-flex align-items-center me-1" title="Generar Reporte">
+                            <i class="fas fa-file-archive  fs-16"></i>
+                        </a>`
+                            : ``
+                        }
                         </div>`;
                 },
             },

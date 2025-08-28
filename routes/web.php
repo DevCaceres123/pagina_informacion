@@ -100,6 +100,7 @@ Route::prefix('/admin')->middleware([Autenticados::class])->group(function () {
         Route::post('agregarImagenesPlanos/{id_infraestructura}', 'agregarImagenesPlanos')->name('infraestructura.agregarImagenesPlanos');
         Route::delete('eliminarImagenPlano/{id_imagen}', 'eliminarImagenPlano')->name('infraestructura.eliminarImagenPlano');
         Route::post('actualizarInfraestructura', 'actualizarInfraestructura')->name('infraestructura.actualizarInfraestructura');
+        Route::get('reporteInfraestructura/{id_infraestructura}', 'reporteInfraestructura')->name('infraestructura.reporteInfraestructura');
     });
 
 
