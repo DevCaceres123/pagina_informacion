@@ -664,25 +664,45 @@ class Controlador_infraestructura extends Controller
     public function reporteInfraestructura($id_infraestructura)
     {
         try {
-
+            //listar las imagenes de los planos
             $planos = PlanosInfraestructura::select('id', 'nombre')
                 ->where('infraestructura_id', $id_infraestructura)
                 ->get();
+            
+            $infraestructura= Infraestructura::select('estado_inmueble','estado_tramite','observacion_estado','created_at','sede_id','propiedad','uso_asignado')->where('id',$id_infraestructura)->first();
 
+            $sede=Sede::select('nombre')->where('id',$infraestructura->sede_id)->first();
+
+            $ubicacion = DatosInfraestructura::select('distrito','ubicacion','urb','manzano','lote','sup_test','sup_lev','sup_adju','sup_util')->where('infraestructura_id', $id_infraestructura)->first() ?? new \stdClass();
+
+            // reducir calidad y convertir en base 64 una imagen
+            $manager = new ImageManager(new Driver());
 
             foreach ($planos as $plano) {
-                $path = storage_path('app/private/'.$plano->nombre); // Ajusta a tu carpeta real
+                $path = storage_path('app/private/'.$plano->nombre);
                 if (file_exists($path)) {
-                    $plano->base64 = 'data:image/png;base64,' . base64_encode(file_get_contents($path));
+
+                    $imagen = $manager->read($path);
+                    // Escalar (máximo 1200px de ancho o alto, mantiene proporción)
+                    $img = $imagen->scaleDown(1200);
+
+                    // Convertir a WebP y calidad 80 (ajustable: 0 = más liviano, 100 = más pesado)
+                    $webp = $imagen->encode(new \Intervention\Image\Encoders\WebpEncoder(quality: 70));
+
+                   $plano->base64 = 'data:image/webp;base64,' . base64_encode($webp);
                 } else {
                     $plano->base64 = null;
                 }
             }
+                  
 
+            $pdf = \PDF::loadView('administrador.infraestructura.reporteInfraestructura', compact('planos','infraestructura','sede','ubicacion'));
+
+            $pdfContent = $pdf->output();
             
-            $pdf = \PDF::loadView('administrador.infraestructura.reporteInfraestructura', compact('planos'));
-            return $pdf->stream('reporte_infraestructura.pdf');
-
+            $pdfb64=base64_encode($pdfContent);   
+            $this->mensaje('exito',$pdfb64);
+            return response()->json($this->mensaje, 200);    
 
 
         } catch (Exception $e) {
@@ -693,6 +713,8 @@ class Controlador_infraestructura extends Controller
             return response()->json($this->mensaje, 200);
         }
     }
+
+
     // Mensaje para mostrar al usuario
     public function mensaje($titulo, $mensaje)
     {

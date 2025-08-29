@@ -43,7 +43,7 @@ function listar_infraestructuras() {
                     `;
                 },
             },
-            
+
             {
                 data: "created_at_formateado",
                 className: "table-td text-capitalize",
@@ -129,9 +129,9 @@ function listar_infraestructuras() {
                         }
                          
                          ${permisosGlobal.eliminar
-                            ? ` <a href='reporteInfraestructura/${row.id}' class="btn btn-sm btn-outline-primary px-2 d-inline-flex align-items-center me-1" title="Generar Reporte">
+                            ? ` <button class="btn btn-sm btn-outline-primary px-2 d-inline-flex align-items-center me-1 generar_reporte" data-id="${row.id}" title="Generar Reporte">
                             <i class="fas fa-file-archive  fs-16"></i>
-                        </a>`
+                        </button>`
                             : ``
                         }
                         </div>`;
@@ -362,6 +362,7 @@ $(document).on("click", ".actualizarUbicacion", function (e) {
 
         if (response.mensaje == null) {
             vaciar_formulario("formInfraestructuraUbicacion");
+            $("#infraestructura_id").val(id);
             return;
         }
         // ✅ Poblar el formulario
@@ -527,9 +528,9 @@ $(document).on("click", ".eliminar_imagen", function () {
 
 
 // Editar datos de infraestructura
-$(document).on("click", ".editar_sede", function () {    
+$(document).on("click", ".editar_sede", function () {
     let id_infraestructura = $(this).data('id'); // Obtener el id del alumno desde el data-id
-    
+
 
     crud("admin/infraestructura", "GET", id_infraestructura + '/edit', null, function (error, response) {
 
@@ -545,7 +546,7 @@ $(document).on("click", ".editar_sede", function () {
         $('#uso_asignadoEdit').val(response.mensaje.uso_asignado);
         $('#estado_inmuebleEdit').val(response.mensaje.estado_inmueble);
         $('#observacion_estadoEdit').val(response.mensaje.observacion_estado);
-        
+
         $('#modalInfraestructuraEdit').modal('show')
         // si todo esta correcto muestra el mensaje de correcto
     })
@@ -555,12 +556,12 @@ $(document).on("click", ".editar_sede", function () {
 
 $("#formInfraestructuraEdit").on("submit", function (e) {
     e.preventDefault();
-   // $("#btnGuardarInfraestructuraEdit").prop("disabled", true);
+    $("#btnGuardarInfraestructuraEdit").prop("disabled", true);
     let formData = new FormData(this);
-    //vaciar_errores("formNuevaSedeEdit");
+    vaciar_errores("formNuevaSedeEdit");
 
     crud("admin/actualizarInfraestructura", "POST", null, formData, function (error, response) {
-        //$("#btnGuardarInfraestructuraEdit").prop("disabled", false);
+        $("#btnGuardarInfraestructuraEdit").prop("disabled", false);
         // console.log(response);
 
         // Verificamos que no haya un error o que todos los campos sean llenados
@@ -580,4 +581,43 @@ $("#formInfraestructuraEdit").on("submit", function (e) {
         actualizarTabla();
     });
 });
+
+
+
+// Editar datos de infraestructura
+$(document).on("click", ".generar_reporte", function () {
+    let id_infraestructura = $(this).data('id'); // Obtener el id del alumno desde el data-id
+
+    $(".generar_reporte").prop("disabled", true);
+    crud("admin/reporteInfraestructura", "GET", id_infraestructura, null, function (error, response) {
+    $(".generar_reporte").prop("disabled", false);
+        //console.log(response);
+        if (response.tipo != "exito") {
+            mensajeAlerta(response.mensaje, response.tipo);
+            return;
+        }
+        mensajeAlerta('Reporte generado espere porfavor....', "exito");
+
+        setTimeout(() => {
+            let pdfUrl = generarURlBlob(response.mensaje);
+            window.open(pdfUrl, "_blank");
+        }, 1500);
+
+    })
+});
+
+
+// nos servira para crear una url para poder visualizar nuestro pdf
+
+function generarURlBlob(pdfbase64) {
+
+    // Convertir Base64 a un Blob
+    const byteCharacters = atob(pdfbase64); // Decodifica el Base64
+    const byteNumbers = Array.from(byteCharacters).map(c => c.charCodeAt(0));
+    const byteArray = new Uint8Array(byteNumbers);
+    const blob = new Blob([byteArray], { type: 'application/pdf' });
+
+    // Crear una URL para el Blob
+    return URL.createObjectURL(blob);
+}
 

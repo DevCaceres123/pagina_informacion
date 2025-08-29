@@ -83,7 +83,7 @@
 
 <header>
     <table>
-        <tr>
+        <tr>            
             <!-- Logo izquierdo -->
             <td style="width: 20%; text-align: left;">
                 <img src="{{ public_path('assets/upea_logo.webp') }}" alt="Logo UPEA" style="max-height: 90px">
