@@ -15,6 +15,9 @@ return new class extends Migration
             $table->id();
             $table->string('titulo', 150);
             $table->text('contenido');
+            $table->enum('estado_destacado', ['activo', 'inactivo']);
+            $table->enum('estado_noticia', ['activo', 'inactivo']);
+            $table->string('url_video')->nullable();
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('sede_id');
 
@@ -29,6 +32,7 @@ return new class extends Migration
                 ->on('sedes')
                 ->onDelete('restrict')
                 ->onUpdate('cascade');
+            $table->timestamp('deleted_at')->nullable();
             $table->timestamps();
         });
     }

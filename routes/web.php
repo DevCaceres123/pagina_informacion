@@ -9,6 +9,7 @@ use App\Http\Controllers\Usuario\Controlador_usuario;
 use App\Http\Controllers\Sedes\Controlador_sedes;
 use App\Http\Controllers\Carreras\Controlador_carrera;
 use App\Http\Controllers\Infraestructuras\Controlador_infraestructura;
+use App\Http\Controllers\Publicaciones\Controlador_noticias;
 use App\Http\Middleware\Autenticados;
 use App\Http\Middleware\No_autenticados;
 use Illuminate\Support\Facades\Route;
@@ -103,6 +104,18 @@ Route::prefix('/admin')->middleware([Autenticados::class])->group(function () {
         Route::get('reporteInfraestructura/{id_infraestructura}', 'reporteInfraestructura')->name('infraestructura.reporteInfraestructura');
     });
 
+
+    // CONTROLADOR PARA LAS NOTICIAS
+    Route::controller(Controlador_noticias::class)->group(function () {
+        Route::resource('noticia', Controlador_noticias::class);
+        Route::get('nuevaNoticia', 'nuevaNoticia')->name('noticia.nuevaNoticia');
+        Route::get('listarNoticias', 'listarNoticias')->name('noticia.listarNoticias');
+        Route::put('cambiar_estado_destacado/{id_noticia}', 'cambiar_estado_destacado')->name('noticia.cambiar_estado_destacado');
+        Route::put('cambiar_estado_publicacion/{id_noticia}', 'cambiar_estado_publicacion')->name('noticia.cambiar_estado_publicacion');
+        Route::get('editarNoticia/{id_noticia}', 'editarNoticia')->name('noticia.editarNoticia');
+        Route::delete('eliminarImagenNoticia/{id_imagen}', 'eliminarImagenNoticia')->name('noticia.eliminarImagenNoticia');
+        Route::post('actualizarNoticia/{id_noticia}', 'actualizarNoticia')->name('noticia.actualizarNoticia');
+    });
 
     //PARA LOS PERMISOS
     Route::resource('permisos', Controlador_permisos::class);

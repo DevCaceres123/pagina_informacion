@@ -79,6 +79,39 @@
                             </ul><!--end nav-->
                         </div><!--end startbarApplications-->
                     </li><!--end nav-item-->
+                  
+                    <li class="menu-label mt-2">
+                        <small class="label-border">
+                            <div class="border_left hidden-xs"></div>
+                            <div class="border_right"></div>
+                        </small>
+                        <span>PUBLICACIONES</span>
+                    </li>
+
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="#noticiasConvocatorias" data-bs-toggle="collapse" role="button"
+                            aria-expanded="false" aria-controls="noticiasConvocatorias">
+                            <i class="fas fa-newspaper   menu-icon"></i>
+                            <span>PUBLICACIONES</span>
+                        </a>
+                        <div class="collapse " id="noticiasConvocatorias">
+                            <ul class="nav flex-column">
+
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ route('noticia.index') }}">Noticias</a>
+                                </li><!--end nav-item-->
+                                {{-- <li class="nav-item">
+                                    <a class="nav-link" href="">Categorias</a>
+                                </li><!--end nav-item-->
+                                <li class="nav-item">
+                                    <a class="nav-link" href="">Convocatorias</a>
+                                </li><!--end nav-item--> --}}
+
+                            </ul><!--end nav-->
+                        </div><!--end startbarApplications-->
+                    </li><!--end nav-item-->
+                 
 
                     <li class="menu-label mt-2">
                         <small class="label-border">
