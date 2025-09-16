@@ -10,4 +10,9 @@ class CategoriasNoticia extends Model
     //
     use SoftDeletes,HasFactory;
     protected $table = 'categorias_noticias';
+
+    public function noticias()
+    {
+        return $this->hasMany('App\Models\Noticia', 'categoria_id');
+    }
 }

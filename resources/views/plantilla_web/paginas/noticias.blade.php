@@ -26,28 +26,31 @@
 
     <div class="container py-4 font-sans">
 
-        <!-- 🔥 Noticia destacada -->
-        <div class="row mb-5 mt-6 align-items-center bg-light rounded p-4 shadow-sm">
-            <div class="col-md-6 position-relative">
-                <img src="{{ asset('assets/noticias/feria_cientifica.jpg') }}" alt="Noticia destacada"
-                    class="img-fluid rounded shadow-lg">
+        @if (isset($noticiaDestacada))
+            <!-- 🔥 Noticia destacada -->
+            <div class="row mb-5 mt-6 align-items-center bg-light rounded p-4 shadow-sm">
+                <div class="col-md-6 position-relative">
+                    <img src="{{ asset('assets/noticias/feria_cientifica.jpg') }}" alt="Noticia destacada"
+                        class="img-fluid rounded shadow-lg">
 
+                </div>
+                <div class="col-md-6 d-flex flex-column justify-content-center p-3">
+                    <h2 class="fw-bold text-3xl mb-2 text-dark" style="font-family: 'Inter', sans-serif;">{{ $noticiaDestacada->titulo}}
+                        Destacada</h2>
+                    <p class="text-muted mb-2" style="font-family: 'Inter', sans-serif;">📅 {{$noticiaDestacada->created_at_formateado}} | ✍️ Autor: Juan
+                        Pérez
+                    </p>
+                    <p class="text-gray-800 mb-3" style="font-family: 'Inter', sans-serif;">
+                        {{ Str::limit($noticiaDestacada->contenido, 200, '...') }}</p>
+                    </p>
+                    <a  href="{{ route('noticia.detalleNoticia', $noticiaDestacada->id) }}" class="btn btn-secondary btn-sm shadow rounded"
+                        style="font-family: 'Inter', sans-serif;"><----- Ver más -----></a>
+                </div>
             </div>
-            <div class="col-md-6 d-flex flex-column justify-content-center p-3">
-                <h2 class="fw-bold text-3xl mb-2 text-dark" style="font-family: 'Inter', sans-serif;">Título de la Noticia
-                    Destacada</h2>
-                <p class="text-muted mb-2" style="font-family: 'Inter', sans-serif;">📅 20 Agosto 2025 | ✍️ Autor: Juan Pérez
-                </p>
-                <p class="text-gray-800 mb-3" style="font-family: 'Inter', sans-serif;">
-                    Este es un resumen o contenido más largo de la noticia destacada. Aquí puedes poner la introducción o
-                    parte del contenido para captar la atención del lector...
-                </p>
-                <a href="#" class="btn btn-secondary btn-sm shadow rounded"
-                    style="font-family: 'Inter', sans-serif;"><----- Ver más -----></a>
-            </div>
-        </div>
+        @endif
 
-        <div class="coniner-fluid bg-light rounded p-4 shadow-sm">
+
+        <div class="coniner-fluid bg-light rounded p-4 shadow-sm mt-3">
             <!-- 📰 Sección Más Noticias con buscador y filtro -->
             <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
                 <h3 class="mb-0" style="font-family: 'Inter', sans-serif;">Más noticias</h3>
@@ -57,28 +60,29 @@
                         style="font-family: 'Inter', sans-serif;">
                     <select class="form-select" id="filtroTipo" style="font-family: 'Inter', sans-serif;">
                         <option value="">Todos los tipos</option>
-                        <option value="deporte">Deporte</option>
-                        <option value="cultura">Cultura</option>
-                        <option value="educacion">Educación</option>
+                        @foreach ($categorias as $categoria)
+                            <option value="{{ $categoria->id }}">{{ $categoria->nombre }}</option>                        
+
+                        @endforeach                        
                     </select>
                 </div>
             </div>
 
             <!-- Grid de noticias -->
             <div class="row g-4" id="noticiasGrid">
-                @foreach (range(2, 7) as $i)
-                    <div class="col-md-4 noticia-item" data-tipo="{{ ['deporte', 'cultura', 'educacion'][$i % 3] }}">
+                @foreach ($noticias as $noticia)
+                    <div class="col-md-4 noticia-item">
                         <div class="card h-100 shadow-sm border-0 news-card overflow-hidden">
                             <div class="position-relative">
-                                <img src="{{ asset('assets/noticias/campeonato.jpg') }}" class="card-img-top transition-img"
-                                    alt="Noticia {{ $i }}">
+                                <img  src="{{ asset('storage/imagenes_noticias/' . $noticia->imagenesNoticia->first()->imagen ) }}" class="card-img-top transition-img"
+                                   >
                                 <span class="badge bg-danger position-absolute top-2 start-2 p-2"
-                                    style="font-family: 'Inter', sans-serif;">{{ ['Deporte', 'Cultura', 'Educación'][$i % 3] }}</span>
+                                    style="font-family: 'Inter', sans-serif;"></span>
                             </div>
                             <div class="card-body">
-                                <h5 class="card-title" style="font-family: 'Inter', sans-serif;">Título noticia
-                                    {{ $i }}</h5>
-                                <p class="text-muted small" style="font-family: 'Inter', sans-serif;">📅 18 Agosto 2025</p>
+                                <h5 class="card-title" style="font-family: 'Inter', sans-serif;">{{$noticia->titulo}}
+                                    </h5>
+                                <p class="text-muted small" style="font-family: 'Inter', sans-serif;">📅 {{$noticia->created_at_formateado}}</p>
                                 <a href="#" class="btn btn-outline-primary btn-sm w-100 mt-2"
                                     style="font-family: 'Inter', sans-serif;">Ver más</a>
                             </div>

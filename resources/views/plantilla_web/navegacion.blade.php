@@ -25,7 +25,7 @@
                             class="hamburger-box"><span class="hamburger-inner"></span></span></span></button>
                 <div class="collapse navbar-collapse" id="primaryNavbarCollapse">
                     <ul class="navbar-nav py-3 py-lg-0 mt-1 mb-2 my-lg-0 ms-lg-n1">
-                        <li class="nav-item dropdown"><a class="nav-link" href="/inicio"
+                        <li class="nav-item dropdown"><a class="nav-link" href="/"
                                 role="button">Inicio</a>
                             <ul class="dropdown-menu">
                             
@@ -36,7 +36,7 @@
                                 aria-expanded="false">Sedes</a>
                             <ul class="dropdown-menu">
                                 @foreach ($sedes as $sede)
-                                    <li><a class="dropdown-item" href="/sedes/{{$sede->id}}">{{$sede->nombre}}</a></li>
+                                    <li><a class="dropdown-item" href="/sedes/{{$sede->id}}">{{ ucfirst(strtolower($sede->nombre)) }}</a></li>
                                 @endforeach                                                            
                             </ul>
                         </li>   

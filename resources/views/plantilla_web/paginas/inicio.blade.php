@@ -201,7 +201,69 @@
                     data-zanim-xs='{"from":{"opacity":0,"width":0},"to":{"opacity":1,"width":"4.20873rem"},"duration":0.8}'
                     data-zanim-trigger="scroll" />
             </div>
-            <div class="row g-0 position-relative mb-4 mb-lg-0">
+
+                @foreach ($noticias as $index => $noticia)
+                <div class="row g-0 position-relative mb-4 mb-lg-0">
+                    {{-- Imagen de portada --}}
+                    <div class="col-lg-6 py-3 py-lg-0 mb-0 position-relative {{ $index % 2 == 0 ? '' : 'order-lg-2' }}"
+                        style="min-height:400px">
+                        @php
+                            // Buscamos la imagen que tenga 'portada_' en el nombre
+                            $imagenPortada = $noticia->imagenesNoticia->first(function ($img) {
+                                return str_contains($img->imagen, 'portada_');
+                            });
+                        @endphp
+
+                        <div class="bg-holder rounded-ts-lg rounded-te-lg rounded-lg-te-0"
+                            style="background-image: url({{ $imagenPortada ? asset('storage/imagenes_noticias/' . $imagenPortada->imagen) : asset('assets/noticias/default.jpg') }}); background-size: cover;background-position: center;">
+                        </div>
+                    </div>
+
+                    {{-- Contenido --}}
+                    <div
+                        class="col-lg-6 px-lg-5 py-lg-6 p-4 my-lg-0 bg-white rounded-bs-lg rounded-lg-bs-0 rounded-be-lg rounded-lg-be-0 {{ $index % 2 == 0 ? '' : 'order-lg-1' }}">
+                        <div class="elixir-caret d-none d-lg-block"></div>
+                        <div class="d-flex align-items-center h-100">
+                            <div data-zanim-timeline="{}" data-zanim-trigger="scroll">
+                                {{-- Título --}}
+                                <div class="overflow-hidden text-uppercase">
+                                    <h5 data-zanim-xs='{"delay":0}'>{{ $noticia->titulo }}</h5>
+                                </div>
+
+                                {{-- Metadatos --}}
+                                <div class="overflow-hidden mb-2">
+                                    <small class="text-muted">
+                                        Publicado: {{ $noticia->created_at_formateado }} |
+                                        Autor: {{ $noticia->autor->nombre ?? 'Desconocido' }} |
+                                        Tipo: {{ $noticia->categoria->nombre }}
+                                    </small>
+                                </div>
+
+                                {{-- Contenido --}}
+                                <div class="overflow-hidden">
+                                    <p class="mt-3" data-zanim-xs='{"delay":0.1}'>
+                                        {{ Str::limit($noticia->contenido, 200, '...') }}</p>
+                                </div>
+
+                                {{-- Botón Ver Detalle --}}
+                                <div class="overflow-hidden">
+                                    <div data-zanim-xs='{"delay":0.2}'>
+                                        <a class="d-flex align-items-center"
+                                            href="{{ route('noticia.detalleNoticia', $noticia->id) }}" target="_blank">
+                                            Ver Detalle
+                                            <div class="overflow-hidden ms-2">
+                                                <span class="d-inline-block"
+                                                    data-zanim-xs='{"from":{"opacity":0,"x":-30},"to":{"opacity":1,"x":0},"delay":0.8}'>&xrarr;</span>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
+            {{-- <div class="row g-0 position-relative mb-4 mb-lg-0">
                 <div class="col-lg-6 py-3 py-lg-0 mb-0 position-relative" style="min-height:400px;">
                     <div class="bg-holder rounded-ts-lg rounded-te-lg rounded-lg-te-0  "
                         style="background-image:url(assets/noticias/feria_cientifica.jpg);"></div>
@@ -311,7 +373,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> --}}
 
             <div class="text-center mt-4">
                 <a href="/noticias" target="_blank"

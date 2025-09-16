@@ -14,15 +14,27 @@ use App\Http\Middleware\Autenticados;
 use App\Http\Middleware\No_autenticados;
 use Illuminate\Support\Facades\Route;
 use Intervention\Image\Facades\Image;
+use App\Models\Noticia;
+use App\Models\ImgNoticia;
 
 Route::get('/', function () {
-    return view('plantilla_web/paginas/inicio');
+
+     $noticias = Noticia::with(['sede', 'categoria', 'imagenesNoticia' => function ($query) {
+        $query->select(['imagen', 'noticia_id']);
+    }])
+    ->select('id', 'titulo', 'contenido', 'url_video', 'sede_id', 'categoria_id', 'created_at')
+    ->where('estado_noticia', 'activo')
+    ->orderBy('id', 'desc')
+    ->limit(3)
+    ->get();
+
+    return view('plantilla_web/paginas/inicio', compact('noticias'));
 })->name('login');
 
 
 Route::controller(Controlador_pagina::class)->group(function () {
     Route::get('/noticias', 'noticias')->name('noticias.show');
-    Route::get('/noticia/{id}', 'noticia')->name('noticia.show');
+    Route::get('/detalleNoticia/{id}', 'noticia')->name('noticia.detalleNoticia');
     Route::get('/convocatorias', 'convocatorias')->name('convocatorias.show');
     Route::get('/convocatoria', 'convocatoria')->name('convocatoria.show');
     Route::get('/sedes/{id}', 'sedes')->name('pagina.sedes');
