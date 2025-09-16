@@ -74,8 +74,12 @@
                     <div class="col-md-4 noticia-item">
                         <div class="card h-100 shadow-sm border-0 news-card overflow-hidden">
                             <div class="position-relative">
-                                <img  src="{{ asset('storage/imagenes_noticias/' . $noticia->imagenesNoticia->first()->imagen ) }}" class="card-img-top transition-img"
-                                   >
+                                <div class="bg-light d-flex align-items-center justify-content-center fw-bold text-dark fs-2 border"
+                                style="height: 200px; width: 100%;">
+                                <img src="{{ asset('storage/imagenes_noticias/' . $noticia->imagenesNoticia->first()->imagen ) }}"
+                                    alt="{{ $noticia->titulo }}" class="card-img-top transition-img"
+                                    style="object-fit: cover; height: 100%; width: 100%;">
+                            </div>                                
                                 <span class="badge bg-danger position-absolute top-2 start-2 p-2"
                                     style="font-family: 'Inter', sans-serif;"></span>
                             </div>
@@ -83,7 +87,7 @@
                                 <h5 class="card-title" style="font-family: 'Inter', sans-serif;">{{$noticia->titulo}}
                                     </h5>
                                 <p class="text-muted small" style="font-family: 'Inter', sans-serif;">📅 {{$noticia->created_at_formateado}}</p>
-                                <a href="#" class="btn btn-outline-primary btn-sm w-100 mt-2"
+                                <a  href="{{ route('noticia.detalleNoticia', $noticia->id) }}" class="btn btn-outline-primary btn-sm w-100 mt-2"
                                     style="font-family: 'Inter', sans-serif;">Ver más</a>
                             </div>
                         </div>
