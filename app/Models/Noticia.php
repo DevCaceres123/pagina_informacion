@@ -39,4 +39,21 @@ class Noticia extends Model
     
         return $fecha->locale('es')->translatedFormat('d \d\e F \d\e Y H:i');
     }
+
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::saving(function ($model) {
+            // Campos que quieres en mayúsculas
+            $campos = ['titulo','url_video'];
+
+            foreach ($campos as $campo) {
+                if (!empty($model->$campo)) {
+                    $model->$campo = strtolower($model->$campo);
+                }
+            }
+        });
+    }
 }

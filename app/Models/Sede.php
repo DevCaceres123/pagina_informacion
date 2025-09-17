@@ -33,5 +33,23 @@ class Sede extends Model
     public function infraestructura(){
         return $this->hasOne('App\Models\ImgSede');
     }
+
+
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::saving(function ($model) {
+            // Campos que quieres en mayúsculas
+            $campos = ['nombre', 'descripcion', 'resolucion','facebook','youtobe'];
+
+            foreach ($campos as $campo) {
+                if (!empty($model->$campo)) {
+                    $model->$campo = strtolower($model->$campo);
+                }
+            }
+        });
+    }
 }
 

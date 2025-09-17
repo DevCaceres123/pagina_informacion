@@ -458,7 +458,7 @@ class Controlador_infraestructura extends Controller
     {
 
         try {
-            $datosinfraestructura = DatosInfraestructura::where('infraestructura_id', $request->infraestructura_id)->first();
+            $datosinfraestructura = DatosInfraestructura::where('infraestructura_id', $request->infraestructura_id)->first() ?? 'null';
 
             DB::commit();
 
@@ -477,7 +477,7 @@ class Controlador_infraestructura extends Controller
 
     public function guardarDatosUbicacion(InfraestructuraRequest $request)
     {
-
+        
         DB::beginTransaction();
         try {
 
@@ -493,6 +493,7 @@ class Controlador_infraestructura extends Controller
                     'sup_lev' => $request->sup_lev,
                     'sup_adju' => $request->sup_adju,
                     'sup_util' => $request->sup_util,
+                    'escala' => $request->escala,
 
                 ]
             );

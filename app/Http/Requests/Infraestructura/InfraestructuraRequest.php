@@ -48,6 +48,7 @@ class InfraestructuraRequest extends BasePrincipalRequest
                     'sup_lev' => 'nullable|numeric|regex:/^\d+(\.\d{1,2})?$/',
                     'sup_adju' => 'nullable|numeric|regex:/^\d+(\.\d{1,2})?$/',
                     'sup_util' => 'nullable|numeric|regex:/^\d+(\.\d{1,2})?$/',
+                    'escala' => 'nullable|string|min:3|max:20',
                 ];
             case 'infraestructura.agregarImagenesPlanos':
                 return [

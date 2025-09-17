@@ -292,11 +292,20 @@
                                     </div>
                                 </div>
 
+                                <div class="col-md-12 mt-2">
+                                    <label class="form-label">Escala</label>                                    
+                                    <input type="text" class="form-control" id="escala" name="escala"
+                                        placeholder="Ejemplo: 1:500, 1:1000">
+                                    <div id="_escala">
+
+                                    </div>
+                                </div>
+
                                 <div class="col-md-4 mt-2">
                                     <label class="form-label">Distrito</label>
                                     <input type="hidden" id="infraestructura_id" name="infraestructura_id">
                                     <input type="text" class="form-control" id="distrito" name="distrito"
-                                        placeholder="Distrito">
+                                        placeholder="Ejemplo: 2,3,4">
                                     <div id="_distrito">
 
                                     </div>
@@ -305,7 +314,7 @@
                                 <div class="col-md-8 mt-2">
                                     <label class="form-label">Ubicación</label>
                                     <input type="text" class="form-control" id="ubicacion" name="ubicacion"
-                                        placeholder="Ubicación">
+                                        placeholder="Zona Juan pablo II, Av. Los Alamos, etc.">
                                     <div id="_ubicacion">
 
                                     </div>
@@ -314,21 +323,21 @@
                                 <div class="col-md-4 mt-2">
                                     <label class="form-label">Urbanización</label>
                                     <input type="text" class="form-control" id="urb" name="urb"
-                                        placeholder="Urb.">
+                                        placeholder="Ejem: Villa Club, etc.">
                                     <div id="_urb"></div>
                                 </div>
 
                                 <div class="col-md-4 mt-2">
                                     <label class="form-label">Manzano</label>
                                     <input type="text" class="form-control" id="manzano" name="manzano"
-                                        placeholder="Mzno.">
+                                        placeholder="Ejem: 1,2,3">
                                     <div id="_manzano"></div>
                                 </div>
 
                                 <div class="col-md-4 mt-2">
                                     <label class="form-label">Lote Nº</label>
                                     <input type="text" class="form-control" id="lote" name="lote"
-                                        placeholder="Lote Nº">
+                                        placeholder="Ejem: 1,2,3">
                                     <div id="_lote"></div>
                                 </div>
                             </div>
@@ -345,28 +354,28 @@
                                 <div class="col-md-6 mt-2">
                                     <label class="form-label">Sup. S/Test (m<sup>2</sup>)</label>
                                     <input type="text" class="form-control" id="sup_test" name="sup_test"
-                                        placeholder="Sup. S/Test">
+                                        placeholder="Ejemplo: 6245.10 m2">
                                     <div id="_sup_test"></div>
                                 </div>
 
                                 <div class="col-md-6 mt-2">
                                     <label class="form-label">Sup. S/Lev (m<sup>2</sup>)</label>
                                     <input type="text" class="form-control" id="sup_lev" name="sup_lev"
-                                        placeholder="Sup. S/Lev">
+                                       placeholder="Ejemplo: 6245.10 m2">
                                     <div id="_sup_lev"></div>
                                 </div>
 
                                 <div class="col-md-6 mt-2">
                                     <label class="form-label">Sup. Adjunta (m<sup>2</sup>)</label>
                                     <input type="text" class="form-control" id="sup_adju" name="sup_adju"
-                                        placeholder="Sup. Adjunta">
+                                       placeholder="Ejemplo: 6245.10 m2">
                                     <div id="_sup_adju"></div>
                                 </div>
 
                                 <div class="col-md-6 mt-2">
                                     <label class="form-label">Sup. Útil (m<sup>2</sup>)</label>
                                     <input type="text" class="form-control" id="sup_util" name="sup_util"
-                                        placeholder="Sup. Útil">
+                                       placeholder="Ejemplo: 6245.10 m2">
                                     <div id="_sup_util"></div>
                                 </div>
                             </div>
@@ -415,7 +424,7 @@
                         <form id="formSubirImagenesPlanos" enctype="multipart/form-data">
                             <div class="mb-3">
                                 <label for="nuevasImagenes" class="form-label">Agregar nuevas imágenes</label>
-                                <input type="hidden" id="id_infrastructura" name="infraestructura_id">
+                                <input type="hidden" id="id_infrastructura" name="id_infrastructura">
                                 <input type="file" id="nuevasImagenes" name="nuevasImagenes[]" class="form-control"
                                     accept="image/*" multiple>
 

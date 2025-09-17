@@ -23,4 +23,21 @@ class Carrera extends Model
     {
         return $this->hasMany('App\Models\Administrativo');
     }
+
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::saving(function ($model) {
+            // Campos que quieres en mayúsculas
+            $campos = ['nombre','vinculo_web'];
+
+            foreach ($campos as $campo) {
+                if (!empty($model->$campo)) {
+                    $model->$campo = strtolower($model->$campo);
+                }
+            }
+        });
+    }
 }

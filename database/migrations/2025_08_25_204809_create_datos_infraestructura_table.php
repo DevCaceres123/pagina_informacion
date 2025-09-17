@@ -27,6 +27,7 @@ return new class extends Migration
             $table->string('urb')->nullable();
             $table->string('manzano')->nullable();
             $table->string('lote')->nullable();
+              $table->string('escala')->nullable();
 
             // 📐 Sección 2: Medidas del Inmueble
             $table->decimal('sup_test', 12, 2)->nullable();   // ejemplo: 6245.10 m2

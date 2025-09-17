@@ -12,7 +12,7 @@ return new class () extends Migration {
     {
         Schema::create('img_sedes', function (Blueprint $table) {
             $table->id();
-            $table->string('descripcion', 150)->nullable();
+            //$table->string('descripcion', 150)->nullable();
             $table->string('imagen')->nullable();
 
             $table->unsignedBigInteger('sede_id');

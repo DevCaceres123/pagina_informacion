@@ -347,7 +347,7 @@ $(document).on("click", ".eliminar_infraestructura", function () {
 $(document).on("click", ".actualizarUbicacion", function (e) {
     e.preventDefault();
     $("#datosUbicacionModal").modal("show");
-    const id = $(this).data("id");
+    const id = $(this).data("id");    
     let datos = { infraestructura_id: id };
 
     crud("admin/datosUbicacion", "POST", null, datos, function (error, response) {
@@ -369,6 +369,7 @@ $(document).on("click", ".actualizarUbicacion", function (e) {
         let data = response.mensaje;
         //console.log(data);
         $("#infraestructura_id").val(id);
+        $("#escala").val(data.escala);
         $("#distrito").val(data.distrito);
         $("#ubicacion").val(data.ubicacion);
         $("#urb").val(data.urb);

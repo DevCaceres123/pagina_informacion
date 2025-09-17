@@ -350,6 +350,7 @@ $("#btnActualizarMalla").on("click", function () {
 
             //si todo esta correcto muestra el mensaje de correcto
             $("#modalVerMalla").modal("hide");
+            $('#nuevoPdf').val(""); // Limpiar input
             mensajeAlerta(response.mensaje, response.tipo);
             actualizarTabla();
         }

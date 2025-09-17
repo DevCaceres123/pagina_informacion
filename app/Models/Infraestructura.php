@@ -38,4 +38,20 @@ class Infraestructura extends Model
     
         return $fecha->locale('es')->translatedFormat('d \d\e F \d\e Y H:i');
     }
+
+     protected static function boot()
+    {
+        parent::boot();
+
+        static::saving(function ($model) {
+            // Campos que quieres en mayúsculas
+            $campos = ['propiedad','uso_asignado','observacion_estado','numero_nota'];
+
+            foreach ($campos as $campo) {
+                if (!empty($model->$campo)) {
+                    $model->$campo = strtolower($model->$campo);
+                }
+            }
+        });
+    }
 }

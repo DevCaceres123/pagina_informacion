@@ -29,7 +29,7 @@ $(document).on("click", ".btn-enviar", function () {
         if (result.isConfirmed) {
             // Modificamos tu función crud para enviar FormData
             crud("admin/guardarDocumentos", "POST", null, datos, function (error, response) {
-                console.log(response);
+                //console.log(response);
                 if (response.tipo === "errores") {
                     mensajeAlerta(response.mensaje, "errores");
                     return;

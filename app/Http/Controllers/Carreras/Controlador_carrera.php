@@ -26,7 +26,8 @@ class Controlador_carrera extends Controller
 
     public function listarCarreras(Request $request)
     {
-        $query = Carrera::select('id', 'nombre', 'modalidad', 'estado', 'malla_curricular_pdf', 'vinculo_web');
+        $query = Carrera::select('id', 'nombre', 'modalidad', 'estado', 'malla_curricular_pdf', 'vinculo_web')->orderBy('id', 'desc');
+
 
         if (!empty($request->search['value'])) {
             $query->where(function ($q) use ($request) {
@@ -161,7 +162,7 @@ class Controlador_carrera extends Controller
     {
         $carrera = Carrera::with(['sedes' => function ($query) {
             $query->select(['sedes.id', 'nombre']); // Selecciona solo los campos necesarios
-        }])->select('id', 'nombre', 'modalidad', 'estado', 'malla_curricular_pdf', 'vinculo_web')->first();
+        }])->select('id', 'nombre', 'modalidad', 'estado', 'malla_curricular_pdf', 'vinculo_web')->where('id',$id)->first();
 
         if (!$carrera) {
             $this->mensaje('error', 'Sede no encontrada');

@@ -17,4 +17,21 @@ class UbicacionSedes extends Model
     {
         return $this->hasMany('App\Models\PuntosSalida');
     }
+
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::saving(function ($model) {
+            // Campos que quieres en mayúsculas
+            $campos = ['ubicacion'];
+
+            foreach ($campos as $campo) {
+                if (!empty($model->$campo)) {
+                    $model->$campo = strtolower($model->$campo);
+                }
+            }
+        });
+    }
 }

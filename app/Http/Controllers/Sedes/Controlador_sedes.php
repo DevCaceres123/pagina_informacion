@@ -93,7 +93,7 @@ class Controlador_sedes extends Controller
             if (!empty($rutasGaleria)) {
                 foreach ($rutasGaleria as $ruta) {
                     $imgSede = new ImgSede();
-                    $imgSede->descripcion = $sede->nombre;
+                    // $imgSede->descripcion = $sede->nombre;
                     $imgSede->imagen = $ruta; // ruta relativa
                     $imgSede->sede_id = $id_sede;
                     $imgSede->save();
@@ -190,7 +190,7 @@ class Controlador_sedes extends Controller
             if (!empty($rutasGaleria)) {
                 foreach ($rutasGaleria as $ruta) {
                     $imgSede = new ImgSede();
-                    $imgSede->descripcion = $request->nombre;
+                    // $imgSede->descripcion = $request->nombre;
                     $imgSede->imagen = $ruta; // ruta relativa
                     $imgSede->sede_id = $sede->id; // ID de la sede recién creada
                     $imgSede->save();

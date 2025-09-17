@@ -1,6 +1,6 @@
 @extends('administrador.reporte.baseReporte')
 
-@section('titulo', 'Reporte de Usuarios')
+@section('titulo', 'Reporte de Infraestructura')
 @section('nombreUniversidad', 'Universidad Pública de El Alto')
 @section('titulo_header', 'Reporte de Usuarios')
 
@@ -99,19 +99,19 @@
         </tr>
         <tr>
             <th>Sup. S/Test</th>
-            <td>{{ $ubicacion->sup_test ?? 'N/A' }}</td>
+            <td>{{ $ubicacion->sup_test ?? 'N/A' }} (m<sup>2</sup>)</td>
         </tr>
         <tr>
             <th>Sup. S/Lev.</th>
-            <td>{{ $ubicacion->sup_lev ?? 'N/A' }}</td>
+            <td>{{ $ubicacion->sup_lev ?? 'N/A' }} (m<sup>2</sup>)</td>
         </tr>
         <tr>
             <th>Sup. Adju.</th>
-            <td>{{ $ubicacion->sup_adju ?? 'N/A' }}</td>
+            <td>{{ $ubicacion->sup_adju ?? 'N/A' }} (m<sup>2</sup>)</td>
         </tr>
         <tr>
             <th>Sup. Útil</th>
-            <td>{{ $ubicacion->sup_util ?? 'N/A' }}</td>
+            <td>{{ $ubicacion->sup_util ?? 'N/A' }} (m<sup>2</sup>)</td>
         </tr>        
        
     </table>
