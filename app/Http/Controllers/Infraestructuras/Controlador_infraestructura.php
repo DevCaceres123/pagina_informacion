@@ -39,18 +39,17 @@ class Controlador_infraestructura extends Controller
 
 
         if (!empty($request->search['value'])) {
-            $search = $request->search['value'];
+            
 
-            $query->where(function ($q) use ($search) {
-                // Buscar en relación 'sede'
-                $q->whereHas('sede', function ($sub) use ($search) {
-                    $sub->where('nombre', 'like', "%{$search}%");
-                })
-                // Buscar en estado_inmueble
-                ->orWhere('estado_inmueble', 'like', "%{$search}%")
+            $query->where(function ($q) use ($request) {    
+
+                $q->where('estado_inmueble', 'like', '%' . $request->search['value'] . '%')                                
                 // Buscar en estado_tramite
-                ->orWhere('estado_tramite', 'like', "%{$search}%");
-            });
+                ->orWhere('estado_tramite', 'like', "%{$request->search['value']}%")
+                ->orWhereHas('sede', function ($sedeQuery) use ($request) {
+                    $sedeQuery->where('nombre', 'like', '%' . $request->search['value'] . '%');
+                });
+            });       
         }
 
         // Total de registros antes del filtrado
