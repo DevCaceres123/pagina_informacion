@@ -452,7 +452,7 @@ class Controlador_sedes extends Controller
 
         $puntos = DB::table('puntos_salidas')
             ->selectRaw("puntos_salidas.id, puntos_salidas.ubicacion, ST_AsGeoJSON(punto)::json as geometry")
-            ->join('ubicacion_sedes', 'puntos_salidas.sede_id', '=', 'ubicacion_sedes.id')
+            ->leftJoin('ubicacion_sedes', 'puntos_salidas.sede_id', '=', 'ubicacion_sedes.id')   
             ->where('puntos_salidas.sede_id', $id_sede)
             ->whereNotNull('punto')
             ->whereNull('puntos_salidas.deleted_at') // listamos todos aquellos que no se hayan eliminado
