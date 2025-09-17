@@ -262,6 +262,7 @@ $("#btnActualizarPdf").on("click", function () {
                 return;
             }
 
+            $("#nuevoPdf").val(""); // Limpiar input
             //si todo esta correcto muestra el mensaje de correcto
             $("#modalVerResolucion").modal("hide");
             mensajeAlerta(response.mensaje, response.tipo);

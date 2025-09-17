@@ -47,7 +47,7 @@ class Noticia extends Model
 
         static::saving(function ($model) {
             // Campos que quieres en mayúsculas
-            $campos = ['titulo','url_video'];
+            $campos = ['titulo'];
 
             foreach ($campos as $campo) {
                 if (!empty($model->$campo)) {

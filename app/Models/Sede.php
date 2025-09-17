@@ -42,7 +42,7 @@ class Sede extends Model
 
         static::saving(function ($model) {
             // Campos que quieres en mayúsculas
-            $campos = ['nombre', 'descripcion', 'resolucion','facebook','youtobe'];
+            $campos = ['nombre', 'descripcion', 'resolucion'];
 
             foreach ($campos as $campo) {
                 if (!empty($model->$campo)) {

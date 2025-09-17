@@ -31,7 +31,7 @@ class Carrera extends Model
 
         static::saving(function ($model) {
             // Campos que quieres en mayúsculas
-            $campos = ['nombre','vinculo_web'];
+            $campos = ['nombre'];
 
             foreach ($campos as $campo) {
                 if (!empty($model->$campo)) {

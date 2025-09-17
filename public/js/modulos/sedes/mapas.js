@@ -282,6 +282,9 @@ $("#guardarUbicaciones").on("submit", async function (e) {
                 mensajeAlerta(response.mensaje, response.tipo);
                 return;
             }
+
+            $('#nombre').val('');
+            $('#tipo').val('');
             mensajeAlerta(response.mensaje, response.tipo);
 
             setTimeout(() => {
