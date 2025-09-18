@@ -46,7 +46,7 @@
                                     class="btn btn-outline-success btn-sm">
                                     📄 Ver Nota
                                 </a>
-                                <span class="badge bg-secondary ms-2">N° {{ $infraestructura->numero_nota ?? '-' }}</span>
+                                <span class="badge bg-secondary ms-2 fs-6">N° {{ $infraestructura->numero_nota ?? '-' }}</span>
                             </div>
                         @endif
 

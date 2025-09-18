@@ -32,7 +32,7 @@
 
               <!-- Columna 3: Universidad y redes -->
               <div class="col-md-4 mb-4">
-                  <img src="{{ asset('assets/upea.png') }}" alt="logo upea" style="max-width: 180px;" class="mb-3">
+                  <img src="{{ asset('assets/upea_logo.webp') }}" alt="logo upea" style="max-width: 180px;" class="mb-3">
                   <h5 class="fw-bold text-warning mb-3">Institución</h5>
                   <p class="mb-2">
                       Universidad <a href="https://themewagon.com/" target="_blank"
