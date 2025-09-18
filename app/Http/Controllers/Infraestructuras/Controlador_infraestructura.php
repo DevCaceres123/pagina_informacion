@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\Infraestructura\InfraestructuraRequest;
 use Exception;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Str;
 
 class Controlador_infraestructura extends Controller
 {
@@ -39,17 +40,17 @@ class Controlador_infraestructura extends Controller
 
 
         if (!empty($request->search['value'])) {
-            
 
-            $query->where(function ($q) use ($request) {    
 
-                $q->where('estado_inmueble', 'like', '%' . $request->search['value'] . '%')                                
+            $query->where(function ($q) use ($request) {
+
+                $q->where('estado_inmueble', 'like', '%' . $request->search['value'] . '%')
                 // Buscar en estado_tramite
                 ->orWhere('estado_tramite', 'like', "%{$request->search['value']}%")
                 ->orWhereHas('sede', function ($sedeQuery) use ($request) {
                     $sedeQuery->where('nombre', 'like', '%' . $request->search['value'] . '%');
                 });
-            });       
+            });
         }
 
         // Total de registros antes del filtrado
@@ -290,23 +291,26 @@ class Controlador_infraestructura extends Controller
 
     public function guardarPdf(Request $request, string $nombre_campo, string $prefijo = '')
     {
+
+        // Verifica si llegó un archivo en el request
         if ($request->hasFile($nombre_campo)) {
             $archivo = $request->file($nombre_campo);
 
-            // extensión (normalmente pdf)
+            // Obtiene la extensión original
             $extension = $archivo->getClientOriginalExtension();
 
-            // nombre único (similar al que genera Laravel con store)
-            $nombreUnico = uniqid() . '.' . $extension;
+            // Genera un nombre único usando UUID
+            $nombreUnico = Str::uuid() . '.' . $extension;
 
-            // agregamos el prefijo al inicio
+            // Agrega prefijo si lo hay
             $nombreFinal = $prefijo . $nombreUnico;
 
-            // guardamos con storeAs para controlar el nombre
+            // Guarda el archivo en el disco "private" dentro de documentos_infraestructura
             $ruta = $archivo->storeAs('documentos_infraestructura', $nombreFinal, 'private');
 
-            return $ruta; // ej: documentos_infraestructura/S66bfa2c52d3e1.pdf
+            return $ruta;
         }
+
         return null;
     }
 
@@ -410,17 +414,23 @@ class Controlador_infraestructura extends Controller
         $tipo = $request->tipo;
         DB::beginTransaction();
         try {
+
+            $validatedData = $request->validate([
+               'tipo' => 'required|in:solicitud,nota,contrato',
+            ]);
+
             $infraestructura = Infraestructura::find($request->idInfraestructura);
             if (!$infraestructura) {
                 throw new Exception('infraestructura no encontrado');
             }
 
-            $nombreArchivo = $infraestructura->$tipo;
+            // obtenemos el campo actual para eliminarlo luego
+            $nombreArchivo = $infraestructura->$tipo ?? null;
 
             // Guardar el PDF si se envió
-            $rutaPdf = $this->guardarPdf($request, $request->tipo, strtoupper(substr($request->tipo, 0, 1)));
+            $rutaPdf = $this->guardarPdf($request, $tipo, strtoupper(substr($request->tipo, 0, 1)));
             if ($rutaPdf) {
-                $infraestructura->$tipo = $rutaPdf;
+                $infraestructura->$tipo = $rutaPdf !=null ? $rutaPdf: $nombreArchivo;
                 $archivosGuardados[] = $rutaPdf; // guardar para rollback
             }
 
@@ -431,11 +441,14 @@ class Controlador_infraestructura extends Controller
 
             $infraestructura->save();
 
-            DB::commit();
-            // ELIMINAR EL ARCHIVO ANTERIOR
-            if (Storage::exists($nombreArchivo)) {
-                Storage::delete($nombreArchivo);
+            if ($nombreArchivo != null && $rutaPdf !=null) {
+                // Eliminar el archivo anterior si existe en el disco "private"
+                if (Storage::disk('private')->exists($nombreArchivo)) {
+                    Storage::disk('private')->delete($nombreArchivo);
+                }
             }
+            DB::commit();
+
             $this->mensaje('exito', 'Documentos actualizados correctamente');
             return response()->json($this->mensaje, 200);
 
@@ -443,8 +456,8 @@ class Controlador_infraestructura extends Controller
             DB::rollBack();
             // Eliminar archivos si ocurre error
             foreach ($archivosGuardados as $ruta) {
-                if (Storage::exists($ruta)) {
-                    Storage::delete($ruta);
+                if (Storage::disk('private')->exists($nombreArchivo)) {
+                    Storage::disk('private')->delete($nombreArchivo);
                 }
             }
 
@@ -476,7 +489,7 @@ class Controlador_infraestructura extends Controller
 
     public function guardarDatosUbicacion(InfraestructuraRequest $request)
     {
-        
+
         DB::beginTransaction();
         try {
 
@@ -668,12 +681,12 @@ class Controlador_infraestructura extends Controller
             $planos = PlanosInfraestructura::select('id', 'nombre')
                 ->where('infraestructura_id', $id_infraestructura)
                 ->get();
-            
-            $infraestructura= Infraestructura::select('estado_inmueble','estado_tramite','observacion_estado','created_at','sede_id','propiedad','uso_asignado')->where('id',$id_infraestructura)->first();
 
-            $sede=Sede::select('nombre')->where('id',$infraestructura->sede_id)->first();
+            $infraestructura = Infraestructura::select('estado_inmueble', 'estado_tramite', 'observacion_estado', 'created_at', 'sede_id', 'propiedad', 'uso_asignado')->where('id', $id_infraestructura)->first();
 
-            $ubicacion = DatosInfraestructura::select('distrito','ubicacion','urb','manzano','lote','sup_test','sup_lev','sup_adju','sup_util')->where('infraestructura_id', $id_infraestructura)->first() ?? new \stdClass();
+            $sede = Sede::select('nombre')->where('id', $infraestructura->sede_id)->first();
+
+            $ubicacion = DatosInfraestructura::select('distrito', 'ubicacion', 'urb', 'manzano', 'lote', 'sup_test', 'sup_lev', 'sup_adju', 'sup_util')->where('infraestructura_id', $id_infraestructura)->first() ?? new \stdClass();
 
             // reducir calidad y convertir en base 64 una imagen
             $manager = new ImageManager(new Driver());
@@ -689,20 +702,20 @@ class Controlador_infraestructura extends Controller
                     // Convertir a WebP y calidad 80 (ajustable: 0 = más liviano, 100 = más pesado)
                     $webp = $imagen->encode(new \Intervention\Image\Encoders\WebpEncoder(quality: 70));
 
-                   $plano->base64 = 'data:image/webp;base64,' . base64_encode($webp);
+                    $plano->base64 = 'data:image/webp;base64,' . base64_encode($webp);
                 } else {
                     $plano->base64 = null;
                 }
             }
-                  
 
-            $pdf = \PDF::loadView('administrador.infraestructura.reporteInfraestructura', compact('planos','infraestructura','sede','ubicacion'));
+
+            $pdf = \PDF::loadView('administrador.infraestructura.reporteInfraestructura', compact('planos', 'infraestructura', 'sede', 'ubicacion'));
 
             $pdfContent = $pdf->output();
-            
-            $pdfb64=base64_encode($pdfContent);   
-            $this->mensaje('exito',$pdfb64);
-            return response()->json($this->mensaje, 200);    
+
+            $pdfb64 = base64_encode($pdfContent);
+            $this->mensaje('exito', $pdfb64);
+            return response()->json($this->mensaje, 200);
 
 
         } catch (Exception $e) {

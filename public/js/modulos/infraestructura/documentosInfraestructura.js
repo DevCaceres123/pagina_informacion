@@ -16,6 +16,7 @@ $(document).on("click", ".btn-enviar", function () {
     datos.append("tipo", tipo);       // agregamos tipo
     datos.append("idInfraestructura", id); // agregamos id
 
+    //console.log([...datos]); // Para ver el contenido de FormData en la consola
     Swal.fire({
         title: "NOTA!",
         text: "¿Está seguro de Subir el documento?",
