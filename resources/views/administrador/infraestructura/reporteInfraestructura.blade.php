@@ -68,6 +68,10 @@
 
     <table>
         <tr>
+            <th style="font-size: 23px; text-align: center; letter-spacing: 2px">Escala</th>
+            <td style="font-size: 22px">{{$ubicacion->escala ?? 'N/A'}}</td>
+        </tr>
+        <tr>
             <th>Propiedad de</th>
             <td>{{$infraestructura->propiedad ?? 'N/A'}}</td>
         </tr>

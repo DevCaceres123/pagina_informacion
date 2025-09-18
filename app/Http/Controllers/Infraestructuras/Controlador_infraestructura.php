@@ -686,7 +686,7 @@ class Controlador_infraestructura extends Controller
 
             $sede = Sede::select('nombre')->where('id', $infraestructura->sede_id)->first();
 
-            $ubicacion = DatosInfraestructura::select('distrito', 'ubicacion', 'urb', 'manzano', 'lote', 'sup_test', 'sup_lev', 'sup_adju', 'sup_util')->where('infraestructura_id', $id_infraestructura)->first() ?? new \stdClass();
+            $ubicacion = DatosInfraestructura::select('distrito', 'ubicacion', 'urb', 'manzano', 'lote', 'sup_test', 'sup_lev', 'sup_adju', 'sup_util','escala')->where('infraestructura_id', $id_infraestructura)->first() ?? new \stdClass();
 
             // reducir calidad y convertir en base 64 una imagen
             $manager = new ImageManager(new Driver());
