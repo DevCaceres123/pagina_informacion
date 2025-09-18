@@ -439,15 +439,15 @@ class Controlador_infraestructura extends Controller
                 $infraestructura->numero_nota = $request->numero_nota ?? null;
             }
 
-            $infraestructura->save();
-
-            if ($nombreArchivo != null && $rutaPdf !=null) {
-                // Eliminar el archivo anterior si existe en el disco "private"
-                if (Storage::disk('private')->exists($nombreArchivo)) {
-                    Storage::disk('private')->delete($nombreArchivo);
-                }
-            }
+            $infraestructura->save();            
             DB::commit();
+
+            // if ($nombreArchivo != null && $rutaPdf !=null) {
+            //     // Eliminar el archivo anterior si existe en el disco "private"
+            //     if (Storage::disk('private')->exists($nombreArchivo)) {
+            //         Storage::disk('private')->delete($nombreArchivo);
+            //     }
+            // }
 
             $this->mensaje('exito', 'Documentos actualizados correctamente');
             return response()->json($this->mensaje, 200);
@@ -456,8 +456,8 @@ class Controlador_infraestructura extends Controller
             DB::rollBack();
             // Eliminar archivos si ocurre error
             foreach ($archivosGuardados as $ruta) {
-                if (Storage::disk('private')->exists($nombreArchivo)) {
-                    Storage::disk('private')->delete($nombreArchivo);
+                if (Storage::disk('private')->exists($ruta)) {
+                    Storage::disk('private')->delete($ruta);
                 }
             }
 
@@ -540,7 +540,7 @@ class Controlador_infraestructura extends Controller
         $galeria = $imagenes->map(function ($img) {
             $path = $img->nombre;
             if (!Storage::disk('private')->exists($path)) {
-                return null;
+                
             }
             $mime = Storage::disk('private')->mimeType($path);
             return [
