@@ -86,6 +86,7 @@
                                 <option value="">Seleccione una opción</option>
                                 <option value="semestral">Semestral</option>
                                 <option value="anual">Anual</option>
+                                <option value="mixto">Mixto</option>
                             </select>
                             <div id="_modalidad" class="text-danger small"></div>
                         </div>
@@ -177,6 +178,7 @@
                                 <option value="">Seleccione una opción</option>
                                 <option value="semestral">Semestral</option>
                                 <option value="anual">Anual</option>
+                                <option value="mixto">Mixto</option>
                             </select>
                             <div id="_modalidad_edit" class="text-danger small"></div>
                         </div>

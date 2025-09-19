@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('carreras', function (Blueprint $table) {
             $table->id();
             $table->string('nombre');
-            $table->enum('modalidad', ['semestral', 'anual']);
+            $table->enum('modalidad', ['semestral', 'anual','mixto']);
             $table->enum('estado', ['activo', 'inactivo']);
             $table->string('malla_curricular_pdf')->nullable();
             $table->string('vinculo_web')->nullable();            

@@ -30,7 +30,7 @@ class CarrerasRequest extends BasePrincipalRequest
                 return [
                     'sede_id' => 'required|exists:sedes,id',
                     'nombre' => 'required|max:100|min:5',
-                    'modalidad' => 'required|in:semestral,anual',      
+                    'modalidad' => 'required|in:semestral,anual,mixto',      
                     'malla_curricular' => 'required|mimes:pdf|max:3072',       
                     'vinculo_web' => 'nullable|url|max:255',
                 ];        
