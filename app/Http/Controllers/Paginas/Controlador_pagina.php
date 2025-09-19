@@ -35,7 +35,7 @@ class Controlador_pagina extends Controller
 
     public function noticia($id)
     {
-
+        $id= decrypt($id);
         $noticia = Noticia::with(['sede', 'categoria', 'imagenesNoticia' => function ($query) {
             $query->select(['imagen', 'noticia_id']);
         }])
@@ -70,6 +70,7 @@ class Controlador_pagina extends Controller
     }
     public function sedes($id)
     {
+        $id = decrypt($id);
         $sedeUnica = Sede::with([
             'imagenesSede' => function ($query) {
                 $query->select(['id', 'imagen', 'sede_id']);

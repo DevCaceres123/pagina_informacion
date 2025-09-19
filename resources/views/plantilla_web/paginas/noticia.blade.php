@@ -110,7 +110,7 @@
                             <h5 class="card-title" style="font-family: 'Inter', sans-serif;">{{ $noticia->titulo }}</h5>
                             <p class="text-muted small" style="font-family: 'Inter', sans-serif;">📅
                                 {{ $noticia->created_at_formateado }}</p>
-                            <a href="{{ route('noticia.detalleNoticia', $noticia->id) }}"
+                            <a href="{{ route('noticia.detalleNoticia', encrypt($noticia->id)) }}"
                                 class="btn btn-outline-primary btn-sm w-100 mt-2"
                                 style="font-family: 'Inter', sans-serif;">Ver más</a>
                         </div>

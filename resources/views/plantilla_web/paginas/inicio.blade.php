@@ -31,14 +31,7 @@
                                         de las condiciones de vida.
                                     </p>
                                 </div>
-                                <div class="overflow-hidden">
-                                    <div data-zanim-xs='{"delay":0.2}'>
-                                        <a class="btn me-3 mt-3 text-light" style="background-color: #003366;"
-                                            href="index.html#!">Localización
-                                            <span class="fas fa-chevron-right ms-2"></span>
-                                        </a>
-                                    </div>
-                                </div>
+                            
                             </div>
                         </div>
                     </div>
@@ -66,13 +59,7 @@
                                         institucionales de la Universidad Pública de El Alto.
                                     </p>
                                 </div>
-                                <div class="overflow-hidden">
-                                    <div data-zanim-xs='{"delay":0.2}'>
-                                        <a class="btn btn-primary me-3 mt-3" href="index.html#!">Localización
-                                            <span class="fas fa-chevron-right ms-2"></span>
-                                        </a>
-                                    </div>
-                                </div>
+                               
                             </div>
                         </div>
                     </div>
@@ -101,13 +88,7 @@
                                         deporte) y el Área de Psicología.
                                     </p>
                                 </div>
-                                <div class="overflow-hidden">
-                                    <div data-zanim-xs='{"delay":0.2}'>
-                                        <a class="btn btn-primary me-3 mt-3" href="index.html#!">Localización
-                                            <span class="fas fa-chevron-right ms-2"></span>
-                                        </a>
-                                    </div>
-                                </div>
+                               
                             </div>
                         </div>
                     </div>
@@ -249,7 +230,7 @@
                                 <div class="overflow-hidden">
                                     <div data-zanim-xs='{"delay":0.2}'>
                                         <a class="d-flex align-items-center"
-                                            href="{{ route('noticia.detalleNoticia', $noticia->id) }}" target="_blank">
+                                            href="{{ route('noticia.detalleNoticia', encrypt($noticia->id)) }}" target="_blank">
                                             Ver Detalle
                                             <div class="overflow-hidden ms-2">
                                                 <span class="d-inline-block"

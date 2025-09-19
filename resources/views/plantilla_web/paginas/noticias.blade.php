@@ -43,8 +43,8 @@
                     <p class="text-gray-800 mb-3" style="font-family: 'Inter', sans-serif;">
                         {{ Str::limit($noticiaDestacada->contenido, 200, '...') }}</p>
                     </p>
-                    <a  href="{{ route('noticia.detalleNoticia', $noticiaDestacada->id) }}" class="btn btn-secondary btn-sm shadow rounded"
-                        style="font-family: 'Inter', sans-serif;"><----- Ver más -----></a>
+                    <a  href="{{ route('noticia.detalleNoticia', encrypt($noticiaDestacada->id)) }}" class="btn btn-outline-primary btn-sm w-100 mt-2"
+                        style="font-family: 'Inter', sans-serif;">Ver más</a>
                 </div>
             </div>
         @endif
@@ -68,7 +68,7 @@
                 </div>
             </div>
 
-            <!-- Grid de noticias -->
+            <!-- Listar noticias -->
             <div class="row g-4" id="noticiasGrid">
                 @foreach ($noticias as $noticia)
                     <div class="col-md-4 noticia-item">
@@ -87,7 +87,7 @@
                                 <h5 class="card-title" style="font-family: 'Inter', sans-serif;">{{$noticia->titulo}}
                                     </h5>
                                 <p class="text-muted small" style="font-family: 'Inter', sans-serif;">📅 {{$noticia->created_at_formateado}}</p>
-                                <a  href="{{ route('noticia.detalleNoticia', $noticia->id) }}" class="btn btn-outline-primary btn-sm w-100 mt-2"
+                                <a  href="{{ route('noticia.detalleNoticia', encrypt($noticia->id)) }}" class="btn btn-outline-primary btn-sm w-100 mt-2"
                                     style="font-family: 'Inter', sans-serif;">Ver más</a>
                             </div>
                         </div>
