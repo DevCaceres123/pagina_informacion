@@ -196,7 +196,7 @@
                         @endphp
 
                         <div class="bg-holder rounded-ts-lg rounded-te-lg rounded-lg-te-0"
-                            style="background-image: url({{ $imagenPortada ? asset('storage/imagenes_noticias/' . $imagenPortada->imagen) : asset('assets/noticias/default.jpg') }}); background-size: cover;background-position: center;">
+                            style="background-image: url({{ $imagenPortada ? asset('storage/imagenes_noticias/' . $imagenPortada->imagen) : asset('storage/imagenes_noticias/default.webp') }}); background-size: cover;background-position: center;">
                         </div>
                     </div>
 

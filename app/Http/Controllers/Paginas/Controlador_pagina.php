@@ -11,15 +11,36 @@ use App\Models\CategoriasNoticia;
 
 class Controlador_pagina extends Controller
 {
-    public function noticias()
+    public function noticias(Request $request)
     {
-        $noticias = Noticia::with(['sede', 'categoria', 'imagenesNoticia' => function ($query) {
-            $query->select(['imagen', 'noticia_id']);
+        $query = Noticia::with(['sede', 'categoria', 'imagenesNoticia' => function ($q) {
+            $q->select(['imagen', 'noticia_id']);
         }])
         ->select('id', 'titulo', 'contenido', 'url_video', 'sede_id', 'categoria_id', 'created_at')
-        ->where('estado_noticia', 'activo')        
-        ->get();
+        ->where('estado_noticia', 'activo');
 
+        // Filtro por categoría si existe
+        if ($request->filled('categoria')) {
+            $query->where('categoria_id', decrypt($request->categoria));
+        }
+
+        // Filtro por búsqueda si se usa el input
+        if ($request->filled('search')) {
+            $query->where('titulo', 'like', "%{$request->search}%");
+        }
+
+        // Filtro si se busca por sede
+        if ($request->filled('sede')) {
+            $query->where('sede_id', 'like', decrypt($request->sede));
+        }
+
+        // Filtro por fecha
+        if ($request->filled('fecha')) {
+            $query->whereDate('created_at', $request->fecha);
+        }
+
+        $noticias = $query->orderBy('id', 'desc')->paginate(9)->withQueryString();
+        $sedes = Sede::select('id', 'nombre')->where('estado', 'activo')->get();
         $noticiaDestacada = Noticia::with(['sede', 'categoria', 'imagenesNoticia' => function ($query) {
             $query->select(['imagen', 'noticia_id']);
         }])
@@ -28,14 +49,14 @@ class Controlador_pagina extends Controller
         ->orderBy('id', 'desc')
         ->first();
 
-        $categorias=CategoriasNoticia::where('estado','activo')->get();
+        $categorias = CategoriasNoticia::where('estado', 'activo')->get();
 
-        return view('plantilla_web.paginas.noticias', compact('noticias', 'noticiaDestacada','categorias'));
+        return view('plantilla_web.paginas.noticias', compact('noticias', 'noticiaDestacada', 'categorias', 'sedes'));
     }
 
     public function noticia($id)
     {
-        $id= decrypt($id);
+        $id = decrypt($id);
         $noticia = Noticia::with(['sede', 'categoria', 'imagenesNoticia' => function ($query) {
             $query->select(['imagen', 'noticia_id']);
         }])
@@ -55,7 +76,7 @@ class Controlador_pagina extends Controller
          ->limit(3)
          ->get();
 
-         
+
         return view('plantilla_web.paginas.noticia', compact('noticia', 'ultimasNoticias'));
     }
 

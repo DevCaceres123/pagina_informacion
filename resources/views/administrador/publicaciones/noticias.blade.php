@@ -23,6 +23,7 @@
                                 <tr>
                                     <th>Nº</th>
                                     <th>TITULO</th>
+                                    <th>TIPO</th>
                                     <th>CREACION</th>
                                     <th>NOT.DESTACADO</th>                                    
                                     <th>PUBLICAR</th>                                                                   

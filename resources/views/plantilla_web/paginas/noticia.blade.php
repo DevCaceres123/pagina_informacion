@@ -101,7 +101,7 @@
                         <div class="position-relative">
                             <div class="bg-light d-flex align-items-center justify-content-center fw-bold text-dark fs-2 border"
                                 style="height: 200px; width: 100%;">
-                                <img src="{{ asset('storage/imagenes_noticias/' . $noticia->imagenesNoticia[0]->imagen) }}"
+                                <img src="{{ asset('storage/imagenes_noticias/' . (optional($noticia->imagenesNoticia->first())->imagen ?? 'default.webp')) }}"
                                     alt="{{ $noticia->titulo }}" class="card-img-top"
                                     style="object-fit: cover; height: 100%; width: 100%;">
                             </div>

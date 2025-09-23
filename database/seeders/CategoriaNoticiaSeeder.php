@@ -15,22 +15,22 @@ class CategoriaNoticiaSeeder extends Seeder
     {
         $categorias = [
             [
-                'nombre' => 'Noticias',
+                'nombre' => 'noticias',
                 'descripcion' => 'Noticias generales de la institución',
                 'estado' => 'activo',
             ],
             [
-                'nombre' => 'Eventos',
+                'nombre' => 'eventos',
                 'descripcion' => 'Eventos académicos y sociales',
                 'estado' => 'activo',
             ],
             [
-                'nombre' => 'Comunicados',
+                'nombre' => 'comunicados',
                 'descripcion' => 'Comunicados oficiales de la institución',
                 'estado' => 'activo',
             ],
             [
-                'nombre' => 'Convocatorias',
+                'nombre' => 'convocatorias',
                 'descripcion' => 'Convocatorias y llamados públicos',
                 'estado' => 'activo',
             ],

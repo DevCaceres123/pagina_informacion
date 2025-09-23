@@ -30,8 +30,11 @@ function listar_infraestructuras() {
             {
                 data: null,
                 className: "table-td",
-                render: function (data, type, row, meta) {
-                    return meta.row + 1; // Usar meta.row para obtener el índice de la fila
+                render: function (data, type, row, meta) {                 
+                     let start = $("#tabla_listar_noticias")
+                        .DataTable()
+                        .page.info().start;
+                    return start + meta.row + 1;
                 },
             },
             {
@@ -40,6 +43,15 @@ function listar_infraestructuras() {
                 render: function (data) {
                     return `                            
                         ${data}
+                    `;
+                },
+            },
+            {
+                data: "categoria.nombre",
+                className: "table-td text-capitalize",
+                render: function (data) {
+                    return `                            
+                       <span class="badge rounded-pill bg-danger text-light p-2 fs-6">${data}</span>
                     `;
                 },
             },

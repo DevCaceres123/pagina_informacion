@@ -23,11 +23,14 @@ class DatabaseSeeder extends Seeder
             'email' => 'test@example.com',
         ]); */
 
+         
         $this->call([
             UsuarioSeeder::class,
             SedeSeeder::class,
             CategoriaNoticiaSeeder::class,
         ]);
+
+        \App\Models\Noticia::factory(500)->create();
 
     }
 }

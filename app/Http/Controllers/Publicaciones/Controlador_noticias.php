@@ -47,13 +47,20 @@ class Controlador_noticias extends Controller
 
     public function listarNoticias(Request $request)
     {
-         $query = Noticia::select('id', 'titulo', 'estado_destacado', 'estado_noticia', 'created_at')->orderBy('id', 'desc');
+        $query = Noticia::with([
+            'categoria' => function ($query) {
+                $query->select(['id','nombre']);
+            },
+        ])->select('id', 'titulo', 'estado_destacado', 'estado_noticia', 'created_at','categoria_id')->orderBy('id', 'desc');
+
 
         if (!empty($request->search['value'])) {
+
             $query->where(function ($q) use ($request) {
-                $q->where('nombre', 'like', '%' . $request->search['value'] . '%')
-                  ->orWhere('estado_destacado', 'like', '%' . $request->search['value'] . '%')
-                  ->orWhere('estado_noticia', 'like', '%' . $request->search['value'] . '%');
+                $q->where('titulo', 'like', '%' . $request->search['value'] . '%')                 
+                  ->orWhereHas('categoria', function ($sedeQuery) use ($request) {
+                    $sedeQuery->where('nombre', 'like', '%' . $request->search['value'] . '%');
+                });
             });
         }
 
