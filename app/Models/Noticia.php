@@ -27,6 +27,11 @@ class Noticia extends Model
     {
         return $this->belongsTo('App\Models\CategoriasNoticia', 'categoria_id');
     }
+
+    public function usuario(){
+        return $this->belongsTo('App\Models\User','user_id');
+    }
+
       //funcion para formatear la fecha en español
     public function getCreatedAtFormateadoAttribute()
     {

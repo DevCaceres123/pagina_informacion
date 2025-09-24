@@ -35,5 +35,17 @@ class UsuarioSeeder extends Seeder
         $usuario->save();
 
         $usuario->syncRoles(['administrador']);
+
+        $usuario2 = new User();
+        $usuario2->usuario = 'gloria_123';
+        $usuario2->password = Hash::make('1234');
+        $usuario2->ci = '10028685';
+        $usuario2->nombres = 'GLORIA';
+        $usuario2->apellidos = 'RAMOS BLANCO';
+        $usuario2->estado = 'activo';
+        $usuario2->email = 'gloriaramosblanco9@gmail.com';
+        $usuario2->save();
+
+        $usuario2->syncRoles(['administrador']);
     }
 }

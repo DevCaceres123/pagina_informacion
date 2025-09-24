@@ -31,11 +31,18 @@
 
         <!-- Título, autor y fecha -->
         <div class="mb-4">
-            <h2 class="fw-bold fs-4 mb-2" style="font-family: 'Inter', sans-serif;">{{ $noticia->titulo }}</h2>
-            <p class="text-muted mb-1" style="font-family: 'Inter', sans-serif;">📅 {{ $noticia->created_at_formateado }}|
-                ✍️ Autor: Juan Pérez</p>
-            <p class="text-muted mb-0" style="font-family: 'Inter', sans-serif;">🏷️ Categoría:
-                {{ $noticia->categoria->nombre }}</p>
+            <h2 class="fw-bold fs-4 mb-2 text-uppercase" style="font-family: 'Inter', sans-serif;">{{ $noticia->titulo }}
+            </h2>
+            <p class="small text-muted mb-3 text-capitalize">
+                <i class="far fa-calendar-alt me-1"></i> {{ $noticia->created_at_formateado }}
+                |
+                <i class="fas fa-user me-1"></i>
+                {{ $noticia->usuario
+                    ? strtoupper(substr($noticia->usuario->nombres, 0, 1)) . '. ' . strtok($noticia->usuario->apellidos, ' ')
+                    : 'Desconocido' }}
+                |
+                <i class="fas fa-tag me-1"></i> {{ $noticia->categoria->nombre }}
+            </p>
         </div>
 
 
@@ -107,9 +114,18 @@
                             </div>
                         </div>
                         <div class="card-body">
-                            <h5 class="card-title" style="font-family: 'Inter', sans-serif;">{{ $noticia->titulo }}</h5>
-                            <p class="text-muted small" style="font-family: 'Inter', sans-serif;">📅
-                                {{ $noticia->created_at_formateado }}</p>
+                            <h6 class="card-title text-uppercase" style="font-family: 'Inter', sans-serif;">
+                                {{ $noticia->titulo }}</h6>
+                            <p class="small text-muted mb-3 text-capitalize">
+                                <i class="far fa-calendar-alt me-1"></i> {{ $noticia->created_at_formateado }}
+                                |
+                                <i class="fas fa-user me-1"></i>
+                                {{ $noticia->usuario
+                                    ? strtoupper(substr($noticia->usuario->nombres, 0, 1)) . '. ' . strtok($noticia->usuario->apellidos, ' ')
+                                    : 'Desconocido' }}
+                                |
+                                <i class="fas fa-tag me-1"></i> {{ $noticia->categoria->nombre }}
+                            </p>
                             <a href="{{ route('noticia.detalleNoticia', encrypt($noticia->id)) }}"
                                 class="btn btn-outline-primary btn-sm w-100 mt-2"
                                 style="font-family: 'Inter', sans-serif;">Ver más</a>

@@ -13,11 +13,22 @@ class Controlador_pagina extends Controller
 {
     public function noticias(Request $request)
     {
-        $query = Noticia::with(['sede', 'categoria', 'imagenesNoticia' => function ($q) {
+        $query = Noticia::with([
+        'sede' => function ($q) {
+            $q->select('id', 'nombre'); // solo traigo id y nombre de la sede
+        },
+        'categoria' => function ($q) {
+            $q->select('id', 'nombre'); // solo id y nombre de la categoría
+        },
+         'usuario' => function ($q) {
+            $q->select('id', 'nombres','apellidos'); // solo traigo id y nombre de la sede
+        },
+        'imagenesNoticia' => function ($q) {
             $q->select(['imagen', 'noticia_id']);
-        }])
-        ->select('id', 'titulo', 'contenido', 'url_video', 'sede_id', 'categoria_id', 'created_at')
-        ->where('estado_noticia', 'activo');
+        }
+       
+        ])->select('id', 'titulo', 'contenido', 'url_video', 'sede_id', 'categoria_id','user_id' ,'created_at')
+          ->where('estado_noticia', 'activo');
 
         // Filtro por categoría si existe
         if ($request->filled('categoria')) {
@@ -41,10 +52,10 @@ class Controlador_pagina extends Controller
 
         $noticias = $query->orderBy('id', 'desc')->paginate(9)->withQueryString();
         $sedes = Sede::select('id', 'nombre')->where('estado', 'activo')->get();
-        $noticiaDestacada = Noticia::with(['sede', 'categoria', 'imagenesNoticia' => function ($query) {
+        $noticiaDestacada = Noticia::with(['sede', 'categoria','usuario', 'imagenesNoticia' => function ($query) {
             $query->select(['imagen', 'noticia_id']);
         }])
-        ->select('id', 'titulo', 'contenido', 'url_video', 'sede_id', 'categoria_id', 'created_at')
+        ->select('id', 'titulo', 'contenido', 'url_video', 'sede_id', 'categoria_id','user_id' ,'created_at')
         ->where('estado_destacado', 'activo')
         ->orderBy('id', 'desc')
         ->first();
@@ -57,10 +68,10 @@ class Controlador_pagina extends Controller
     public function noticia($id)
     {
         $id = decrypt($id);
-        $noticia = Noticia::with(['sede', 'categoria', 'imagenesNoticia' => function ($query) {
+        $noticia = Noticia::with(['sede', 'categoria','usuario', 'imagenesNoticia' => function ($query) {
             $query->select(['imagen', 'noticia_id']);
         }])
-        ->select('id', 'titulo', 'contenido', 'url_video', 'sede_id', 'categoria_id', 'created_at')
+        ->select('id', 'titulo', 'contenido', 'url_video', 'sede_id', 'categoria_id', 'created_at','user_id')
         ->where('estado_noticia', 'activo')
         ->where('id', $id)
         ->first();
@@ -72,6 +83,7 @@ class Controlador_pagina extends Controller
         }])
          ->select('id', 'titulo', 'contenido', 'url_video', 'sede_id', 'categoria_id', 'created_at')
          ->where('estado_noticia', 'activo')
+         ->where('categoria_id',$noticia->categoria_id)
          ->orderBy('id', 'desc')
          ->limit(3)
          ->get();

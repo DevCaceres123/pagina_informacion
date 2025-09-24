@@ -19,14 +19,25 @@ use App\Models\ImgNoticia;
 
 Route::get('/', function () {
 
-     $noticias = Noticia::with(['sede', 'categoria', 'imagenesNoticia' => function ($query) {
-        $query->select(['imagen', 'noticia_id']);
-    }])
-    ->select('id', 'titulo', 'contenido', 'url_video', 'sede_id', 'categoria_id', 'created_at')
-    ->where('estado_noticia', 'activo')
-    ->orderBy('id', 'desc')
-    ->limit(3)
-    ->get();
+    $noticias = Noticia::with([
+         'sede' => function ($q) {
+             $q->select('id', 'nombre'); // solo traigo id y nombre de la sede
+         },
+         'categoria' => function ($q) {
+             $q->select('id', 'nombre'); // solo id y nombre de la categoría
+         },
+          'usuario' => function ($q) {
+              $q->select('id', 'nombres', 'apellidos'); // solo traigo id y nombre de la sede
+          },
+         'imagenesNoticia' => function ($q) {
+             $q->select(['imagen', 'noticia_id']);
+         }
+
+         ])->select('id', 'titulo', 'contenido', 'url_video', 'sede_id', 'categoria_id', 'user_id', 'created_at')
+           ->where('estado_noticia', 'activo')
+           ->orderBy('id', 'desc')
+           ->limit(3)
+           ->get();
 
     return view('plantilla_web/paginas/inicio', compact('noticias'));
 })->name('login');
@@ -81,7 +92,7 @@ Route::prefix('/admin')->middleware([Autenticados::class])->group(function () {
         Route::get('ubicacionSede/{id_sede}', 'ubicacionSede')->name('sede.ubicacionSede');
         Route::post('guardarUbicaciones', 'guardarUbicaciones')->name('sede.guardarUbicaciones');
         Route::put('eliminarUbicacion/{id_ubicacion}', 'eliminarUbicacion')->name('sede.eliminarUbicacion');
-        Route::put('actualizarUbicacion/{id_ubicacion}', 'actualizarUbicacion')->name('sede.eliminarUbicacion');     
+        Route::put('actualizarUbicacion/{id_ubicacion}', 'actualizarUbicacion')->name('sede.eliminarUbicacion');
     });
 
 
@@ -97,7 +108,7 @@ Route::prefix('/admin')->middleware([Autenticados::class])->group(function () {
 
     });
 
-     // CONTROLADOR PARA LAS INFRAESTRUCTURAS
+    // CONTROLADOR PARA LAS INFRAESTRUCTURAS
     Route::controller(Controlador_infraestructura::class)->group(function () {
         Route::resource('infraestructura', Controlador_infraestructura::class);
         Route::get('listarInfraestructuras', 'listarInfraestructuras')->name('infraestructura.listarInfraestructuras');

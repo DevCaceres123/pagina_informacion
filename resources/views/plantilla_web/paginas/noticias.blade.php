@@ -42,17 +42,34 @@
             <!-- 🔥 Noticia destacada -->
             <div class="row mb-5 mt-6 align-items-center bg-light rounded p-4 shadow-sm">
                 <div class="col-md-6 position-relative">
-                    <img src="{{ asset('storage/imagenes_noticias/' . (optional($noticiaDestacada->imagenesNoticia->first())->imagen ?? 'default.webp')) }}"
-                        alt="Noticia destacada" class="img-fluid rounded shadow-lg">
+                    @php
+
+                        // Buscamos la imagen que tenga 'portada_' en el nombre
+                        $imagenPortada = $noticiaDestacada->imagenesNoticia->first(function ($img) {
+                            return str_contains($img->imagen, 'portada_');
+                        });
+
+                    @endphp
+                    <img src="{{ asset('storage/imagenes_noticias/' . ($imagenPortada->imagen ?? 'default.webp')) }}"
+                        alt="Noticia destacada" class="img-fluid shadow-lg">
+                    <span class="position-absolute top-0 end-0 p-2 badge mt-2 me-4 text-capitalize bg-gradient"
+                        style="background-color: #003366;border-radius: 5px;">{{ $noticiaDestacada->sede->nombre }}</span>
 
                 </div>
                 <div class="col-md-6 d-flex flex-column justify-content-center p-3">
-                    <h2 class="fw-bold text-3xl mb-2 text-dark" style="font-family: 'Inter', sans-serif;">
+                    <h2 class="fw-bold mb-2 text-dark text-uppercase fs-3" style="font-family: 'Inter', sans-serif;">
                         {{ $noticiaDestacada->titulo }}
-                        Destacada</h2>
-                    <p class="text-muted mb-2" style="font-family: 'Inter', sans-serif;">📅
-                        {{ $noticiaDestacada->created_at_formateado }} | ✍️ Autor: Juan
-                        Pérez
+                    </h2>
+                    <p class="small text-muted mb-3 text-capitalize">
+                        <i class="far fa-calendar-alt me-1"></i> {{ $noticiaDestacada->created_at_formateado }} |
+                        <i class="fas fa-user me-1"></i>
+                        {{ $noticiaDestacada->usuario
+                            ? strtoupper(substr($noticiaDestacada->usuario->nombres, 0, 1)) .
+                                '. ' .
+                                strtok($noticiaDestacada->usuario->apellidos, ' ')
+                            : 'Desconocido' }}
+                        |
+                        <i class="fas fa-tag me-1"></i> {{ $noticiaDestacada->categoria->nombre }}
                     </p>
                     <p class="text-gray-800 mb-3" style="font-family: 'Inter', sans-serif;">
                         {{ Str::limit($noticiaDestacada->contenido, 200, '...') }}</p>
@@ -128,23 +145,41 @@
                     <div class="col-md-4 noticia-item">
                         <div class="card h-100 shadow-sm border-0 news-card overflow-hidden">
                             <div class="position-relative">
-                                <div class="bg-light d-flex align-items-center justify-content-center fw-bold text-dark fs-2 border"
+                                <div class="bg-light d-flex align-items-center justify-content-center fw-bold text-dark fs-2 border position-relative"
                                     style="height: 200px; width: 100%;">
+                                    @php
+                                        // Buscamos la imagen que tenga 'portada_' en el nombre
+                                        $imagenPortada = $noticia->imagenesNoticia->first(function ($img) {
+                                            return str_contains($img->imagen, 'portada_');
+                                        });
+                                    @endphp
 
-                                    <img src="{{ asset('storage/imagenes_noticias/' . (optional($noticia->imagenesNoticia->first())->imagen ?? 'default.webp')) }}"
+                                    <img src="{{ asset('storage/imagenes_noticias/' . ($imagenPortada->imagen ?? 'default.webp')) }}"
                                         alt="{{ $noticia->titulo }}" class="card-img-top transition-img"
                                         style="object-fit: cover; height: 100%; width: 100%;">
-
-
+                                    <span
+                                        class="position-absolute top-0 end-0 p-2 badge mt-2 me-1 text-capitalize bg-gradient"
+                                        style="background-color: #003366;border-radius: 5px;">{{ $noticia->sede->nombre }}</span>
                                 </div>
                                 <span class="badge bg-danger position-absolute top-2 start-2 p-2"
                                     style="font-family: 'Inter', sans-serif;"></span>
                             </div>
                             <div class="card-body">
-                                <h5 class="card-title" style="font-family: 'Inter', sans-serif;">{{ $noticia->titulo }}
-                                </h5>
-                                <p class="text-muted small" style="font-family: 'Inter', sans-serif;">📅
-                                    {{ $noticia->created_at_formateado }}</p>
+                                <h6 class="card-title text-uppercase" style="font-family: 'Inter', sans-serif;">
+                                    {{ $noticia->titulo }}
+                                </h6>
+                                <p class="small text-muted mb-3 text-capitalize">
+                                    <i class="far fa-calendar-alt me-1"></i> {{ $noticia->created_at_formateado }}
+                                    |
+                                    <i class="fas fa-user me-1"></i>
+                                    {{ $noticia->usuario
+                                        ? strtoupper(substr($noticia->usuario->nombres, 0, 1)) .
+                                            '. ' .
+                                            strtok($noticia->usuario->apellidos, ' ')
+                                        : 'Desconocido' }}
+                                    
+                                    <i class="fas fa-tag me-1"></i> {{ $noticia->categoria->nombre }}
+                                </p>
                                 <a href="{{ route('noticia.detalleNoticia', encrypt($noticia->id)) }}"
                                     class="btn btn-outline-primary btn-sm w-100 mt-2"
                                     style="font-family: 'Inter', sans-serif;">Ver más</a>

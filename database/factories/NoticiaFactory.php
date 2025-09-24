@@ -28,7 +28,7 @@ class NoticiaFactory extends Factory
             'estado_destacado' => 'inactivo',
             // 'estado_noticia' => $this->faker->randomElement(['activo', 'inactivo']), 
             'estado_noticia' => 'activo', 
-            'user_id' => 1, //
+            'user_id' => 2, //
             'sede_id' => $this->faker->randomElement(\App\Models\Sede::pluck('id')->toArray()), //seleccionar un id Generado
             'created_at' => $this->faker->dateTimeBetween('2025-01-01', 'now'),
             'categoria_id' => $this->faker->numberBetween(1, 4), // ej. categorías de 1 a 5

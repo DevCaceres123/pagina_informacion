@@ -31,7 +31,7 @@
                                         de las condiciones de vida.
                                     </p>
                                 </div>
-                            
+
                             </div>
                         </div>
                     </div>
@@ -59,7 +59,7 @@
                                         institucionales de la Universidad Pública de El Alto.
                                     </p>
                                 </div>
-                               
+
                             </div>
                         </div>
                     </div>
@@ -88,7 +88,7 @@
                                         deporte) y el Área de Psicología.
                                     </p>
                                 </div>
-                               
+
                             </div>
                         </div>
                     </div>
@@ -183,7 +183,7 @@
                     data-zanim-trigger="scroll" />
             </div>
 
-                @foreach ($noticias as $index => $noticia)
+            @foreach ($noticias as $index => $noticia)
                 <div class="row g-0 position-relative mb-4 mb-lg-0">
                     {{-- Imagen de portada --}}
                     <div class="col-lg-6 py-3 py-lg-0 mb-0 position-relative {{ $index % 2 == 0 ? '' : 'order-lg-2' }}"
@@ -195,8 +195,10 @@
                             });
                         @endphp
 
-                        <div class="bg-holder rounded-ts-lg rounded-te-lg rounded-lg-te-0"
+                        <div class="bg-holder rounded-ts-lg rounded-te-lg rounded-lg-te-0 position-relative"
                             style="background-image: url({{ $imagenPortada ? asset('storage/imagenes_noticias/' . $imagenPortada->imagen) : asset('storage/imagenes_noticias/default.webp') }}); background-size: cover;background-position: center;">
+                            <span class="position-absolute top-0 end-0 p-2 badge mt-2 me-2 text-capitalize bg-gradient"
+                                style="background-color: #003366;border-radius: 5px;">{{ $noticia->sede->nombre }}</span>
                         </div>
                     </div>
 
@@ -213,11 +215,16 @@
 
                                 {{-- Metadatos --}}
                                 <div class="overflow-hidden mb-2">
-                                    <small class="text-muted">
-                                        Publicado: {{ $noticia->created_at_formateado }} |
-                                        Autor: {{ $noticia->autor->nombre ?? 'Desconocido' }} |
-                                        Tipo: {{ $noticia->categoria->nombre }}
-                                    </small>
+                                    {{-- Metadatos --}}
+                                    <p class="small text-muted mb-3 text-capitalize">
+                                        <i class="far fa-calendar-alt me-1"></i> {{ $noticia->created_at_formateado }} |
+                                        <i class="fas fa-user me-1"></i>
+                                        {{ $noticia->usuario
+                                            ? strtoupper(substr($noticia->usuario->nombres, 0, 1)) . '. ' . strtok($noticia->usuario->apellidos, ' ')
+                                            : 'Desconocido' }}
+                                        |
+                                        <i class="fas fa-tag me-1"></i> {{ $noticia->categoria->nombre }}
+                                    </p>
                                 </div>
 
                                 {{-- Contenido --}}
@@ -230,7 +237,8 @@
                                 <div class="overflow-hidden">
                                     <div data-zanim-xs='{"delay":0.2}'>
                                         <a class="d-flex align-items-center"
-                                            href="{{ route('noticia.detalleNoticia', encrypt($noticia->id)) }}" target="_blank">
+                                            href="{{ route('noticia.detalleNoticia', encrypt($noticia->id)) }}"
+                                            target="_blank">
                                             Ver Detalle
                                             <div class="overflow-hidden ms-2">
                                                 <span class="d-inline-block"
@@ -244,118 +252,6 @@
                     </div>
                 </div>
             @endforeach
-            {{-- <div class="row g-0 position-relative mb-4 mb-lg-0">
-                <div class="col-lg-6 py-3 py-lg-0 mb-0 position-relative" style="min-height:400px;">
-                    <div class="bg-holder rounded-ts-lg rounded-te-lg rounded-lg-te-0  "
-                        style="background-image:url(assets/noticias/feria_cientifica.jpg);"></div>
-                    <!--/.bg-holder-->
-                </div>
-                <div
-                    class="col-lg-6 px-lg-5 py-lg-6 p-4 my-lg-0 bg-white rounded-bs-lg rounded-lg-bs-0 rounded-be-lg rounded-lg-be-0 rounded-lg-te-lg ">
-                    <div class="elixir-caret d-none d-lg-block"></div>
-                    <div class="d-flex align-items-center h-100">
-                        <div data-zanim-timeline="{}" data-zanim-trigger="scroll">
-                            <div class="overflow-hidden">
-                                <h5 data-zanim-xs='{"delay":0}'>IV VERSIÓN DE LA EXPO FERIA CIENTÍFICA DE SEDES
-                                    ACADÉMICAS DESCONCENTRADAS "EXPOSAD 2024"</h5>
-                            </div>
-                            <div class="overflow-hidden">
-                                <p class="mt-3" data-zanim-xs='{"delay":0.1}'>La Universidad Pública de El Alto
-                                    y la Dirección de Interacción Social Bienestar Estudiantil Deportes y Cultura,
-                                    fueron parte del desarrollo de la IV VERSIÓN DE LA EXPO FERIA CIENTÍFICA DE
-                                    SEDES ACADÉMICAS DESCONCENTRADAS "EXPOSAD 2024", donde los estudiantes
-                                    expusieron sus proyectos de investigación con mucho dinamismo y entusiasmo.</p>
-                            </div>
-                            <div class="overflow-hidden">
-                                <div data-zanim-xs='{"delay":0.2}'>
-                                    <a class="d-flex align-items-center" href="{{ route('noticia.show', 1) }}"
-                                        target="_blank">
-                                        Ver Detalle
-                                        <div class="overflow-hidden ms-2">
-                                            <span class="d-inline-block"
-                                                data-zanim-xs='{"from":{"opacity":0,"x":-30},"to":{"opacity":1,"x":0},"delay":0.8}'>&xrarr;</span>
-                                        </div>
-                                    </a>
-                                </div>
-                                <!--                  <div data-zanim-xs='{"delay":0.2}'><a class="d-flex align-items-center" href="index.html#!">Ver Detalle<div class="overflow-hidden ms-2"><span class="d-inline-block" data-zanim-xs='{"from":{"opacity":0,"x":-30},"to":{"opacity":1,"x":0},"delay":0.8}'>&xrarr;</span></div></a></div>     -->
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row g-0 position-relative mb-4 mb-lg-0">
-                <div class="col-lg-6 py-3 py-lg-0 mb-0 position-relative order-lg-2" style="min-height:400px;">
-                    <div class="bg-holder rounded-ts-lg rounded-te-lg rounded-lg-te-0  rounded-lg-ts-0"
-                        style="background-image:url(assets/noticias/arte_upea.jpg);"></div>
-                    <!--/.bg-holder-->
-                </div>
-                <div
-                    class="col-lg-6 px-lg-5 py-lg-6 p-4 my-lg-0 bg-white rounded-bs-lg rounded-lg-bs-0 rounded-be-lg  rounded-lg-be-0">
-                    <div class="elixir-caret d-none d-lg-block"></div>
-                    <div class="d-flex align-items-center h-100">
-                        <div data-zanim-timeline="{}" data-zanim-trigger="scroll">
-                            <div class="overflow-hidden">
-                                <h5 data-zanim-xs='{"delay":0}'>Gira de Arte "CAMINOS DE UNIÓN</h5>
-                            </div>
-                            <div class="overflow-hidden">
-                                <p class="mt-3" data-zanim-xs='{"delay":0.1}'>De esta manera fue como se
-                                    desarrollo la Gira de Arte denominada "CAMINOS DE UNIÓN", en esta ocasión desde
-                                    el Municipio de Achacachi donde estuvieron presentes LanzArte Bolivia y el
-                                    Ballet Folklórico UPEA. </p>
-                            </div>
-                            <div class="overflow-hidden">
-                                <div data-zanim-xs='{"delay":0.2}'>
-                                    <a class="d-flex align-items-center"
-                                        href={{ route('noticia.show', 1) }} target="_blank">
-                                        Ver Detalle
-                                        <div class="overflow-hidden ms-2">
-                                            <span class="d-inline-block"
-                                                data-zanim-xs='{"from":{"opacity":0,"x":-30},"to":{"opacity":1,"x":0},"delay":0.8}'>&xrarr;</span>
-                                        </div>
-                                    </a>
-                                </div>
-                                <!--                 <div data-zanim-xs='{"delay":0.2}'><a class="d-flex align-items-center" href="index.html#!">Learn More<div class="overflow-hidden ms-2"><span class="d-inline-block" data-zanim-xs='{"from":{"opacity":0,"x":-30},"to":{"opacity":1,"x":0},"delay":0.8}'>&xrarr;</span></div></a></div> -->
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row g-0 position-relative mb-4 mb-lg-0">
-                <div class="col-lg-6 py-3 py-lg-0 mb-0 position-relative" style="min-height:400px;">
-                    <div class="bg-holder rounded-ts-lg rounded-te-lg rounded-lg-te-0 rounded-lg-ts-0 rounded-bs-0 rounded-lg-bs-lg "
-                        style="background-image:url(assets/noticias/campeonato.jpg);"></div>
-                    <!--/.bg-holder-->
-                </div>
-                <div class="col-lg-6 px-lg-5 py-lg-6 p-4 my-lg-0 bg-white rounded-bs-lg rounded-lg-bs-0 rounded-be-lg  ">
-                    <div class="elixir-caret d-none d-lg-block"></div>
-                    <div class="d-flex align-items-center h-100">
-                        <div data-zanim-timeline="{}" data-zanim-trigger="scroll">
-                            <div class="overflow-hidden">
-                                <h5 data-zanim-xs='{"delay":0}'>Encuentro deportivo INTER-SEDES 'VIACHA 2024'.</h5>
-                            </div>
-                            <div class="overflow-hidden">
-                                <p class="mt-3" data-zanim-xs='{"delay":0.1}'>TFotografía de la apertura e
-                                    inicio del día 5 de Septiembre del Encuentro deportivo INTER-SEDES 'VIACHA
-                                    2024'.</p>
-                            </div>
-                            <div class="overflow-hidden">
-                                <div data-zanim-xs='{"delay":0.2}'>
-                                    <a class="d-flex align-items-center"
-                                        href={{ route('noticia.show', 1) }} target="_blank">
-                                        Ver Detalle
-                                        <div class="overflow-hidden ms-2">
-                                            <span class="d-inline-block"
-                                                data-zanim-xs='{"from":{"opacity":0,"x":-30},"to":{"opacity":1,"x":0},"delay":0.8}'>&xrarr;</span>
-                                        </div>
-                                    </a>
-                                </div>
-                                <!--                  <div data-zanim-xs='{"delay":0.2}'><a class="d-flex align-items-center" href="index.html#!">Learn More<div class="overflow-hidden ms-2"><span class="d-inline-block" data-zanim-xs='{"from":{"opacity":0,"x":-30},"to":{"opacity":1,"x":0},"delay":0.8}'>&xrarr;</span></div></a></div>        -->
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div> --}}
-
             <div class="text-center mt-4">
                 <a href="/noticias" target="_blank"
                     class="btn btn-outline-danger px-4 py-2 rounded-pill fw-semibold position-relative overflow-hidden">
@@ -395,15 +291,16 @@
                             alt="Vicerrector">
                         <span class=" fw-bold text-light p-2 rounded mt-1" style='background-color: #880000;'>DR. EFRAIN
                             CHAMBI VARGAS
-                            </span>
+                        </span>
                         <p class="text-light mb-0 mt-1">VICERRECTOR UNIVERSIDAD PÚBLICA DE EL ALTO</p>
                     </div>
 
                     <!-- AUTORIDAD 3 -->
                     <div class="col-12 col-md-3 d-flex flex-column align-items-center text-center">
-                        <img class="rounded-3 img-fluid mb-2" src="{{ asset('assets/autoridades/directora_disbet.jpg') }}"
-                            alt="Directora">
-                        <span class=" fw-bold text-light p-2 rounded mt-1" style='background-color: #880000;'>LIC. HERMINIA SILLO
+                        <img class="rounded-3 img-fluid mb-2"
+                            src="{{ asset('assets/autoridades/directora_disbet.jpg') }}" alt="Directora">
+                        <span class=" fw-bold text-light p-2 rounded mt-1" style='background-color: #880000;'>LIC.
+                            HERMINIA SILLO
                             CORINA</span>
                         <p class="text-light mb-0 mt-1">DIRECTORA DISBEDC UNIVERSIDAD PÚBLICA DE EL ALTO</p>
 
@@ -413,9 +310,10 @@
 
                     <!-- AUTORIDAD 4 -->
                     <div class="col-12 col-md-3 d-flex flex-column align-items-center text-center">
-                        <img class="rounded-3 img-fluid mb-2" src="{{ asset('assets/autoridades/cordinador_sedes.jpg') }}"
-                            alt="Directora">
-                        <span class=" fw-bold text-light p-2 rounded mt-1" style='background-color: #880000;'> LIC. PRIMITIVO HUAYHUA CAYO
+                        <img class="rounded-3 img-fluid mb-2"
+                            src="{{ asset('assets/autoridades/cordinador_sedes.jpg') }}" alt="Directora">
+                        <span class=" fw-bold text-light p-2 rounded mt-1" style='background-color: #880000;'> LIC.
+                            PRIMITIVO HUAYHUA CAYO
                             CORINA</span>
                         <p class="text-light mb-0 mt-1">CORDINADOR DE SEDES UNIVERSIDAD PÚBLICA DE EL ALTO</p>
 
