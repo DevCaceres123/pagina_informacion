@@ -1,6 +1,9 @@
 @extends('index')
 @section('titulo', 'PERFIL')
 @section('contenido')
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css" />
+
     <section class="py-0">
         <div class="swiper theme-slider min-vh-100"
             data-swiper='{"loop":true,"allowTouchMove":false,"autoplay":{"delay":5000},"effect":"fade","speed":800}'>
@@ -347,17 +350,11 @@
         <div class="container">
             <div class="row flex-center text-center pb-6">
                 <div class="col-12">
-
-                    <iframe
-                        src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d15299.515842022018!2d-68.2027616!3d-16.532207200000002!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1ses-419!2sbo!4v1749878906763!5m2!1ses-419!2sbo"
-                        width="1220" height="450" style="border:0;" allowfullscreen="" loading="lazy"
-                        referrerpolicy="no-referrer-when-downgrade"></iframe>
+                    <div id="map" style="width: 100%; height: 500px; border-radius: 10px;"></div>
                 </div>
             </div>
-
         </div>
     </section>
-
     <!-- FINAL DE SEDES ACADEMICAS DESCONCENTRADAS -->
 
 
@@ -439,5 +436,60 @@
 
             </div>
     </section>
+
+@endsection
+@section('script')
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const poligonos = @json($poligonos);
+
+            const map = L.map('map').setView([-16.5322, -68.2027], 13);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '&copy; OpenStreetMap contributors'
+            }).addTo(map);
+
+           const colors = ["#880000", "#007bff", "#28a745", "#ffc107"];
+poligonos.forEach((pol, index) => {
+    const color = colors[index % colors.length]; // alterna colores
+    const layer = L.geoJSON(pol.geometry, {
+        style: {
+            color: color,
+            weight: 2,
+            fillColor: color,
+            fillOpacity: 0.4
+        }
+    }).addTo(map);
+
+    // Tooltip permanente
+    layer.bindTooltip(pol.ubicacion, { permanent: true, direction: "top" });
+
+    // Popup con link a Google Maps
+    const center = layer.getBounds().getCenter();
+    layer.bindPopup(`
+        <b>${pol.ubicacion}</b><br>
+        <a class="btn btn-sm btn-success mt-2" 
+           href="https://www.google.com/maps/dir/?api=1&destination=${center.lat},${center.lng}" 
+           target="_blank">
+           🚗 Cómo llegar
+        </a>
+    `);
+});
+
+
+            // 👉 Mensaje inicial para guiar al usuario
+            L.control
+                .attribution({
+                    prefix: ""
+                })
+                .addAttribution("🖱️ Haz click en la ubicacion para ver cómo llegar")
+                .addTo(map);
+        });
+    </script>
 
 @endsection

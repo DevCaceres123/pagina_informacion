@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Route;
 use Intervention\Image\Facades\Image;
 use App\Models\Noticia;
 use App\Models\ImgNoticia;
+use Illuminate\Support\Facades\DB;
 
 Route::get('/', function () {
 
@@ -39,7 +40,16 @@ Route::get('/', function () {
            ->limit(3)
            ->get();
 
-    return view('plantilla_web/paginas/inicio', compact('noticias'));
+        $poligonos = DB::table('ubicacion_sedes')
+            ->selectRaw("id, ubicacion, ST_AsGeoJSON(poligono)::json as geometry")            
+            ->whereNotNull('poligono')
+            ->whereNull('deleted_at')  // listamos todos aquellos que no se hayan eliminado
+            ->get()
+            ->map(function ($p) {
+                $p->geometry = json_decode($p->geometry);
+                return $p;
+        });
+    return view('plantilla_web/paginas/inicio', compact('noticias','poligonos'));
 })->name('login');
 
 
