@@ -8,6 +8,7 @@ use App\Models\Sede;
 use App\Models\Noticia;
 use App\Models\ImgNoticia;
 use App\Models\CategoriasNoticia;
+use Illuminate\Support\Facades\DB;
 
 class Controlador_pagina extends Controller
 {
@@ -116,7 +117,32 @@ class Controlador_pagina extends Controller
         ->orderBy('id', 'desc')
         ->get(); // No olvides terminar con get() si vas a ejecutar la consulta
 
-        return view('plantilla_web.paginas.sedes', compact('sedeUnica', 'sedes'));
+
+       $poligonos = DB::table('ubicacion_sedes')
+            ->selectRaw("id, ubicacion, ST_AsGeoJSON(poligono)::json as geometry")            
+            ->whereNotNull('poligono')
+            ->whereNull('deleted_at')  // listamos todos aquellos que no se hayan eliminado
+            ->where('sede_id',$id)
+            ->get()
+            ->map(function ($p) {
+                $p->geometry = json_decode($p->geometry);
+                return $p;
+        });
+
+         $puntos = DB::table('puntos_salidas')
+            ->selectRaw("puntos_salidas.id, puntos_salidas.ubicacion, ST_AsGeoJSON(punto)::json as geometry")
+            ->leftJoin('ubicacion_sedes', 'puntos_salidas.sede_id', '=', 'ubicacion_sedes.id')   
+            ->where('puntos_salidas.sede_id', $id)
+            ->whereNotNull('punto')
+            ->whereNull('puntos_salidas.deleted_at') // listamos todos aquellos que no se hayan eliminado            
+            ->get()
+            ->map(function ($p) {
+                $p->geometry = json_decode($p->geometry);
+                return $p;
+        });
+
+
+        return view('plantilla_web.paginas.sedes', compact('sedeUnica', 'sedes','poligonos', 'puntos'));
     }
     public function inicio()
     {

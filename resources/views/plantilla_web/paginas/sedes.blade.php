@@ -3,25 +3,10 @@
 
 @section('contenido')
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.11.1/baguetteBox.min.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css" />
+    <div class="container my-5 pt-6">
 
-    <div class="container my-5">
-
-        {{-- Título principal --}}
-        <div class="text-center mb-5">
-            <h1 class="fw-bold">Nuestras Sedes</h1>
-            <p class="text-muted">Explora nuestras sedes, carreras disponibles y conoce nuestra ubicación.</p>
-        </div>
-
-        {{-- Selector de sede --}}
-        <div class="card shadow-sm p-4 mb-5">
-            <label for="sedeSelect" class="form-label fw-semibold">Selecciona una sede:</label>
-            <select id="sedeSelect" class="form-select text-capitalize">
-                @foreach ($sedes as $sede)
-                    <option value="{{ $sede->id }}">{{ $sede->nombre }}</option>
-                @endforeach
-
-            </select>
-        </div>
         {{-- Información de la sede --}}
         <div class="card shadow-sm p-4 mb-5">
             <h2 id="nombreSede" class="fw-bold mb-3 text-uppercase">{{ $sedeUnica->nombre }}</h2>
@@ -29,10 +14,15 @@
                 recreativas.</p>
 
             {{-- Mapa --}}
-            <div class="ratio ratio-16x9 rounded overflow-hidden mb-4">
-                <iframe id="mapaSede" src="https://www.google.com/maps/embed?pb=!1m18..." allowfullscreen loading="lazy"
-                    class="border rounded"></iframe>
-            </div>
+            <section class="pt-0 mt-5">
+                <div class="container">
+                    <div class="row flex-center text-center pb-6">
+                        <div class="col-12">
+                            <div id="map" style="width: 100%; height: 500px; border-radius: 10px;"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
 
             {{-- Botón galería --}}
             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#galeriaModal">
@@ -155,10 +145,136 @@
 
 
 @section('script')
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.11.1/baguetteBox.min.js"></script>
     <script>
         baguetteBox.run('.gallery');
     </script>
 
     <script src="{{ asset('js/modulos/pagina/sedes.js') }}" type="module"></script>
+
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const poligonos = @json($poligonos);
+            const puntos = @json($puntos);
+
+            // Inicializar mapa centrado
+            const map = L.map('map').setView([-16.5322, -68.2027], 13);
+
+            // Capa base
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '&copy; OpenStreetMap contributors'
+            }).addTo(map);
+
+            // 🎨 Colores para los polígonos
+            const colors = ["#880000", "#007bff", "#28a745", "#ffc107"];
+
+            // ======================
+            // 📍 DIBUJAR POLÍGONOS
+            // ======================
+            poligonos.forEach((pol, index) => {
+                const color = colors[index % colors.length]; // alterna colores
+                const layer = L.geoJSON(pol.geometry, {
+                    style: {
+                        color: color,
+                        weight: 2,
+                        fillColor: color,
+                        fillOpacity: 0.4
+                    }
+                }).addTo(map);
+
+                // Tooltip permanente
+                layer.bindTooltip(pol.ubicacion, {
+                    permanent: true,
+                    direction: "top"
+                });
+
+                // Popup con enlace a Google Maps
+                const center = layer.getBounds().getCenter();
+                layer.bindPopup(`
+            <b>${pol.ubicacion}</b><br>
+            <a class="btn btn-sm btn-success mt-2" 
+               href="https://www.google.com/maps/dir/?api=1&destination=${center.lat},${center.lng}" 
+               target="_blank">
+               🚗 Cómo llegar
+            </a>
+        `);
+            });
+
+            // ======================
+            // 🟢 DIBUJAR PUNTOS
+            // ======================
+            const puntoIcon = L.icon({
+                iconUrl: 'https://cdn-icons-png.flaticon.com/512/854/854878.png', // puedes cambiarlo
+                iconSize: [32, 32],
+                iconAnchor: [16, 32],
+                popupAnchor: [0, -28]
+            });
+
+
+            // Mostrar PUNTOS existentes en el mapa y en el panel
+            puntos.forEach(function(punto) {
+                if (punto.geometry && punto.geometry.coordinates) {
+
+                    // 🧠 Construimos un objeto Feature válido para Leaflet
+                    const feature = {
+                        type: "Feature",
+                        geometry: punto.geometry,
+                        properties: {
+                            id: punto.id,
+                            ubicacion: punto.ubicacion
+                        }
+                    };
+
+                    // 🗺️ Crear la capa GeoJSON del punto
+                    const layer = L.geoJSON(feature, {
+                        pointToLayer: function(feature, latlng) {
+                            return L.marker(latlng);
+                        },
+                        onEachFeature: function(feature, layer) {
+                            layer._idBD = feature.properties.id;
+
+                            const [lng, lat] = feature.geometry.coordinates;
+
+                            // Popup con enlace a Google Maps
+                            layer.bindPopup(`
+                    <b>${feature.properties.ubicacion}</b><br>
+                    <a class="btn btn-sm btn-success mt-2" 
+                       href="https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}" 
+                       target="_blank">
+                       🚗 Cómo llegar
+                    </a>
+                `);
+                        }
+                    }).bindTooltip(punto.ubicacion, {
+                        permanent: true,
+                        direction: "top",
+                    });
+
+                    layer.addTo(map);
+
+                    // Mostrar en el panel de información
+                    const li = document.createElement("p");
+                    li.textContent = `${punto.ubicacion}`;
+                                    
+                }
+            });
+
+
+            // ======================
+            // 💬 MENSAJE GUIA
+            // ======================
+            L.control
+                .attribution({
+                    prefix: ""
+                })
+                .addAttribution("🖱️ Haz click en la ubicación o punto para ver cómo llegar")
+                .addTo(map);
+        });
+    </script>
 @endsection
