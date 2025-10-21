@@ -5,129 +5,295 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.11.1/baguetteBox.min.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css" />
-    <div class="container my-5 pt-6">
+    <style>
+        /* ---------------------------------------------------- */
+        /* GENERALES UI/UX */
+        /* ---------------------------------------------------- */
+        body {
+            background-color: #f8f9fa;
+            /* Fondo muy claro para destacar las tarjetas */
+        }
 
-        {{-- Información de la sede --}}
-        <div class="card shadow-sm p-4 mb-5">
-            <h2 id="nombreSede" class="fw-bold mb-3 text-uppercase">{{ $sedeUnica->nombre }}</h2>
-            <p id="descripcionSede" class="text-muted">Contamos con infraestructura moderna, laboratorios equipados y áreas
-                recreativas.</p>
+        /* Títulos de Secciones */
+        .section-title-icon {
+            color: #343a40;
+            border-bottom: 2px solid #007bff;
+            /* Subrayado temático */
+            padding-bottom: 5px;
+            display: inline-block;
+            font-size: 1.5rem;
+        }
 
-            {{-- Mapa --}}
-            <section class="pt-0 mt-5">
-                <div class="container">
-                    <div class="row flex-center text-center pb-6">
-                        <div class="col-12">
-                            <div id="map" style="width: 100%; height: 500px; border-radius: 10px;"></div>
-                        </div>
-                    </div>
-                </div>
-            </section>
+        /* ---------------------------------------------------- */
+        /* HEADER PRINCIPAL */
+        /* ---------------------------------------------------- */
+        .header-sede {
+            background: #ffffff;
+            /* Fondo blanco */
+            border: 1px solid #e0e0e0;
+        }
 
-            {{-- Botón galería --}}
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#galeriaModal">
-                📸 Galería de Imágenes
-            </button>
+        /* Botones de Redes Sociales */
+        .social-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
 
+        .social-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
 
-        </div>
+        /* ---------------------------------------------------- */
+        /* MAPA Y GALERÍA */
+        /* ---------------------------------------------------- */
+        .map-container-final {
+            width: 100%;
+            height: 450px;
+            /* Altura cómoda para el mapa */
+            border-radius: 12px;
+            overflow: hidden;
+            /* Asegura que el mapa se integre al contenedor */
+        }
 
-        {{-- Resolución de la sede --}}
-        <div class="card shadow-sm p-4 mb-5">
-            <h4 class="fw-bold mb-2">Resolución de Funcionamiento</h4>
-            <p class="mb-3">Número de resolución: <span class="fw-semibold text-primary">RES-2025-00123</span></p>
-            <a href="{{ asset('storage/resoluciones/' . $sedeUnica->resolucion_pdf) }}" class="btn btn-success" download>
-                📄 Descargar Resolución
-            </a>
-        </div>
+        .map-container-final #map {
+            width: 100%;
+            height: 100%;
+            border-radius: 12px;
+        }
 
-        {{-- Carreras --}}
-        <div class="card shadow-sm p-4">
-            <h3 class="fw-bold mb-4">Carreras disponibles en esta sede</h3>
-            <div class="d-flex gap-2 align-items-center mb-3">
-                <input type="text" id="buscadorCarreras" class="form-control form-sm" placeholder="🔍 Buscar carrera...">
-                <button class="btn btn-danger flex-shrink-0" id="listarTodo"> Listar Todo</button>
+        .gallery-preview-card .btn-primary {
+            /* Botón de galería destacado */
+            background: linear-gradient(45deg, #007bff, #00b4d8);
+            border: none;
+        }
+
+        .gallery-preview-card .btn-primary:hover {
+            box-shadow: 0 5px 15px rgba(0, 123, 255, 0.3);
+        }
+
+        /* ---------------------------------------------------- */
+        /* CARRERAS */
+        /* ---------------------------------------------------- */
+        .card-carreras-final {
+            background-color: #ffffff;
+            border: 1px solid #e9ecef;
+        }
+
+        /* Estilo de búsqueda */
+        .input-search-custom {
+            border-radius: 50px;
+        }
+
+        .btn-listado {
+            border-radius: 50px;
+            background-color: #6c757d;
+            /* Gris para listar */
+            border-color: #6c757d;
+        }
+
+        /* Tarjeta de carrera individual */
+        .card-carrera-item {
+            border: 1px solid #e0e0e0 !important;
+            transition: transform 0.2s ease;
+        }
+
+        .card-carrera-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border-color: #007bff !important;
+        }
+
+        /* ---------------------------------------------------- */
+        /* RESOLUCIÓN */
+        /* ---------------------------------------------------- */
+        .card-resolution-final {
+            background-color: #fffde7;
+            /* Fondo amarillo muy claro para énfasis */
+            border: none;
+            padding: 2rem !important;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-resolution-final .btn-warning {
+            background-color: #ffc107;
+            border-color: #ffc107;
+            color: #343a40;
+        }
+
+        .card-resolution-final .btn-warning:hover {
+            background-color: #e0a800;
+            border-color: #e0a800;
+        }
+
+        /* ---------------------------------------------------- */
+        /* MODAL GALERÍA */
+        /* ---------------------------------------------------- */
+        .gallery-thumbnail {
+            height: 150px;
+            /* Altura uniforme para todas las miniaturas */
+            object-fit: cover;
+            transition: transform 0.2s ease;
+        }
+
+        .gallery-thumbnail:hover {
+            transform: scale(1.05);
+        }
+    </style>
+    <div class="container my-5 pt-6 page-sede-final">
+
+        {{-- BLOQUE PRINCIPAL: Título, Descripción y Redes (Cabecera) --}}
+        <div class="header-sede mb-5 p-4 rounded-4 shadow-lg text-center">
+            <h1 id="nombreSede" class="fw-bolder display-4 mb-2 text-uppercase text-primary-emphasis">{{ $sedeUnica->nombre }}
+            </h1>
+            <p id="descripcionSede" class="lead text-muted mb-4 px-lg-5">
+                Contamos con infraestructura moderna, laboratorios equipados y áreas recreativas.
+            </p>
+
+            {{-- Redes sociales (Integradas en el encabezado) --}}
+            <h5 class="fw-bold mb-3 mt-4 text-secondary-emphasis">¡Síguenos y Contáctanos!</h5>
+            <div class="d-flex justify-content-center gap-3 social-links">
+                {{-- WhatsApp --}}
+                <a href="https://api.whatsapp.com/send?phone={{ $sedeUnica->whatsapp }}&text=Hola%20me%20gustaria%20que%20me%20ayuden%20%20en%20una%20duda"
+                    target="_blank" class="btn btn-success social-btn whatsapp-btn" title="WhatsApp">
+                    <i class="fab fa-whatsapp fa-2x"></i>
+                </a>
+
+                {{-- Facebook --}}
+                <a href="{{ $sedeUnica->facebook }}" target="_blank" class="btn btn-primary social-btn facebook-btn"
+                    title="Facebook">
+                    <i class="fab fa-facebook-f fa-2x"></i>
+                </a>
+
+                {{-- YouTube --}}
+                <a href="{{ $sedeUnica->youtobe }}" target="_blank" class="btn btn-danger social-btn youtube-btn"
+                    title="YouTube">
+                    <i class="fab fa-youtube fa-2x"></i>
+                </a>
             </div>
 
+        </div>
 
-            <div class="row g-3" id="contenedorCarreras">
-                <div class="col-12 col-sm-6 col-md-4">
-                    <div class="card h-100 shadow-sm">
-                        <div class="card-body d-flex flex-column justify-content-between">
-                            <h5 class="card-title"><i class="fas fa-laptop-code me-2 text-primary"></i> Ingeniería de
-                                Sistemas</h5>
+        <div class="row g-5">
 
-                            <div class="mt-3">
-                                <a href="{{ asset('mallas/ingenieria_sistemas.pdf') }}"
-                                    class="btn btn-danger btn-sm mb-2 w-100 d-flex align-items-center justify-content-center gap-2"
-                                    download>
-                                    <i class="fas fa-download"></i> Descargar Malla
-                                </a>
-                                <a href="https://example.com/ingenieria-sistemas" target="_blank"
-                                    class="btn btn-outline-dark btn-sm w-100 d-flex align-items-center justify-content-center gap-2">
-                                    <i class="fas fa-globe"></i> Ver Página
-                                </a>
+            {{-- COLUMNA IZQUIERDA: MAPA Y GALERÍA (Visual) --}}
+            <div class="col-lg-7">
+
+                {{-- SECCIÓN MAPA --}}
+                <div class="mb-5">
+                    <h3 class="fw-bold mb-3 section-title-icon"><i class="fas fa-map-marked-alt me-2 text-primary"></i>
+                        Ubicación</h3>
+                    <div id="map" class="map-container-final shadow-lg"></div>
+                </div>
+
+                {{-- SECCIÓN GALERÍA --}}
+                <div class="mb-5">
+                    <h3 class="fw-bold mb-3 section-title-icon"><i class="fas fa-camera-retro me-2 text-primary"></i>
+                        Instalaciones</h3>
+                    <div class="card p-4 rounded-4 shadow-sm gallery-preview-card">
+                        <p class="text-muted mb-3">Haz clic para ver nuestra galería completa de imágenes en alta
+                            resolución.</p>
+                        <button class="btn btn-primary btn-lg fw-bold w-100" data-bs-toggle="modal"
+                            data-bs-target="#galeriaModal">
+                            <i class="fas fa-images me-2"></i> Ver Galería de Imágenes
+                        </button>
+                    </div>
+                </div>
+                {{-- SECCIÓN RESOLUCIÓN (CORREGIDA: Ahora es su propia tarjeta fuera de Carreras) --}}
+                <div class="card card-resolution-final shadow-sm p-4 rounded-4 border-start border-warning border-5">
+                    <h4 class="fw-bold mb-3 section-title-icon"><i class="fas fa-file-contract me-2 text-warning"></i>
+                        Documento Legal</h4>
+                    <p class="">Resolución:</p>
+                    <p class="fw-bolder text-primary fs-3">{{ $sedeUnica->resolucion ?? 'Ninguno::' }}</p>
+                    <a href="{{ asset('storage/resoluciones/' . $sedeUnica->resolucion_pdf) }}" id="btnDescargarResolucion"
+                        class="btn btn-warning fw-bold w-100 btn-lg shadow-sm" download>
+                        <i class="fas fa-download me-2"></i> Descargar Resolución (PDF)
+                    </a>
+
+
+                </div>
+
+            </div>
+
+            <div class="col-lg-5">
+
+                {{-- SECCIÓN CARRERAS --}}
+                <div class="card card-carreras-final shadow-lg p-4 rounded-4 mb-5 h-100">
+                    <h3 class="fw-bold mb-4 section-title-icon">
+                        <i class="fas fa-graduation-cap me-2 text-primary"></i> Carreras Disponibles
+                    </h3>
+
+                    {{-- Buscador y total --}}
+                    <div class="d-flex flex-column gap-2 mb-4">
+                        <div class="d-flex gap-2 align-items-center">
+                            
+                            <input type="text" id="buscadorCarreras" class="form-control form-sm input-search-custom"
+                                placeholder="🔍 Buscar carrera...">
+                            <input type="hidden" name="sede_id" id="sede_id" value="{{ encrypt($sedeUnica->id) }}">
+                            {{-- <button class="btn btn-danger flex-shrink-0 btn-listado" id="listarTodo">
+                                <i class="fas fa-list-ul"></i> Todo
+                            </button> --}}
+                        </div>
+                        <small class="text-muted ms-3">
+                            Total de carreras existentes en esta sede: <strong>{{ $totalCarreras }}</strong>
+                        </small>
+                    </div>
+
+                    {{-- Carreras --}}
+                    <div class="row g-3 carreras-grid-final" id="contenedorCarreras">
+                        @forelse ($carreras as $carrera)
+                            <div class="col-6">
+                                <div class="card card-carrera-item h-100 border-0 shadow-sm">
+                                    <div class="card-body p-3 d-flex flex-column justify-content-between">
+                                        <h6 class="card-title fw-bold mb-2 text-uppercase">{{ $carrera->nombre }}</h6>
+                                        <div class="mt-3 btn-group-vertical w-100" role="group">
+                                            @if ($carrera->malla_curricular_pdf)
+                                                <a href="{{ asset('mallas/' . $carrera->malla) }}"
+                                                    class="btn btn-danger btn-sm w-100 btn-action-malla" download>
+                                                    <i class="fas fa-download me-1"></i> Malla Curricular
+                                                </a>
+                                            @endif                                            
+                                            <a href="{{ $carrera->vinculo_web }}" target="_blank"
+                                                class="btn btn-outline-dark btn-sm w-100 btn-action-web">
+                                                <i class="fas fa-external-link-alt me-1"></i> Ver Página
+                                            </a>                                            
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
+                        @empty
+                            <p class="text-center text-muted">No hay carreras registradas en esta sede.</p>
+                        @endforelse
                     </div>
+
                 </div>
-
-
-                {{-- Agrega más carreras aquí --}}
             </div>
+
         </div>
     </div>
 
-    {{-- Redes sociales --}}
-    <div class="mt-3 mb-5">
-        <h5 class="text-center">
-            <i class="fas fa-share-alt me-1"></i> Nuestras Redes Sociales
-        </h5>
-        <div class="d-flex justify-content-center gap-3 mt-2">
-            {{-- WhatsApp --}}
-            <a href="https://api.whatsapp.com/send?phone={{ $sedeUnica->whatsapp }}&text=Hola%20me%20gustaria%20que%20me%20ayuden%20%20en%20una%20duda"
-                target="_blank" class="btn btn-success rounded-circle d-flex align-items-center justify-content-center"
-                style="width: 70px; height: 70px;" title="WhatsApp">
-                <i class="fab fa-whatsapp fa-lg"></i>
-            </a>
-
-            {{-- Facebook --}}
-            <a href="{{ $sedeUnica->facebook }}" target="_blank"
-                class="btn btn-primary rounded-circle d-flex align-items-center justify-content-center"
-                style="width: 70px; height: 70px;" title="Facebook">
-                <i class="fab fa-facebook-f fa-lg"></i>
-            </a>
-
-            {{-- YouTube --}}
-            <a href="{{ $sedeUnica->youtobe }}" target="_blank"
-                class="btn btn-danger rounded-circle d-flex align-items-center justify-content-center"
-                style="width: 70px; height: 70px;" title="YouTube">
-                <i class="fab fa-youtube fa-lg"></i>
-            </a>
-        </div>
-    </div>
-
-
-
-
-    {{-- Modal Galería --}}
+    {{-- MODAL GALERÍA (Mantenido y Mejorado Ligeramente) --}}
     <div class="modal fade" id="galeriaModal" tabindex="-1" aria-labelledby="galeriaModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-xl modal-dialog-centered">
-            <div class="modal-content shadow">
-                <div class="modal-header">
-                    <h5 class="modal-title">Galería de Imágenes de la Sede</h5>
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content shadow rounded-4">
+                <div class="modal-header modal-header-custom py-3">
+                    <h5 class="modal-title fw-bold text-uppercase">Galería de Imágenes de {{ $sedeUnica->nombre }}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                 </div>
-                <div class="modal-body p-0">
-
-                    <div class="container gallery mt-3 p-5">
-                        <div class="row">
+                <div class="modal-body p-4">
+                    <div class="gallery-sede-modal">
+                        <div class="row g-3">
                             @foreach ($sedeUnica->imagenesSede as $img)
-                                <div class="col-6 col-sm-4 col-md-3 col-lg-4 mb-3">
-                                    <a href="{{ asset('storage/galeria_sedes/' . $img->imagen) }}" class="lightbox">
+                                <div class="col-6 col-sm-4 col-md-3">
+                                    <a href="{{ asset('storage/galeria_sedes/' . $img->imagen) }}"
+                                        class="lightbox d-block">
                                         <img src="{{ asset('storage/galeria_sedes/' . $img->imagen) }}"
-                                            class="img-fluid rounded shadow-sm border border-1 rounded" alt="Imagen Sede"
-                                            style="width: 350px; height: 200px; object-fit: cover;">
+                                            class="img-fluid rounded shadow-sm gallery-thumbnail" alt="Imagen Sede">
                                     </a>
                                 </div>
                             @endforeach
@@ -137,10 +303,6 @@
             </div>
         </div>
     </div>
-
-
-    <!-- Antes de cerrar </body> -->
-
 @endsection
 
 
@@ -151,9 +313,9 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.11.1/baguetteBox.min.js"></script>
     <script>
-        baguetteBox.run('.gallery');
+      baguetteBox.run('.gallery-sede-modal');
     </script>
-
+    
     <script src="{{ asset('js/modulos/pagina/sedes.js') }}" type="module"></script>
 
 
@@ -261,7 +423,7 @@
                     // Mostrar en el panel de información
                     const li = document.createElement("p");
                     li.textContent = `${punto.ubicacion}`;
-                                    
+
                 }
             });
 

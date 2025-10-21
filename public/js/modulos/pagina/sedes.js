@@ -1,81 +1,99 @@
+import { mensajeAlerta } from "../../../funciones_helper/notificaciones/mensajes.js";
+import { crud } from "../../../funciones_helper/operaciones_crud/crud.js";
+import {
+    vaciar_errores,
+    vaciar_formulario,
+} from "../../../funciones_helper/vistas/formulario.js";
 
-    document.addEventListener('DOMContentLoaded', () => {
+$(document).ready(function () {
 
-        const inputBuscar = document.getElementById('buscadorCarreras');
-        const contenedor = document.getElementById('contenedorCarreras');
-        const botonListarTodo = document.getElementById('listarTodo');
-
-        let temporizador = null;
-
-        inputBuscar.addEventListener('input', function () {
-            const valor = this.value.trim();
-
-            clearTimeout(temporizador);
-
-            if (valor.length >= 4) {
-                temporizador = setTimeout(() => {
-                    buscarCarreras(valor);
-                }, 500);
-            } else {
-                contenedor.innerHTML = '';
-            }
-        });
-
-        botonListarTodo.addEventListener('click', async () => {
-            await buscarCarreras('');
-        });
-
-        async function buscarCarreras(termino) {
-            try {
-                const res = await fetch('/buscarCarrera', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                    },
-                    body: JSON.stringify({ query: termino })
-                });
-
-                const data = await res.json();
-
-                if (data.tipo !== 'exito') {
-                    contenedor.innerHTML = `<div class="col-12"><div class="alert alert-warning">${data.mensaje}</div></div>`;
-                    return;
-                }
-
-                renderizarCarreras(data.datos);
-
-            } catch (err) {
-                console.error('Error al buscar carreras:', err);
-                contenedor.innerHTML = `<div class="col-12"><div class="alert alert-danger">Ocurrió un error al buscar.</div></div>`;
-            }
+    
+    // Configurar token CSRF globalmente
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
+    });
 
-        function renderizarCarreras(carreras) {
-            contenedor.innerHTML = '';
+    // Escucha cuando el usuario escribe
+    $('#buscadorCarreras').on('keyup', function () {
+        let valorBuscado = $(this).val().trim();
 
-            carreras.forEach(carrera => {
-                contenedor.innerHTML += `
-                    <div class="col-12 col-sm-6 col-md-4">
-                        <div class="card h-100 shadow-sm">
-                            <div class="card-body d-flex flex-column justify-content-between">
-                                <h5 class="card-title">
-                                    <i class="fas fa-laptop-code me-2 text-primary"></i> ${carrera.nombre}
-                                </h5>
-                                <div class="mt-3">
-                                    <a href="/mallas/${carrera.archivo_malla}" class="btn btn-danger btn-sm mb-2 w-100 d-flex align-items-center justify-content-center gap-2" download>
-                                        <i class="fas fa-download"></i> Descargar Malla
-                                    </a>
-                                    <a href="${carrera.url}" target="_blank" class="btn btn-outline-dark btn-sm w-100 d-flex align-items-center justify-content-center gap-2">
-                                        <i class="fas fa-globe"></i> Ver Página
-                                    </a>
+        // Si el texto tiene más de 2 caracteres, realiza la búsqueda
+        if (valorBuscado.length > 2) {
+
+            // console.log("Buscando carrera: " + valorBuscado);
+
+            $.ajax({
+                url: '/buscarCarrera',  // Asegúrate que esta ruta exista
+                method: 'POST',
+                data: { 
+                    q: valorBuscado, 
+                    id_sede: $('#sede_id').val()  // Envía el ID de la sede
+                },
+                 success: function (response) {
+                    
+                    let html = '';
+
+                    if (response.carreras.length > 0) {
+                        response.carreras.forEach(carrera => {
+                            html += `
+                                <div class="col-6">
+                                    <div class="card card-carrera-item h-100 border-0 shadow-sm">
+                                        <div class="card-body p-3 d-flex flex-column justify-content-between">
+                                            <h6 class="card-title fw-bold mb-2 text-uppercase">${carrera.nombre}</h6>
+                                            <div class="mt-3 btn-group-vertical w-100" role="group">
+                                                ${carrera.malla_curricular_pdf ? `
+                                                    <a href="/mallas/${carrera.malla_curricular_pdf}" class="btn btn-danger btn-sm w-100 btn-action-malla" download>
+                                                        <i class="fas fa-download me-1"></i> Malla Curricular
+                                                    </a>` : ''}
+                                                <a href="${carrera.vinculo_web}" target="_blank"
+                                                    class="btn btn-outline-dark btn-sm w-100 btn-action-web">
+                                                    <i class="fas fa-external-link-alt me-1"></i> Ver Página
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                `;
+                            `;
+                        });
+                    } else {
+                        html = `<p class="text-center text-muted">No hay carreras registradas en esta sede.</p>`;
+                    }
+
+                    $('#contenedorCarreras').html(html);
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error al buscar carrera:", error);
+                }
             });
         }
-
     });
+
+});
+
+
+
+// desactivar bton de descargar resolucion para evitar multiples clics
+$(document).ready(function () {
+    $('#btnDescargarResolucion').on('click', function (e) {
+        const $btn = $(this);
+
+        // Evitar clics múltiples
+        if ($btn.hasClass('disabled')) {
+            e.preventDefault();
+            return false;
+        }
+
+        // Cambiar el estado visual
+        $btn.addClass('disabled');
+        $btn.html('<i class="fas fa-spinner fa-spin me-2"></i> Descargando...');
+
+        // Volver a habilitar después de unos segundos (por si acaso)
+        setTimeout(() => {
+            $btn.removeClass('disabled');
+            $btn.html('<i class="fas fa-download me-2"></i> Descargar Resolución (PDF)');
+        }, 3000);
+    });
+});
 

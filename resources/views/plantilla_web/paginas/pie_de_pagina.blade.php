@@ -15,18 +15,10 @@
               <div class="col-md-4 mb-4">
                   <h5 class="fw-bold text-warning mb-3">Nuestras Sedes Académicas</h5>
                   <ul class="list-unstyled">
-                      <li><a href="pages/service.html" class="text-light text-decoration-none">Achacachi</a></li>
-                      <li><a href="pages/about.html" class="text-light text-decoration-none">Ancoraimes</a></li>
-                      <li><a href="pages/alumni.html" class="text-light text-decoration-none">Caranavi</a></li>
-                      <li><a href="pages/blank.html" class="text-light text-decoration-none">Coroico - Cruz Loma</a>
-                      </li>
-                      <li><a href="pages/blank.html" class="text-light text-decoration-none">Guaqui</a></li>
-                      <li><a href="pages/blank.html" class="text-light text-decoration-none">Batallas</a></li>
-                      <li><a href="pages/blank.html" class="text-light text-decoration-none">Mapiri</a></li>
-                      <li><a href="pages/blank.html" class="text-light text-decoration-none">Palos Blancos</a></li>
-                      <li><a href="pages/blank.html" class="text-light text-decoration-none">Chaguaya</a></li>
-                      <li><a href="pages/blank.html" class="text-light text-decoration-none">Viacha</a></li>
-                      <li><a href="pages/blank.html" class="text-light text-decoration-none">San Pablo</a></li>
+                     
+                        @foreach ($sedes as $sede)
+                            <li><a class="text-light text-decoration-none" href="/sedes/{{encrypt($sede->id)}}">{{ ucfirst(strtolower($sede->nombre)) }}</a></li>
+                        @endforeach    
                   </ul>
               </div>
 

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Paginas;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Sede;
+use App\Models\Carrera;
 use App\Models\Noticia;
 use App\Models\ImgNoticia;
 use App\Models\CategoriasNoticia;
@@ -22,13 +23,13 @@ class Controlador_pagina extends Controller
             $q->select('id', 'nombre'); // solo id y nombre de la categoría
         },
          'usuario' => function ($q) {
-            $q->select('id', 'nombres','apellidos'); // solo traigo id y nombre de la sede
-        },
+             $q->select('id', 'nombres', 'apellidos'); // solo traigo id y nombre de la sede
+         },
         'imagenesNoticia' => function ($q) {
             $q->select(['imagen', 'noticia_id']);
         }
-       
-        ])->select('id', 'titulo', 'contenido', 'url_video', 'sede_id', 'categoria_id','user_id' ,'created_at')
+
+        ])->select('id', 'titulo', 'contenido', 'url_video', 'sede_id', 'categoria_id', 'user_id', 'created_at')
           ->where('estado_noticia', 'activo');
 
         // Filtro por categoría si existe
@@ -56,7 +57,7 @@ class Controlador_pagina extends Controller
         $noticiaDestacada = Noticia::with(['sede', 'categoria','usuario', 'imagenesNoticia' => function ($query) {
             $query->select(['imagen', 'noticia_id']);
         }])
-        ->select('id', 'titulo', 'contenido', 'url_video', 'sede_id', 'categoria_id','user_id' ,'created_at')
+        ->select('id', 'titulo', 'contenido', 'url_video', 'sede_id', 'categoria_id', 'user_id', 'created_at')
         ->where('estado_destacado', 'activo')
         ->orderBy('id', 'desc')
         ->first();
@@ -72,7 +73,7 @@ class Controlador_pagina extends Controller
         $noticia = Noticia::with(['sede', 'categoria','usuario', 'imagenesNoticia' => function ($query) {
             $query->select(['imagen', 'noticia_id']);
         }])
-        ->select('id', 'titulo', 'contenido', 'url_video', 'sede_id', 'categoria_id', 'created_at','user_id')
+        ->select('id', 'titulo', 'contenido', 'url_video', 'sede_id', 'categoria_id', 'created_at', 'user_id')
         ->where('estado_noticia', 'activo')
         ->where('id', $id)
         ->first();
@@ -84,7 +85,7 @@ class Controlador_pagina extends Controller
         }])
          ->select('id', 'titulo', 'contenido', 'url_video', 'sede_id', 'categoria_id', 'created_at')
          ->where('estado_noticia', 'activo')
-         ->where('categoria_id',$noticia->categoria_id)
+         ->where('categoria_id', $noticia->categoria_id)
          ->orderBy('id', 'desc')
          ->limit(3)
          ->get();
@@ -109,48 +110,76 @@ class Controlador_pagina extends Controller
             'imagenesSede' => function ($query) {
                 $query->select(['id', 'imagen', 'sede_id']);
             },
-        ])->select('id', 'nombre', 'resolucion_pdf', 'whatsapp', 'youtobe', 'facebook')
+        ])->select('id', 'nombre', 'resolucion_pdf', 'whatsapp', 'youtobe', 'facebook', 'resolucion')
         ->where('id', $id)
         ->first();
 
-        $sedes = Sede::select('id', 'nombre', 'resolucion_pdf', 'whatsapp', 'youtobe', 'facebook')
-        ->orderBy('id', 'desc')
-        ->get(); // No olvides terminar con get() si vas a ejecutar la consulta
+        $carreras = Carrera::whereHas('sedes', function ($query) use ($id) {
+            $query->where('sedes.id', $id);
+        })->select('nombre', 'malla_curricular_pdf', 'vinculo_web')
+        ->orderBy('nombre')
+        ->take(6)
+        ->get();
 
 
-       $poligonos = DB::table('ubicacion_sedes')
-            ->selectRaw("id, ubicacion, ST_AsGeoJSON(poligono)::json as geometry")            
-            ->whereNotNull('poligono')
-            ->whereNull('deleted_at')  // listamos todos aquellos que no se hayan eliminado
-            ->where('sede_id',$id)
-            ->get()
-            ->map(function ($p) {
-                $p->geometry = json_decode($p->geometry);
-                return $p;
-        });
+        $sedeUnica = Sede::findOrFail($id);
 
-         $puntos = DB::table('puntos_salidas')
-            ->selectRaw("puntos_salidas.id, puntos_salidas.ubicacion, ST_AsGeoJSON(punto)::json as geometry")
-            ->leftJoin('ubicacion_sedes', 'puntos_salidas.sede_id', '=', 'ubicacion_sedes.id')   
-            ->where('puntos_salidas.sede_id', $id)
-            ->whereNotNull('punto')
-            ->whereNull('puntos_salidas.deleted_at') // listamos todos aquellos que no se hayan eliminado            
-            ->get()
-            ->map(function ($p) {
-                $p->geometry = json_decode($p->geometry);
-                return $p;
-        });
+        // Total de carreras de la sede
+        $totalCarreras = $sedeUnica->carreras()->count();
+
+        $poligonos = DB::table('ubicacion_sedes')
+             ->selectRaw("id, ubicacion, ST_AsGeoJSON(poligono)::json as geometry")
+             ->whereNotNull('poligono')
+             ->whereNull('deleted_at')  // listamos todos aquellos que no se hayan eliminado
+             ->where('sede_id', $id)
+             ->get()
+             ->map(function ($p) {
+                 $p->geometry = json_decode($p->geometry);
+                 return $p;
+             });
+
+        $puntos = DB::table('puntos_salidas')
+           ->selectRaw("puntos_salidas.id, puntos_salidas.ubicacion, ST_AsGeoJSON(punto)::json as geometry")
+           ->leftJoin('ubicacion_sedes', 'puntos_salidas.sede_id', '=', 'ubicacion_sedes.id')
+           ->where('puntos_salidas.sede_id', $id)
+           ->whereNotNull('punto')
+           ->whereNull('puntos_salidas.deleted_at') // listamos todos aquellos que no se hayan eliminado
+           ->get()
+           ->map(function ($p) {
+               $p->geometry = json_decode($p->geometry);
+               return $p;
+           });
 
 
-        return view('plantilla_web.paginas.sedes', compact('sedeUnica', 'sedes','poligonos', 'puntos'));
+        return view('plantilla_web.paginas.sedes', compact('sedeUnica', 'carreras', 'poligonos', 'puntos', 'totalCarreras'));
     }
     public function inicio()
     {
         return view('plantilla_web.paginas.inicio');
     }
 
-    public function buscarCarrera(string $nombreCarrera)
+    public function buscarCarrera(Request $request)
     {
-        return $nombreCarrera;
+        $nombreCarrera = $request->input('q');
+        $id_sede = decrypt($request->input('id_sede'));
+        // Buscar carreras de esa sede que coincidan con el texto
+        $carreras = Carrera::whereHas('sedes', function ($query) use ($id_sede) {
+            $query->where('sedes.id', $id_sede);
+        })
+            ->select('nombre', 'malla_curricular_pdf', 'vinculo_web')
+            ->where('nombre', 'like', "%{$nombreCarrera}%")
+            ->orderBy('nombre')
+            ->take(10)
+            ->get();
+
+
+        
+    return response()->json([
+        'tipo' => 'exito',
+        'carreras' => $carreras
+    ]);
+
+
+        
     }
 }

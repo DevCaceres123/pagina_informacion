@@ -22,7 +22,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        View::composer('plantilla_web.navegacion', function ($view) {
+        View::composer(
+            ['plantilla_web.navegacion', 'plantilla_web.paginas.pie_de_pagina'],
+            function ($view) {
             $sedes = Sede::select('id', 'nombre')->where('estado','activo')->orderBy('nombre')->get();
             $view->with('sedes', $sedes);
         });
