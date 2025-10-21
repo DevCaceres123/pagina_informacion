@@ -5,7 +5,7 @@
 <meta name="csrf-token" content="{{ csrf_token() }}">
 
 <!-- App favicon -->
-<link rel="shortcut icon" href="{{ asset('admin_template/images/favicon.ico') }}">
+<link rel="shortcut icon" href="{{ asset('assets/disbedc_logo.webp') }}">
 
 <!-- CSS Libraries -->
 <link href="{{ asset('admin_template/libs/slimselect/slimselect.css') }}" rel="stylesheet">

@@ -1,17 +1,13 @@
 <div class="startbar d-print-none">
     <!--start brand-->
-    <div class="brand">
+    <div class="brand" style="overflow: hidden;box-sizing: border-box">
         <a href="index.html" class="logo">
-            <span>
-                <img src="{{ asset('admin_template/images/logo-sm.png') }}" alt="logo-small" class="logo-sm">
-            </span>
-            <span class="">
-                <img src="{{ asset('admin_template/images/logo-light.png') }}" alt="logo-large"
-                    class="logo-lg logo-light">
-                <img src="{{ asset('admin_template/images/logo-dark.png') }}" alt="logo-large"
-                    class="logo-lg logo-dark">
-            </span>
+            <span style="overflow: hidden">
+                <img src="{{ asset('assets/disbedc_logo.webp') }}" alt="logo-small" class="" width="100%"
+                    style="object-fit: contain" />
+            </span>          
         </a>
+        
     </div>
     <!--end brand-->
     <!--start startbar-menu-->
