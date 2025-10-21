@@ -70,7 +70,7 @@ function listar_infraestructuras() {
                 className: "table-td",
                 render: function (data, type, row) {
                     let estadoChecked =
-                        row.estado_destacado === "activo" ? "checked" : "";
+                        row.estado === "activo" ? "checked" : "";
 
                     // Aquí verificamos el permiso de desactivar
                     let desactivarContent =
@@ -91,35 +91,7 @@ function listar_infraestructuras() {
                                 ${desactivarContent}
                             </div>`;
                 },
-            },
-
-            {
-                data: null,
-                className: "table-td",
-                render: function (data, type, row) {
-                    let estadoChecked =
-                        row.estado_noticia === "activo" ? "checked" : "";
-
-                    // Aquí verificamos el permiso de desactivar
-                    let desactivarContent =
-                        permisosGlobal["estado"] == false
-                            ? `
-                            <a class="cambiar_estado_publicacion" data-id="${row.id},${row.estado_noticia}">
-                                <div class="form-check form-switch ms-3">
-                                    <input class="form-check-input" type="checkbox" 
-                                           ${estadoChecked} style="transform: scale(2.0);">
-                                </div>
-                            </a>`
-                            : `
-                           <p>No permitido...<p/>
-                        `;
-
-                    return `
-                            <div data-class="">
-                                ${desactivarContent}
-                            </div>`;
-                },
-            },         
+            },     
 
             {
                 data: null,
@@ -130,7 +102,7 @@ function listar_infraestructuras() {
                          ${
                              permisosGlobal.eliminar
                                  ? `
-                        <a class="btn btn-sm btn-outline-danger px-2 d-inline-flex align-items-center eliminar_noticia me-1" data-id="${row.id}" title="Eliminar Noticia">
+                        <a class="btn btn-sm btn-outline-danger px-2 d-inline-flex align-items-center eliminar_convocatoria me-1" data-id="${row.id}" title="Eliminar Noticia">
                             <i class="fas fa-window-close fs-16"></i>
                         </a>
                             `
@@ -155,3 +127,36 @@ function actualizarTabla() {
     tabla.ajax.reload(null, false); // Recarga los datos sin resetear el paginado
 }
 
+
+
+// eliminar noticia
+$(document).on("click", ".eliminar_convocatoria", function () {
+    let id = $(this).data("id");
+
+    Swal.fire({
+        title: "NOTA!",
+        text: "¿Está seguro de Eliminar la Convocatoria?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Sí, Estoy seguro",
+        cancelButtonText: "Cancelar",
+    }).then(async function (result) {
+        if (result.isConfirmed) {
+            crud("admin/convocatoria", "DELETE", id, null, function (error, response) {
+                // console.log(response);
+               
+                if (response.tipo != "exito") {
+                    mensajeAlerta(response.mensaje, response.tipo);
+                    return;
+                }
+                // si todo esta correcto muestra el mensaje de correcto
+                mensajeAlerta(response.mensaje, response.tipo);
+                actualizarTabla();
+            });
+        } else {
+            alerta_top("error", "Se canceló la eliminacion");
+        }
+    });
+});

@@ -107,6 +107,34 @@ class Controlador_convocatorias extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        
+        DB::beginTransaction();
+        try {
+            
+            $convocatoria=Convocatoria::find($id);
+
+            if(!$convocatoria){
+               throw new Exception('convocatoria no encontrado');
+            }
+            $convocatoria->delete();
+            DB::commit();
+        
+            $this->mensaje("exito", "Eliminado Correctamente");
+            return response()->json($this->mensaje, 200);
+        
+        } catch (Exception $e) {
+            DB::rollBack();
+        
+            $this->mensaje("error", "error " . $e->getMessage());
+            return response()->json($this->mensaje, 200);
+        }
+    }
+
+    public function mensaje($titulo, $mensaje)
+    {
+        $this->mensaje = [
+            'tipo' => $titulo,
+            'mensaje' => $mensaje,
+        ];
     }
 }

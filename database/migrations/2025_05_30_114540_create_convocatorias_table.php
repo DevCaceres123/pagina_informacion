@@ -19,7 +19,7 @@ return new class extends Migration
             $table->enum('estado', ['activo', 'inactivo']);
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('sede_id');
-          
+            $table->timestamp('deleted_at')->nullable();
             $table->foreign('sede_id')
                 ->references('id')
                 ->on('sedes')
