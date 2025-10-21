@@ -4,6 +4,12 @@ namespace App\Http\Controllers\Publicaciones;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
+use Exception;
+use App\Models\Sede;
+use App\Models\Convocatoria;
+use App\Models\CategoriasNoticia; // tambien utilizada para las categorias de convocatorias
+use Illuminate\Support\Facades\DB;
 
 class Controlador_convocatorias extends Controller
 {
@@ -14,6 +20,46 @@ class Controlador_convocatorias extends Controller
     {
         
         return view('administrador.publicaciones.convocatorias');
+    }
+
+    public function listarConvocatorias(Request $request)
+    {
+        $query = Convocatoria::with([
+            'categoria' => function ($query) {
+                $query->select(['id','nombre']);
+            },
+        ])->select('id', 'titulo', 'estado', 'created_at','categoria_id')->orderBy('id', 'desc');
+
+
+        if (!empty($request->search['value'])) {
+
+            $query->where(function ($q) use ($request) {
+                $q->where('titulo', 'like', '%' . $request->search['value'] . '%')
+                  ->where('estado', 'like', '%' . $request->search['value'] . '%')                  
+                  ->orWhereHas('categoria', function ($sedeQuery) use ($request) {
+                    $sedeQuery->where('nombre', 'like', '%' . $request->search['value'] . '%');
+                });
+            });
+        }
+
+        // Total de registros antes del filtrado
+        $recordsTotal = $query->count();
+
+        // Paginación y orden
+        $sedes = $query->skip($request->start)->take($request->length)->get();
+
+        // Respuesta
+        return response()->json([
+            'draw' => $request->draw,
+            'recordsTotal' => $recordsTotal,
+            'recordsFiltered' => $recordsTotal, // Ajustar si hay filtros
+            'data' => $sedes,
+            'permisos' => [
+                'editar' => auth()->user()->can('afiliado.editar'),
+                'eliminar' => true,
+                'estado' => auth()->user()->can('afiliado.estado'),
+            ],
+        ]);
     }
 
     /**

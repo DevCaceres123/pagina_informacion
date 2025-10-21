@@ -154,6 +154,7 @@ Route::prefix('/admin')->middleware([Autenticados::class])->group(function () {
     // CONTROLADOR PARA LAS CONVOCATORIAS
     Route::controller(Controlador_convocatorias::class)->group(function () {
         Route::resource('convocatoria', Controlador_convocatorias::class);
+        Route::get('listarConvocatorias', 'listarConvocatorias')->name('convocatoria.listarNoticias');
       
     });
 

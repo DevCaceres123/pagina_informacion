@@ -6,19 +6,19 @@ import {
 } from "../../../funciones_helper/vistas/formulario.js";
 
 let permisosGlobal;
-let tabla_infraestructura;
+let tabla;
 
 $(document).ready(function () {
     listar_infraestructuras();
 });
 
 function listar_infraestructuras() {
-    tabla_infraestructura = $("#tabla_listar_noticias").DataTable({
+    tabla = $("#tabla_listar_convocatorias").DataTable({
         processing: true,
         serverSide: true,
         responsive: true,
         ajax: {
-            url: "listarNoticias", // Ruta que recibe la solicitud en el servidor
+            url: "listarConvocatorias", // Ruta que recibe la solicitud en el servidor
             type: "GET", // Método de la solicitud (GET o POST)
             dataSrc: function (json) {
                 permisosGlobal = json.permisos;
@@ -31,7 +31,7 @@ function listar_infraestructuras() {
                 data: null,
                 className: "table-td",
                 render: function (data, type, row, meta) {                 
-                     let start = $("#tabla_listar_noticias")
+                     let start = $("#tabla_listar_convocatorias")
                         .DataTable()
                         .page.info().start;
                     return start + meta.row + 1;
@@ -152,6 +152,6 @@ function listar_infraestructuras() {
 
 // Llamada a la función para recargar la tabla después de una operación
 function actualizarTabla() {
-    tabla_infraestructura.ajax.reload(null, false); // Recarga los datos sin resetear el paginado
+    tabla.ajax.reload(null, false); // Recarga los datos sin resetear el paginado
 }
 

@@ -14,6 +14,6 @@ class Convocatoria extends Model
 
     public function categoria()
     {
-        return $this->belongsTo('App\Models\CategoriaNoticia', 'categoria_id');
+        return $this->belongsTo('App\Models\CategoriasNoticia', 'categoria_id');
     }
 }

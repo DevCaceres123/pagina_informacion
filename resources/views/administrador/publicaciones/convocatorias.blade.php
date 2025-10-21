@@ -43,5 +43,5 @@
 @endsection
 
 @section('scripts')
-    <script src="{{ asset('js/modulos/noticias/noticia.js') }}" type="module"></script>
+    <script src="{{ asset('js/modulos/noticias/convocatoria.js') }}" type="module"></script>
 @endsection
