@@ -10,6 +10,7 @@ use App\Http\Controllers\Sedes\Controlador_sedes;
 use App\Http\Controllers\Carreras\Controlador_carrera;
 use App\Http\Controllers\Infraestructuras\Controlador_infraestructura;
 use App\Http\Controllers\Publicaciones\Controlador_noticias;
+use App\Http\Controllers\Publicaciones\Controlador_convocatorias;
 use App\Http\Middleware\Autenticados;
 use App\Http\Middleware\No_autenticados;
 use Illuminate\Support\Facades\Route;
@@ -149,6 +150,14 @@ Route::prefix('/admin')->middleware([Autenticados::class])->group(function () {
         Route::delete('eliminarImagenNoticia/{id_imagen}', 'eliminarImagenNoticia')->name('noticia.eliminarImagenNoticia');
         Route::post('actualizarNoticia/{id_noticia}', 'actualizarNoticia')->name('noticia.actualizarNoticia');
     });
+
+    // CONTROLADOR PARA LAS CONVOCATORIAS
+    Route::controller(Controlador_convocatorias::class)->group(function () {
+        Route::resource('convocatoria', Controlador_convocatorias::class);
+      
+    });
+
+
 
     //PARA LOS PERMISOS
     Route::resource('permisos', Controlador_permisos::class);

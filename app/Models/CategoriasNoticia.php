@@ -15,4 +15,9 @@ class CategoriasNoticia extends Model
     {
         return $this->hasMany('App\Models\Noticia', 'categoria_id');
     }
+
+    public function convocatorias()
+    {
+        return $this->hasMany('App\Models\Convocatoria', 'categoria_id');
+    }
 }

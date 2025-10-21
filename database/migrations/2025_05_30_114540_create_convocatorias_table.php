@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('titulo', 150);
             $table->text('descripcion');
             $table->string('archivo');
-
+            $table->enum('estado', ['activo', 'inactivo']);
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('sede_id');
           

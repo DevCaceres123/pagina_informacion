@@ -96,14 +96,12 @@
 
                                 <li class="nav-item">
                                     <a class="nav-link" href="{{ route('noticia.index') }}">Noticias</a>
-                                </li><!--end nav-item-->
-                                {{-- <li class="nav-item">
-                                    <a class="nav-link" href="">Categorias</a>
-                                </li><!--end nav-item-->
-                                <li class="nav-item">
-                                    <a class="nav-link" href="">Convocatorias</a>
-                                </li><!--end nav-item--> --}}
+                                </li>
 
+                                 <li class="nav-item">
+                                    <a class="nav-link" href="{{ route('convocatoria.index') }}">Convocatorias</a>
+                                </li>
+                                
                             </ul><!--end nav-->
                         </div><!--end startbarApplications-->
                     </li><!--end nav-item-->
