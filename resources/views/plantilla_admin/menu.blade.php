@@ -122,6 +122,44 @@
                             <span>INFRAESTRUCTURA</span>
                         </a>                       
                     </li>
+
+
+                      <li class="menu-label mt-2">
+                        <small class="label-border">
+                            <div class="border_left hidden-xs"></div>
+                            <div class="border_right"></div>
+                        </small>
+                        <span>ACADEMICO</span>
+                    </li>
+
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="#academico" data-bs-toggle="collapse" role="button"
+                            aria-expanded="false" aria-controls="academico">
+                            <i class="fas fa-university   menu-icon"></i>
+                            <span>ACADEMICO</span>
+                        </a>
+                        <div class="collapse " id="academico">
+                            <ul class="nav flex-column">
+
+                                <li class="nav-item">
+                                    <a class="nav-link" href="">Estudiantes</a>
+                                </li>
+
+                                 <li class="nav-item">
+                                    <a class="nav-link" href="">Titulados</a>
+                                </li>
+                                 <li class="nav-item">
+                                    <a class="nav-link" href="">Docentes</a>
+                                </li>
+
+                                 <li class="nav-item">
+                                    <a class="nav-link" href="">Administrativos</a>
+                                </li>
+                                
+                            </ul>
+                        </div>
+                    </li>
                     
                    
                     <!--end nav-item-->
