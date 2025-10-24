@@ -13,10 +13,9 @@
                         </div>
                         <div class="col-auto">
                             
-                                <button type="button" class="btn btn-primary nuevo_vehiculo" data-bs-toggle="modal"
-                                    data-bs-target="#modal_color">
-                                    <i class="fas fa-plus me-1"></i> Nuevo
-                                </button>
+                            <a href="{{ route('convocatoria.nuevaConvocatoria') }}" target="_blank" class="btn btn-primary"> 
+                                <i class="fas fa-plus me-1"></i> Nuevo
+                            </a>
                             
                         </div>
                     </div>

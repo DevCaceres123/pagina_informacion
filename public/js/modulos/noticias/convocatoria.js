@@ -109,9 +109,9 @@ function listar_infraestructuras() {
                                  : ``
                          }
                       
-                             ${
-                                 permisosGlobal.eliminar
-                                     ? ` <a  href="editarNoticia/${row.id}" class="btn btn-sm btn-outline-warning px-2 d-inline-flex align-items-center editar_sede me-1" data-id="${row.id}" title="Editar Noticia">
+                        ${
+                            permisosGlobal.eliminar
+                        ? ` <a  href="editarConvocatoria/${row.id}" class="btn btn-sm btn-outline-warning px-2 d-inline-flex align-items-center editar_sede me-1" data-id="${row.id}" title="Editar Convocatoria">
                             <i class="fas fa-pencil-alt fs-16"></i>
                         </a>`
                                      : ``

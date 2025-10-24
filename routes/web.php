@@ -155,6 +155,10 @@ Route::prefix('/admin')->middleware([Autenticados::class])->group(function () {
     Route::controller(Controlador_convocatorias::class)->group(function () {
         Route::resource('convocatoria', Controlador_convocatorias::class);
         Route::get('listarConvocatorias', 'listarConvocatorias')->name('convocatoria.listarNoticias');
+        Route::get('nuevaConvocatoria', 'nuevaConvocatoria')->name('convocatoria.nuevaConvocatoria');
+        Route::get('editarConvocatoria/{id_convocatoria}', 'editarConvocatoria')->name('convocatoria.editarConvocatoria');
+        Route::delete('eliminarImagenConvocatoria/{id_convocatoria}', 'eliminarImagenConvocatoria')->name('noticia.eliminarImagenConvocatoria');
+        Route::post('actualizarConvocatoria/{id_convocatoria}', 'actualizarConvocatoria')->name('noticia.actualizarConvocatoria');
       
     });
 
