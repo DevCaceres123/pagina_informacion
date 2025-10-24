@@ -28,6 +28,7 @@
                                     <th>Nº</th>
                                     <th>TITULO</th>
                                     <th>TIPO</th>
+                                    <th>SEDE</th>
                                     <th>CREACION</th>                                                            
                                     <th>PUBLICAR</th>                                                                   
                                     <th>ACCION</th>

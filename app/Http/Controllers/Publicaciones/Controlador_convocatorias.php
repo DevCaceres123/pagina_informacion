@@ -32,7 +32,10 @@ class Controlador_convocatorias extends Controller
             'categoria' => function ($query) {
                 $query->select(['id','nombre']);
             },
-        ])->select('id', 'titulo', 'estado', 'created_at', 'categoria_id')->orderBy('id', 'desc');
+            'sede' => function ($query) {
+                $query->select(['id','nombre']);
+            },
+        ])->select('id', 'titulo', 'estado', 'created_at', 'categoria_id','sede_id')->orderBy('id', 'desc');
 
 
         if (!empty($request->search['value'])) {
@@ -349,6 +352,41 @@ class Controlador_convocatorias extends Controller
         }
 
         return $rutas;
+    }
+
+
+
+    public function cambiar_estado_convocatoria(Request $request, string $id_convocatoria)
+    {
+        
+        DB::beginTransaction();
+        try {
+
+            $convocatoria = Convocatoria::find($id_convocatoria);
+            if (!$convocatoria) {
+                throw new Exception('convocatoria no encontrado');
+            }
+            if ($request->estado == "activo") {
+                $convocatoria->estado = "inactivo";
+            }
+            if ($request->estado == "inactivo") {
+                $convocatoria->estado = "activo";
+            }
+
+            $convocatoria->save();
+            DB::commit();
+
+            $this->mensaje("exito", "Estado cambiado Correctamente");
+
+            return response()->json($this->mensaje, 200);
+        } catch (Exception $e) {
+            // Revertir los cambios si hay algún error
+            DB::rollBack();
+
+            $this->mensaje("error", "Error " . $e->getMessage());
+
+            return response()->json($this->mensaje, 200);
+        }
     }
 
     public function mensaje($titulo, $mensaje)

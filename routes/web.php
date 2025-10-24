@@ -157,8 +157,9 @@ Route::prefix('/admin')->middleware([Autenticados::class])->group(function () {
         Route::get('listarConvocatorias', 'listarConvocatorias')->name('convocatoria.listarNoticias');
         Route::get('nuevaConvocatoria', 'nuevaConvocatoria')->name('convocatoria.nuevaConvocatoria');
         Route::get('editarConvocatoria/{id_convocatoria}', 'editarConvocatoria')->name('convocatoria.editarConvocatoria');
-        Route::delete('eliminarImagenConvocatoria/{id_convocatoria}', 'eliminarImagenConvocatoria')->name('noticia.eliminarImagenConvocatoria');
-        Route::post('actualizarConvocatoria/{id_convocatoria}', 'actualizarConvocatoria')->name('noticia.actualizarConvocatoria');
+        Route::delete('eliminarImagenConvocatoria/{id_convocatoria}', 'eliminarImagenConvocatoria')->name('convocatoria.eliminarImagenConvocatoria');
+        Route::post('actualizarConvocatoria/{id_convocatoria}', 'actualizarConvocatoria')->name('convocatoria.actualizarConvocatoria');
+        Route::put('cambiar_estado_convocatoria/{id_noticia}', 'cambiar_estado_convocatoria')->name('convocatoria.cambiar_estado_convocatoria');
       
     });
 

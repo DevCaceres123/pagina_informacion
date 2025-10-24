@@ -57,6 +57,16 @@ function listar_infraestructuras() {
             },
 
             {
+                data: "sede.nombre",
+                className: "table-td text-capitalize",
+                render: function (data) {
+                    return `                            
+                       <span class="badge rounded-pill bg-success text-light p-2 fs-6">${data}</span>
+                    `;
+                },
+            },
+
+            {
                 data: "created_at_formateado",
                 className: "table-td text-capitalize",
                 render: function (data) {
@@ -76,7 +86,7 @@ function listar_infraestructuras() {
                     let desactivarContent =
                         permisosGlobal["estado"] == false
                             ? `
-                            <a class="cambiar_estado_destacado" data-id="${row.id},${row.estado_destacado}">
+                            <a class="cambiar_estado_convocatoria" data-id="${row.id},${row.estado}">
                                 <div class="form-check form-switch ms-3">
                                     <input class="form-check-input" type="checkbox" 
                                            ${estadoChecked} style="transform: scale(2.0);">
@@ -158,5 +168,36 @@ $(document).on("click", ".eliminar_convocatoria", function () {
         } else {
             alerta_top("error", "Se canceló la eliminacion");
         }
+    });
+});
+
+
+// cambiar estado destacado
+$("#tabla_listar_convocatorias").on("click", ".cambiar_estado_convocatoria", function (e) {
+    e.preventDefault(); // Evitar que el enlace recargue la página
+
+    // Obtener el valor de data-id
+    var dataId = $(this).data("id");
+    
+    // Separar el id y el estado
+    var values = dataId.split(",");
+
+    let datos = {
+        estado: values[1],
+    };
+
+    crud("admin/cambiar_estado_convocatoria", "PUT", values[0], datos, function (error, response) {
+        if (response.tipo === "errores") {
+            mensajeAlerta(response.mensaje, "errores");
+            return;
+        }
+        if (response.tipo != "exito") {
+            mensajeAlerta(response.mensaje, response.tipo);
+            return;
+        }
+
+        mensajeAlerta(response.mensaje, response.tipo);
+
+        actualizarTabla();
     });
 });
