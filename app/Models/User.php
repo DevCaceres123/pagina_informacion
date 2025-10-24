@@ -79,4 +79,8 @@ class User extends Authenticatable
     public function noticias(){
         return $this->hasMany('App\Models\Noticia', 'user_id');
     }
+
+    public function convocatorias(){
+        return $this->hasMany('App\Models\Convocatorias', 'user_id');
+    }
 }

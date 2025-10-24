@@ -6,187 +6,70 @@
 
         <div class="list-group">
 
+            @foreach ($convocatorias as $convocatoria)
+                @php
+                    // Tomar la primera imagen o una por defecto
+                    $imagen = $convocatoria->imgConvocatorias->first()->imagen ?? 'imagenes_convocatorias/default.webp';
+                @endphp
 
-            <!-- Convocatoria 3 -->
-            <div class="list-group-item list-group-item-action mb-4 shadow-sm rounded-3">
-                <div class="row g-0">
-                    <!-- Imagen -->
-                    <div class="col-md-4">
-                        <img src="{{ asset('assets/noticias/feria_cientifica.jpg') }}"
-                            class="img-fluid rounded-start h-100 object-fit-cover" alt="Convocatoria 3">
-                    </div>
-                    <!-- Texto -->
-                    <div class="col-md-8 d-flex flex-column p-3">
-                        <div class="d-flex justify-content-between align-items-start">
-                            <h5 class="fw-bold text-primary mb-0">Convocatoria de Becas Académicas</h5>
-                            <button class="btn btn-info btn-sm rounded-pill ms-1" title="Descargar">
-                                <i class="fas fa-download "></i>
-                            </button>
+                <div class="list-group-item list-group-item-action mb-4 shadow-sm rounded-3">
+                    <div class="row g-0">
+                        <!-- Imagen -->
+                        <div class="col-md-4">
+                            <img src="{{ asset('storage/' . $imagen) }}" class="img-fluid rounded-start object-fit-contain"
+                                alt="Imagen de {{ $convocatoria->titulo }}" style="width: 100%;height: 250px;">
                         </div>
-                        <p class="text-muted mb-3">
-                            Convocatoria dirigida a estudiantes destacados para acceder a becas académicas en distintas
-                            áreas de formación.
-                        </p>
-                        <p class="text-muted small" style="font-family: 'Inter', sans-serif;">📅 18 Agosto 2025</p>
-                        <div>
-                            <a href="/convocatoria" class="btn btn-outline-primary btn-sm rounded-pill">Ver más</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
+                        <!-- Texto -->
+                        <div class="col-md-8 d-flex flex-column p-3">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <h5 class="fw-bold text-primary mb-0 text-uppercase">
+                                    {{ $convocatoria->titulo }}
+                                </h5>
+                                <a href="{{ asset('storage/' . ($convocatoria->archivo ?? '')) }}"
+                                    class="btn btn-info btn-sm rounded-pill ms-1" title="Descargar PDF" target="_blank">
+                                    <i class="fas fa-download"></i>
+                                </a>
+                            </div>
 
+                            <p class="text-muted mb-3">
+                                {{ Str::limit($convocatoria->descripcion, 200, '...') }}
+                            </p>
+                            
+                            <p class="small text-muted mb-3 text-capitalize">
+                                <i class="far fa-calendar-alt me-1"></i> {{ $convocatoria->created_at->translatedFormat('d F Y') }} |
+                                <i class="fas fa-user me-1"></i>
+                                {{ $convocatoria->usuario
+                                    ? strtoupper(substr($convocatoria->usuario->nombres, 0, 1)) .
+                                        '. ' .
+                                        strtok($convocatoria->usuario->apellidos, ' ')
+                                    : 'Desconocido' }}
+                                |
+                                <i class="fas fa-tag me-1"></i> {{ $convocatoria->categoria->nombre }}
+                            </p>
 
-                  <!-- Convocatoria 3 -->
-            <div class="list-group-item list-group-item-action mb-4 shadow-sm rounded-3">
-                <div class="row g-0">
-                    <!-- Imagen -->
-                    <div class="col-md-4">
-                        <img src="{{ asset('assets/noticias/feria_cientifica.jpg') }}"
-                            class="img-fluid rounded-start h-100 object-fit-cover" alt="Convocatoria 3">
-                    </div>
-                    <!-- Texto -->
-                    <div class="col-md-8 d-flex flex-column p-3">
-                        <div class="d-flex justify-content-between align-items-start">
-                            <h5 class="fw-bold text-primary mb-0">Convocatoria de Becas Académicas</h5>
-                            <button class="btn btn-info btn-sm rounded-pill ms-1" title="Descargar">
-                                <i class="fas fa-download "></i>
-                            </button>
-                        </div>
-                        <p class="text-muted mb-3">
-                            Convocatoria dirigida a estudiantes destacados para acceder a becas académicas en distintas
-                            áreas de formación.
-                        </p>
-                        <p class="text-muted small" style="font-family: 'Inter', sans-serif;">📅 18 Agosto 2025</p>
-                        <div>
-                            <a href="#" class="btn btn-outline-primary btn-sm rounded-pill">Ver más</a>
+                            <div>
+                                <a  href="{{ route('convocatoria.deatelleConvocatoria', encrypt($convocatoria->id)) }} "class="btn btn-outline-primary btn-md mt-2 "
+                                    style="font-family: 'Inter', sans-serif;">Ver
+                                    más</a>
+                            </div>
                         </div>
                     </div>
                 </div>
+            @endforeach
+
+
+
+            <!-- Paginación -->
+            <div class="mb-2 mt-4">
+                <p class="text-muted text-center">
+                    Mostrando {{ $convocatorias->firstItem() }} al {{ $convocatorias->lastItem() }} de {{ $convocatorias->total() }}
+                    resultados
+                </p>
             </div>
 
-
-                  <!-- Convocatoria 3 -->
-            <div class="list-group-item list-group-item-action mb-4 shadow-sm rounded-3">
-                <div class="row g-0">
-                    <!-- Imagen -->
-                    <div class="col-md-4">
-                        <img src="{{ asset('assets/noticias/feria_cientifica.jpg') }}"
-                            class="img-fluid rounded-start h-100 object-fit-cover" alt="Convocatoria 3">
-                    </div>
-                    <!-- Texto -->
-                    <div class="col-md-8 d-flex flex-column p-3">
-                        <div class="d-flex justify-content-between align-items-start">
-                            <h5 class="fw-bold text-primary mb-0">Convocatoria de Becas Académicas</h5>
-                            <button class="btn btn-info btn-sm rounded-pill ms-1" title="Descargar">
-                                <i class="fas fa-download "></i>
-                            </button>
-                        </div>
-                        <p class="text-muted mb-3">
-                            Convocatoria dirigida a estudiantes destacados para acceder a becas académicas en distintas
-                            áreas de formación.
-                        </p>
-                        <p class="text-muted small" style="font-family: 'Inter', sans-serif;">📅 18 Agosto 2025</p>
-                        <div>
-                            <a href="#" class="btn btn-outline-primary btn-sm rounded-pill">Ver más</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-
-                  <!-- Convocatoria 3 -->
-            <div class="list-group-item list-group-item-action mb-4 shadow-sm rounded-3">
-                <div class="row g-0">
-                    <!-- Imagen -->
-                    <div class="col-md-4">
-                        <img src="{{ asset('assets/noticias/feria_cientifica.jpg') }}"
-                            class="img-fluid rounded-start h-100 object-fit-cover" alt="Convocatoria 3">
-                    </div>
-                    <!-- Texto -->
-                    <div class="col-md-8 d-flex flex-column p-3">
-                        <div class="d-flex justify-content-between align-items-start">
-                            <h5 class="fw-bold text-primary mb-0">Convocatoria de Becas Académicas</h5>
-                            <button class="btn btn-info btn-sm rounded-pill ms-1" title="Descargar">
-                                <i class="fas fa-download "></i>
-                            </button>
-                        </div>
-                        <p class="text-muted mb-3">
-                            Convocatoria dirigida a estudiantes destacados para acceder a becas académicas en distintas
-                            áreas de formación.
-                        </p>
-                        <p class="text-muted small" style="font-family: 'Inter', sans-serif;">📅 18 Agosto 2025</p>
-                        <div>
-                            <a href="#" class="btn btn-outline-primary btn-sm rounded-pill">Ver más</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-
-                  <!-- Convocatoria 3 -->
-            <div class="list-group-item list-group-item-action mb-4 shadow-sm rounded-3">
-                <div class="row g-0">
-                    <!-- Imagen -->
-                    <div class="col-md-4">
-                        <img src="{{ asset('assets/noticias/feria_cientifica.jpg') }}"
-                            class="img-fluid rounded-start h-100 object-fit-cover" alt="Convocatoria 3">
-                    </div>
-                    <!-- Texto -->
-                    <div class="col-md-8 d-flex flex-column p-3">
-                        <div class="d-flex justify-content-between align-items-start">
-                            <h5 class="fw-bold text-primary mb-0">Convocatoria de Becas Académicas</h5>
-                            <button class="btn btn-info btn-sm rounded-pill ms-1" title="Descargar">
-                                <i class="fas fa-download "></i>
-                            </button>
-                        </div>
-                        <p class="text-muted mb-3">
-                            Convocatoria dirigida a estudiantes destacados para acceder a becas académicas en distintas
-                            áreas de formación.
-                        </p>
-                        <p class="text-muted small" style="font-family: 'Inter', sans-serif;">📅 18 Agosto 2025</p>
-                        <div>
-                            <a href="#" class="btn btn-outline-primary btn-sm rounded-pill">Ver más</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-
-                  <!-- Convocatoria 3 -->
-            <div class="list-group-item list-group-item-action mb-4 shadow-sm rounded-3">
-                <div class="row g-0">
-                    <!-- Imagen -->
-                    <div class="col-md-4">
-                        <img src="{{ asset('assets/noticias/feria_cientifica.jpg') }}"
-                            class="img-fluid rounded-start h-100 object-fit-cover" alt="Convocatoria 3">
-                    </div>
-                    <!-- Texto -->
-                    <div class="col-md-8 d-flex flex-column p-3">
-                        <div class="d-flex justify-content-between align-items-start">
-                            <h5 class="fw-bold text-primary mb-0">Convocatoria de Becas Académicas</h5>
-                            <button class="btn btn-info btn-sm rounded-pill ms-1" title="Descargar">
-                                <i class="fas fa-download "></i>
-                            </button>
-                        </div>
-                        <p class="text-muted mb-3">
-                            Convocatoria dirigida a estudiantes destacados para acceder a becas académicas en distintas
-                            áreas de formación.
-                        </p>
-                        <p class="text-muted small" style="font-family: 'Inter', sans-serif;">📅 18 Agosto 2025</p>
-                        <div>
-                            <a href="#" class="btn btn-outline-primary btn-sm rounded-pill">Ver más</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-
-
-
-            <!-- Cargar más -->
-            <div class="text-center mt-4">
-                <button id="cargarMas" class="btn btn-secondary btn-md shadow-sm">Cargar más</button>
+            <div class="d-flex justify-content-center">
+                {{ $convocatorias->links('pagination::simple-bootstrap-5') }}
             </div>
 
         </div>

@@ -57,8 +57,8 @@
 
         <!-- Contenido de la noticia -->
         <div class="mb-5" style="font-family: 'Inter', sans-serif; font-size: 1rem; line-height: 1.9; color:#333;">
-            <p>
-                {{ $noticia->contenido }}
+            <p>                
+                  {!! nl2br(e($noticia->contenido)) !!}
             </p>
         </div>
 

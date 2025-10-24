@@ -19,7 +19,7 @@ class Convocatoria extends Model
         return $this->belongsTo('App\Models\CategoriasNoticia', 'categoria_id');
     }
 
-    public function imgNoticias(){
+    public function imgConvocatorias(){
           return $this->hasMany('App\Models\ImgConvocatoria');
     }
 
@@ -36,6 +36,11 @@ class Convocatoria extends Model
             : Carbon::parse($this->created_at);
     
         return $fecha->locale('es')->translatedFormat('d \d\e F \d\e Y H:i');
+    }
+
+
+    public function usuario(){
+        return $this->belongsTo('App\Models\User','user_id');
     }
 
     protected static function boot()

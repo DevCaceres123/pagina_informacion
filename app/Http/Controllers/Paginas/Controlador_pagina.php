@@ -9,6 +9,7 @@ use App\Models\Carrera;
 use App\Models\Noticia;
 use App\Models\ImgNoticia;
 use App\Models\CategoriasNoticia;
+use App\Models\Convocatoria;
 use Illuminate\Support\Facades\DB;
 
 class Controlador_pagina extends Controller
@@ -96,12 +97,66 @@ class Controlador_pagina extends Controller
 
     public function convocatorias()
     {
-        return view('plantilla_web.paginas.convocatorias');
+        $convocatorias = Convocatoria::with([
+        'sede' => function ($q) {
+            $q->select('id', 'nombre'); // solo traigo id y nombre de la sede
+        },
+        'categoria' => function ($q) {
+            $q->select('id', 'nombre'); // solo id y nombre de la categoría
+        },
+         'usuario' => function ($q) {
+             $q->select('id', 'nombres', 'apellidos'); // solo traigo id y nombre de la sede
+         },
+        'imgConvocatorias' => function ($q) {
+            $q->select(['imagen', 'convocatoria_id']);
+        }
+        ])->select('id', 'titulo', 'descripcion','archivo' ,'sede_id', 'categoria_id', 'user_id', 'created_at')
+          ->where('estado', 'activo')
+          ->orderBy('id', 'desc')
+          ->paginate(6)
+          ->withQueryString();
+        
+        
+        return view('plantilla_web.paginas.convocatorias', compact('convocatorias'));
     }
 
-    public function convocatoria()
+    public function convocatoria($id)
     {
-        return view('plantilla_web.paginas.convocatoria');
+        $id = decrypt($id);
+        $convocatorias = Convocatoria::with([
+        'sede' => function ($q) {
+            $q->select('id', 'nombre'); // solo traigo id y nombre de la sede
+        },
+        'categoria' => function ($q) {
+            $q->select('id', 'nombre'); // solo id y nombre de la categoría
+        },
+         'usuario' => function ($q) {
+             $q->select('id', 'nombres', 'apellidos'); // solo traigo id y nombre de la sede
+         },
+        'imgConvocatorias' => function ($q) {
+            $q->select(['imagen', 'convocatoria_id']);
+        }
+        ])->select('id', 'titulo', 'descripcion','archivo' ,'sede_id', 'categoria_id', 'user_id', 'created_at')
+          ->where('estado', 'activo')
+          ->orderBy('id', 'desc')
+          ->where('id',$id)
+          ->first();
+          
+        
+
+
+
+        $ultimasConvocatorias = Convocatoria::with(['sede', 'categoria', 'imgConvocatorias' => function ($query) {
+            $query->select(['imagen', 'convocatoria_id']);
+        }])
+        ->select('id', 'titulo', 'descripcion','archivo' ,'sede_id', 'categoria_id', 'user_id', 'created_at')
+        ->where('estado', 'activo')
+         ->where('categoria_id', $convocatorias->categoria_id)
+         ->orderBy('id', 'desc')
+         ->limit(3)
+         ->get();
+        
+        return view('plantilla_web.paginas.convocatoria',compact('convocatorias','ultimasConvocatorias'));
     }
     public function sedes($id)
     {
@@ -173,13 +228,13 @@ class Controlador_pagina extends Controller
             ->get();
 
 
-        
-    return response()->json([
-        'tipo' => 'exito',
-        'carreras' => $carreras
-    ]);
+
+        return response()->json([
+            'tipo' => 'exito',
+            'carreras' => $carreras
+        ]);
 
 
-        
+
     }
 }
