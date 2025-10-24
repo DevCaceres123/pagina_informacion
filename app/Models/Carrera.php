@@ -4,12 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+
 class Carrera extends Model
 {
     use SoftDeletes;
     public function sedes()
     {
-        return $this->belongsToMany('App\Models\Sede', 'carrera_sede','carrera_id', 'sede_id');
+        return $this->belongsToMany('App\Models\Sede', 'carrera_sede', 'carrera_id', 'sede_id');
     }
     public function estudiantes()
     {
@@ -39,5 +40,10 @@ class Carrera extends Model
                 }
             }
         });
+    }
+
+    public function estadisticas()
+    {
+        return $this->hasMany(EstadisticaEstudiante::class);
     }
 }

@@ -11,6 +11,7 @@ use App\Http\Controllers\Carreras\Controlador_carrera;
 use App\Http\Controllers\Infraestructuras\Controlador_infraestructura;
 use App\Http\Controllers\Publicaciones\Controlador_noticias;
 use App\Http\Controllers\Publicaciones\Controlador_convocatorias;
+use App\Http\Controllers\Academico\Controlador_estadisticasEstudiantes;
 use App\Http\Middleware\Autenticados;
 use App\Http\Middleware\No_autenticados;
 use Illuminate\Support\Facades\Route;
@@ -160,6 +161,15 @@ Route::prefix('/admin')->middleware([Autenticados::class])->group(function () {
         Route::delete('eliminarImagenConvocatoria/{id_convocatoria}', 'eliminarImagenConvocatoria')->name('convocatoria.eliminarImagenConvocatoria');
         Route::post('actualizarConvocatoria/{id_convocatoria}', 'actualizarConvocatoria')->name('convocatoria.actualizarConvocatoria');
         Route::put('cambiar_estado_convocatoria/{id_noticia}', 'cambiar_estado_convocatoria')->name('convocatoria.cambiar_estado_convocatoria');
+      
+    });
+
+
+    // CONTROLADOR PARA LA ESTADISTICA DE LOS ESTUDIANTES
+    Route::controller(Controlador_estadisticasEstudiantes::class)->group(function () {
+        Route::resource('estudiantes', Controlador_estadisticasEstudiantes::class);
+        Route::get('listarEstudiantes', 'listarEstudiantes')->name('estudiantes.listarEstudiantes');
+        Route::put('actualizar_registro_estudiante/{id_carrera}', 'actualizar_registro_estudiante')->name('estudiantes.actualizar_registro_estudiante');
       
     });
 
