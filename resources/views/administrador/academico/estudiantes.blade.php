@@ -14,15 +14,26 @@
 
             <div class="card-body">
                 <form action="" method="POST">
-                    @csrf
 
-                    <div class="row mb-4">
+                    <div class="row mb-4">                       
+
                         <div class="col-md-3">
-                            <label for="gestion" class="form-label fw-bold">Gestión:</label>
-                            <input type="number" name="gestion" id="gestion" class="form-control shadow-sm"
-                                value="{{ date('Y') }}" min="2000" max="2100">
+                            <label for="gestion_filtro" class="form-label fw-bold">Ver estadísticas de:</label>
+                            <select name="gestion_filtro" id="gestion_filtro" class="form-select shadow-sm">
+                                @php
+                                    // Agregamos la gestión actual como primera opción
+                                    $todasGestiones = collect([$gestionActual])->merge($gestiones);
+                                @endphp
+
+                                @foreach ($todasGestiones as $g)
+                                    <option value="{{ $g }}" {{ $g == $gestionActual ? 'selected' : '' }}>
+                                        {{ $g }}
+                                    </option>
+                                @endforeach
+                            </select>
                         </div>
                     </div>
+
 
                     <div class="table-responsive">
                         <table class="table table-bordered align-middle text-center shadow-sm table-striped"

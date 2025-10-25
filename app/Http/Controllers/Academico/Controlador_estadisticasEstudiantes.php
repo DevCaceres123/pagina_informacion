@@ -18,25 +18,37 @@ class Controlador_estadisticasEstudiantes extends Controller
      */
     public function index(Request $request)
     {
-        // Si el usuario no selecciona gestión, usamos el año actual
-        $gestion = $request->input('gestion', date('Y'));
+        $gestionActual = date('Y');
+
+        // obtenemos las gestiones distintas existentes
+        $gestiones = EstadisticaEstudiante::select('gestion')
+            ->distinct()
+            ->where('gestion', '!=', $gestionActual)
+            ->orderByDesc('gestion')
+            ->pluck('gestion'); // devuelve solo los valores de la columna
+
+
+        $sedes = Sede::where('estado', 'activo')->get();
 
         // Cargamos todas las carreras con sus sedes y estadísticas de la gestión seleccionada
-        $carreras = Carrera::with(['sedes', 'estadisticas' => function ($q) use ($gestion) {
-            $q->where('gestion', $gestion);
+        $carreras = Carrera::with(['sedes', 'estadisticas' => function ($q) {
+            // $q->where('gestion', $gestion);
         }])->get();
 
 
         $sedes = Sede::where('estado', 'activo')->get();
 
-        return view('administrador.academico.estudiantes', compact('carreras','sedes'));
+        return view('administrador.academico.estudiantes', compact('sedes','carreras','gestionActual','gestiones'));
     }
 
     public function listarEstudiantes(Request $request)
     {
-        $query = Carrera::with(['sedes', 'estadisticas' => function ($q) {
-            // $q->where('gestion', $gestion);
-            $q->select(['id','cantidad_hombres','cantidad_mujeres','total','carrera_id']);
+        $gestion = $request->input('fecha', date('Y')); // por defecto el año actual
+
+        $query = Carrera::with(['sedes', 'estadisticas' => function ($q) use ($gestion) {
+            
+            $q->select(['id','cantidad_hombres','cantidad_mujeres','total','carrera_id'])
+              ->where('gestion', $gestion);
         }])->orderBy('id', 'desc');
 
         if (!empty($request->search['value'])) {
@@ -74,7 +86,7 @@ class Controlador_estadisticasEstudiantes extends Controller
         DB::beginTransaction();
         try {
 
-            $anio = date('Y');
+            $anio = $request->gestion;
 
             // updateOrCreate: busca por condiciones y si existe actualiza, si no crea
             $estadistica = EstadisticaEstudiante::updateOrCreate(

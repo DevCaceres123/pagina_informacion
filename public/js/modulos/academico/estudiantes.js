@@ -20,9 +20,13 @@ function listar() {
         ajax: {
             url: "listarEstudiantes", // Ruta que recibe la solicitud en el servidor
             type: "GET", // Método de la solicitud (GET o POST)
+            data: function (d) {
+                d.fecha = $("#gestion_filtro").val(); // Agrega la fecha al request              
+                // console.log(d);
+            },
             dataSrc: function (json) {
                 permisosGlobal = json.permisos;
-                // console.log(permisosGlobal); // Guardar los permisos para usarlos en las columnas
+                
                 return json.data; // Data que se pasará al DataTable
             },
         },
@@ -117,6 +121,11 @@ function listar() {
             },
         ],
     });
+
+    // Permite filtrar por una fecha diferente
+    $("#gestion_filtro").on("change", function () {
+        tabla.ajax.reload();
+    });
 }
 
 // Llamada a la función para recargar la tabla después de una operación
@@ -153,12 +162,14 @@ $('#tabla_estudiantes').on('click', '.actualizar_informacion', function(e) {
     const id = $(this).data('id');
     const hombres = parseInt($row.find('input.hombres').val()) || 0;
     const mujeres = parseInt($row.find('input.mujeres').val()) || 0;
+    const gestion = $("#gestion_filtro").val();
     //const total = parseInt($row.find('input.total').val()) || 0;
     
     const datos = {
         id: id,
         hombres: hombres,
-        mujeres: mujeres,        
+        mujeres: mujeres,
+        gestion: gestion,    
     };
 
     crud("admin/actualizar_registro_estudiante", "PUT", id, datos, function (error, response) {
