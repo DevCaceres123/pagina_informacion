@@ -21,12 +21,12 @@ function listar() {
             url: "listarEstudiantes", // Ruta que recibe la solicitud en el servidor
             type: "GET", // Método de la solicitud (GET o POST)
             data: function (d) {
-                d.fecha = $("#gestion_filtro").val(); // Agrega la fecha al request              
+                d.fecha = $("#gestion_filtro").val(); // Agrega la fecha al request
                 // console.log(d);
             },
             dataSrc: function (json) {
                 permisosGlobal = json.permisos;
-                
+
                 return json.data; // Data que se pasará al DataTable
             },
         },
@@ -155,24 +155,29 @@ $("#tabla_estudiantes").on("change", ".editar-fila", function () {
     }
 });
 
-$('#tabla_estudiantes').on('click', '.actualizar_informacion', function(e) {
+$("#tabla_estudiantes").on("click", ".actualizar_informacion", function (e) {
     e.preventDefault(); // Evita que haga submit o navegue
-    const $row = $(this).closest('tr');
+    const $row = $(this).closest("tr");
 
-    const id = $(this).data('id');
-    const hombres = parseInt($row.find('input.hombres').val()) || 0;
-    const mujeres = parseInt($row.find('input.mujeres').val()) || 0;
+    const id = $(this).data("id");
+    const hombres = parseInt($row.find("input.hombres").val()) || 0;
+    const mujeres = parseInt($row.find("input.mujeres").val()) || 0;
     const gestion = $("#gestion_filtro").val();
     //const total = parseInt($row.find('input.total').val()) || 0;
-    
+
     const datos = {
         id: id,
         hombres: hombres,
         mujeres: mujeres,
-        gestion: gestion,    
+        gestion: gestion,
     };
 
-    crud("admin/actualizar_registro_estudiante", "PUT", id, datos, function (error, response) {
+    crud(
+        "admin/actualizar_registro_estudiante",
+        "PUT",
+        id,
+        datos,
+        function (error, response) {
             if (response.tipo === "errores") {
                 mensajeAlerta(response.mensaje, "errores");
                 return;
@@ -181,17 +186,63 @@ $('#tabla_estudiantes').on('click', '.actualizar_informacion', function(e) {
                 mensajeAlerta(response.mensaje, response.tipo);
                 return;
             }
-    
+
             mensajeAlerta(response.mensaje, response.tipo);
-    
+
             actualizarTabla();
-    });
-    
+        }
+    );
 });
 
+$("#generarReporte").on("click", function (e) {
+    e.preventDefault();
+    const tipo = $("#tipoReporte").val(); // 'sede' o 'carrera'
+    const gestion = $("#gestion_filtro").val() || $("#gestion").val(); // por si manejas año
 
+    if (!tipo) {
+        alert("Seleccione primero si desea filtrar por sede o carrera.");
+        return;
+    }
 
+    // Obtener IDs seleccionados
+    const seleccionados = [];
+    $(".check-item:checked").each(function () {
+        seleccionados.push($(this).val());
+    });
 
+    if (seleccionados.length === 0) {
+        alert('Seleccione al menos una opción o marque "Listar todo".');
+        return;
+    }
+
+    const datos = {
+        tipo: tipo,
+        seleccionados: seleccionados,
+        gestion: gestion,
+    };
+
+    crud("admin/generar_reporte_estudiante", "POST", null, datos, function (error, response) {
+        if (error || !response) {
+            mensajeAlerta("Error al cargar la información", "error");
+            return;
+        }
+
+        if (response.tipo != "exito") {
+            mensajeAlerta(response.mensaje, response.tipo);
+            return;
+        }
+
+        //si todo esta correcto muestra el mensaje de correcto
+        //$("#modalReporte").modal("hide");        
+        
+        mensajeAlerta('Reporte generado espere porfavor....', "exito");
+        
+        setTimeout(() => {
+            let pdfUrl = generarURlBlob(response.mensaje);
+            window.open(pdfUrl, "_blank");
+        }, 1500);
+    });
+});
 
 // $('#guardar_totales').on('click', function() {
 //     const table = $('#tabla_estudiantes').DataTable();
@@ -223,4 +274,16 @@ $('#tabla_estudiantes').on('click', '.actualizar_informacion', function(e) {
 // });
 
 
+
+function generarURlBlob(pdfbase64) {
+
+    // Convertir Base64 a un Blob
+    const byteCharacters = atob(pdfbase64); // Decodifica el Base64
+    const byteNumbers = Array.from(byteCharacters).map(c => c.charCodeAt(0));
+    const byteArray = new Uint8Array(byteNumbers);
+    const blob = new Blob([byteArray], { type: 'application/pdf' });
+
+    // Crear una URL para el Blob
+    return URL.createObjectURL(blob);
+}
 

@@ -38,7 +38,7 @@ class Controlador_estadisticasEstudiantes extends Controller
 
         $sedes = Sede::where('estado', 'activo')->get();
 
-        return view('administrador.academico.estudiantes', compact('sedes','carreras','gestionActual','gestiones'));
+        return view('administrador.academico.estudiantes', compact('sedes', 'carreras', 'gestionActual', 'gestiones'));
     }
 
     public function listarEstudiantes(Request $request)
@@ -46,7 +46,7 @@ class Controlador_estadisticasEstudiantes extends Controller
         $gestion = $request->input('fecha', date('Y')); // por defecto el año actual
 
         $query = Carrera::with(['sedes', 'estadisticas' => function ($q) use ($gestion) {
-            
+
             $q->select(['id','cantidad_hombres','cantidad_mujeres','total','carrera_id'])
               ->where('gestion', $gestion);
         }])->orderBy('id', 'desc');
@@ -114,6 +114,90 @@ class Controlador_estadisticasEstudiantes extends Controller
         }
     }
 
+
+    public function generar_reporte_estudiante(Request $request)
+    {
+        try {
+
+            $tipo = $request->input('tipo');
+            $seleccionados = $request->input('seleccionados', []);
+            $gestion = $request->input('gestion', date('Y'));
+
+            // Contenedor para los resultados
+            $estadisticas = collect();
+
+
+            // 🔹 Reporte por CARRERA
+            if ($tipo === 'carrera') {
+                $estadisticas = EstadisticaEstudiante::with('carrera')
+                    ->whereIn('carrera_id', $seleccionados)
+                    ->where('gestion', $gestion)
+                    ->get();
+
+                $pdf = \PDF::loadView('administrador.academico.reporteEstudiante', [
+                    'tipo' => 'carrera',
+                    'estadisticas' => $estadisticas,
+                    'gestion' => $gestion
+                ]);
+            }
+
+            if ($request->tipo === 'sede') {
+
+                // Obtener las carreras asociadas a las sedes seleccionadas
+                $carrerasPorSede = DB::table('carrera_sede')
+                    ->whereIn('sede_id', $seleccionados)
+                    ->get()
+                    ->groupBy('sede_id');
+
+                $resumenSedes = [];
+
+                foreach ($carrerasPorSede as $sedeId => $carreras) {
+                    $carrerasIds = $carreras->pluck('carrera_id');
+
+                    // Obtener estadísticas de esas carreras
+                    $estadisticas = EstadisticaEstudiante::whereIn('carrera_id', $carrerasIds)
+                        ->where('gestion', $gestion)
+                        ->get();
+
+                    // Hacer sumatorias de campos numéricos
+                    $total_hombres = $estadisticas->sum('cantidad_hombres');
+                    $total_mujeres = $estadisticas->sum('cantidad_mujeres');
+                    $total_general = $estadisticas->sum('total');
+
+                    $sede = Sede::find($sedeId);
+
+                    $resumenSedes[] = [
+                        'sede' => $sede->nombre ?? 'Sin nombre',
+                        'total_hombres' => $total_hombres,
+                        'total_mujeres' => $total_mujeres,
+                        'total_general' => $total_general,
+                    ];
+                }
+
+                
+                $pdf = \PDF::loadView('administrador.academico.reporteEstudiante', [
+                    'tipo' => 'sede',
+                    'resumenSedes' => $resumenSedes,
+                    'gestion' => $gestion
+                ]);
+            }
+
+            // Render PDF y devolverlo en base64
+            $pdfContent = $pdf->output();
+            $pdfb64 = base64_encode($pdfContent);
+
+            $this->mensaje('exito', $pdfb64);
+            return response()->json($this->mensaje, 200);
+
+
+        } catch (Exception $e) {
+            DB::rollBack();
+
+            $this->mensaje("error", "error" . $e->getMessage());
+
+            return response()->json($this->mensaje, 200);
+        }
+    }
 
     /**
      * Show the form for creating a new resource.

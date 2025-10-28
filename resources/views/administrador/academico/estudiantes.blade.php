@@ -9,13 +9,13 @@
                 <h5 class="mb-0 fw-bold">
                     <i class="fas fa-user-graduate me-2"></i> Registro de Estudiantes por Carrera
                 </h5>
-                <span class="badge bg-light text-primary fw-bold">Gestión {{ date('Y') }}</span>
+                <span class="badge bg-light text-primary fw-bold fs-6">Gestión {{ date('Y') }}</span>
             </div>
 
             <div class="card-body">
                 <form action="" method="POST">
 
-                    <div class="row mb-4">                       
+                    <div class="row mb-4">
 
                         <div class="col-md-3">
                             <label for="gestion_filtro" class="form-label fw-bold">Ver estadísticas de:</label>
@@ -72,7 +72,7 @@
     </div>
 
     <div class="modal fade" id="modalReporte" tabindex="-1" aria-labelledby="modalReporteLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog modal-md">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Filtrar Reporte</h5>
@@ -82,24 +82,24 @@
                     <form id="formReporte">
 
                         <div class="mb-3">
-                            <label for="tipoReporte" class="form-label">Listar por:</label>
-                            <select id="tipoReporte" class="form-select">
-                                <option value="">-- Seleccione --</option>
+                            <label for="tipoReporte" class="form-label fw-bold">Filtrar por:</label>
+                            <select id="tipoReporte" class="form-select shadow-sm">
+                                <option value="">-- Seleccione tipo --</option>
                                 <option value="sede">Sede</option>
                                 <option value="carrera">Carrera</option>
                             </select>
                         </div>
 
-                        <div class="mb-3 d-none" id="checkboxesContainer">
-                            <!-- Aquí se listarán los checkboxes dinámicamente -->
-                        </div>
+                        <div id="checkboxesContainer" class="d-none mt-3"></div>
 
-                    </form>
+
+
                 </div>
                 <div class="modal-footer">
                     <button type="button" id="generarReporte" class="btn btn-success">
                         <i class="fas fa-file-pdf me-2"></i> Generar PDF
                     </button>
+                    </form>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                 </div>
             </div>
@@ -112,39 +112,58 @@
 @endsection
 
 @section('scripts')
-    <script src="{{ asset('js/modulos/academico/estudiantes.js') }}" type="module"></script>
+
     <script>
-        const sedes = @json($sedes); // array de sedes desde Laravel
-        const carreras = @json($carreras); // array de carreras desde Laravel
+        const sedes = @json($sedes);
+        const carreras = @json($carreras);
 
         $('#tipoReporte').on('change', function() {
             const tipo = $(this).val();
             const $container = $('#checkboxesContainer');
-            $container.empty(); // limpiar
+            $container.empty();
 
-            if (tipo === 'sede') {
-                sedes.forEach(sede => {
-                    $container.append(`
-                <div class="form-check">
-                    <input class="form-check-input filtroCheck" type="checkbox" value="${sede.id}" id="sede${sede.id}">
-                    <label class="form-check-label" for="sede${sede.id}">${sede.nombre}</label>
-                </div>
-            `);
-                });
-                $container.removeClass('d-none');
-            } else if (tipo === 'carrera') {
-                carreras.forEach(carrera => {
-                    $container.append(`
-                <div class="form-check">
-                    <input class="form-check-input filtroCheck" type="checkbox" value="${carrera.id}" id="carrera${carrera.id}">
-                    <label class="form-check-label" for="carrera${carrera.id}">${carrera.nombre}</label>
-                </div>
-            `);
-                });
-                $container.removeClass('d-none');
-            } else {
+            if (!tipo) {
                 $container.addClass('d-none');
+                return;
             }
+
+            // Agregar "Listar todo"
+            $container.append(`
+            <div class="mb-2">
+                <div class="form-check">
+                    <input class="form-check-input filtroCheck" type="checkbox" id="checkTodo">
+                    <label class="form-check-label fw-bold text-primary" for="checkTodo">Listar todo</label>
+                </div>
+            </div>
+        `);
+
+            // Contenedor de filas en dos columnas
+            const $rowContainer = $('<div class="row"></div>');
+
+            const data = tipo === 'sede' ? sedes : carreras;
+
+            data.forEach((item, index) => {
+                const col = $(`
+                <div class="col-md-6 mb-2">
+                    <div class="form-check">
+                        <input class="form-check-input filtroCheck check-item" type="checkbox" value="${item.id}" id="${tipo}${item.id}">
+                        <label class="form-check-label" for="${tipo}${item.id}">${item.nombre}</label>
+                    </div>
+                </div>
+            `);
+                $rowContainer.append(col);
+            });
+
+            $container.append($rowContainer).removeClass('d-none');
+
+            // Funcionalidad: "Listar todo"
+            $('#checkTodo').on('change', function() {
+                $('.check-item').prop('checked', $(this).is(':checked'));
+            });
         });
     </script>
+
+
+    <script src="{{ asset('js/modulos/academico/estudiantes.js') }}" type="module"></script>
+
 @endsection
