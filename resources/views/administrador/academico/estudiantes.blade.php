@@ -131,6 +131,11 @@
                                 <label for="archivo" class="form-label">Seleccionar archivo Excel</label>
                                 <input type="file" name="archivo" id="archivo" class="form-control form-lg" required>
                             </div>
+                            <div class="alert alert-info mt-2 py-2 px-3">
+                                <strong> El archivo debe contener las columnas:</strong>
+                                <code> carrera </code>|<code> sede </code>|<code> gestion </code>|
+                                <code> femenino </code>|<code> masculino </code>|<code> total </code>.
+                            </div>
 
                             <div id="alertContainer" class="alert d-none" role="alert"></div>
                             <div id="previewContainer" class=" d-none">
@@ -140,7 +145,7 @@
                                 </h4>
 
 
-                                <div class="card card-preview-data shadow-lg border-0">
+                                <div class="card card-preview-data shadow-lg">
                                     <div class="card-body p-4">
 
                                         {{-- Indicador de Fila --}}
@@ -151,11 +156,10 @@
                                         </div>
 
                                         {{-- Contenedor de la Tabla --}}
-                                        <div class="table-responsive table-container-custom">
-                                            <table
-                                                class="table table-striped table-sm align-middle text-center mb-0"
+                                        <div class="table-responsive">
+                                            <table class="table table-striped table-sm align-middle text-center mb-0"
                                                 id="previewTable">
-                                                <thead class="sticky-top table-header-custom">
+                                                <thead class="">
                                                     <tr id="previewHeaders" class="text-uppercase fw-bold"></tr>
                                                 </thead>
                                                 <tbody id="previewBody">

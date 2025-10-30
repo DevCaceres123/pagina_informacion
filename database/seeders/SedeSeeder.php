@@ -15,70 +15,76 @@ class SedeSeeder extends Seeder
     {
         $sedes = [
             [
+                'nombre' => 'Villa esperanza',
+                'descripcion' => 'Noticias generales de la institución',
+                'estado' => 'activo',
+                'usuario_id' => 1,
+            ],
+            [
                 'nombre' => 'Achacachi',
                 'descripcion' => 'Noticias generales de la institución',
                 'estado' => 'activo',
-                'usuario_id' => 1
+                'usuario_id' => 1,
             ],
             [
                 'nombre' => 'Ancoraimes',
                 'descripcion' => 'Eventos académicos y sociales',
                 'estado' => 'activo',
-                'usuario_id' => 1
+                'usuario_id' => 1,
             ],
             [
                 'nombre' => 'Caranavi',
                 'descripcion' => 'Comunicados oficiales de la institución',
                 'estado' => 'activo',
-                'usuario_id' => 1
+                'usuario_id' => 1,
             ],
             [
                 'nombre' => 'Coroico - Cruz Loma',
                 'descripcion' => 'Convocatorias y llamados públicos',
                 'estado' => 'activo',
-                'usuario_id' => 1
+                'usuario_id' => 1,
             ],
-              [
+            [
                 'nombre' => 'Guaqui',
                 'descripcion' => 'Convocatorias y llamados públicos',
                 'estado' => 'activo',
-                'usuario_id' => 1
+                'usuario_id' => 1,
             ],
-              [
+            [
                 'nombre' => 'Batallas',
                 'descripcion' => 'Convocatorias y llamados públicos',
                 'estado' => 'activo',
-                'usuario_id' => 1
+                'usuario_id' => 1,
             ],
-              [
+            [
                 'nombre' => 'Mapiri',
                 'descripcion' => 'Convocatorias y llamados públicos',
                 'estado' => 'activo',
-                'usuario_id' => 1
+                'usuario_id' => 1,
             ],
-              [
+            [
                 'nombre' => 'Palos Blancos',
                 'descripcion' => 'Convocatorias y llamados públicos',
                 'estado' => 'activo',
-                'usuario_id' => 1
+                'usuario_id' => 1,
             ],
-              [
+            [
                 'nombre' => 'Chaguaya',
                 'descripcion' => 'Convocatorias y llamados públicos',
                 'estado' => 'activo',
-                'usuario_id' => 1
+                'usuario_id' => 1,
             ],
-              [
+            [
                 'nombre' => 'Viacha',
                 'descripcion' => 'Convocatorias y llamados públicos',
                 'estado' => 'activo',
-                'usuario_id' => 1
+                'usuario_id' => 1,
             ],
-              [
+            [
                 'nombre' => 'San Pablo',
                 'descripcion' => 'Convocatorias y llamados públicos',
                 'estado' => 'activo',
-                'usuario_id' => 1
+                'usuario_id' => 1,
             ],
         ];
 
@@ -90,7 +96,5 @@ class SedeSeeder extends Seeder
             $sede->usuario_id = $data['usuario_id'];
             $sede->save();
         }
-
-
     }
 }

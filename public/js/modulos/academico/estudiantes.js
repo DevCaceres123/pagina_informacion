@@ -265,7 +265,7 @@ function generarURlBlob(pdfbase64) {
 
 $("#formSubirDatosExcel").on("submit", function (e) {
     e.preventDefault();
-    //$("#btnGuardarInfraestructura").prop("disabled", true);
+    $("#btn-importar").prop("disabled", true);
     let formData = new FormData(this);
 
     crud(
@@ -274,7 +274,7 @@ $("#formSubirDatosExcel").on("submit", function (e) {
         null,
         formData,
         function (error, response) {
-            // $("#btnGuardarInfraestructura").prop("disabled", false);
+            $("#btn-importar").prop("disabled", false);
 
             // Verificamos que no haya un error o que todos los campos sean llenados
             if (response.tipo === "errores") {
@@ -306,7 +306,7 @@ $("#formSubirDatosExcel").on("submit", function (e) {
 
                 // Crear encabezados de tabla
                 headers.forEach((h) => {
-                    $("#previewHeaders").append(`<th>${h.toUpperCase()}</th>`);
+                    $("#previewHeaders").append(`<th class='bg-dark text-light'>${h.toUpperCase()}</th>`);
                 });
 
                 // Crear filas de datos
