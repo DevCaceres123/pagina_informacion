@@ -18,11 +18,11 @@ class EstadisticaEstudiante extends Model
         return $this->belongsTo(Carrera::class);
     }
 
-    // Calcula total automáticamente
-    protected static function booted()
-    {
-        static::saving(function ($estadistica) {
-            $estadistica->total = $estadistica->cantidad_hombres + $estadistica->cantidad_mujeres;
-        });
-    }
+    // // Calcula total automáticamente
+    // protected static function booted()
+    // {
+    //     static::saving(function ($estadistica) {
+    //         $estadistica->total = $estadistica->cantidad_hombres + $estadistica->cantidad_mujeres;
+    //     });
+    // }
 }
