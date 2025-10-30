@@ -129,7 +129,8 @@
                         <form id="formSubirDatosExcel" enctype="multipart/form-data">
                             <div class="mb-3">
                                 <label for="archivo" class="form-label">Seleccionar archivo Excel</label>
-                                <input type="file" name="archivo" id="archivo" class="form-control form-lg" required>
+                                <input type="file" name="archivo" id="archivo" class="form-control form-lg"
+                                    accept=".csv, text/csv" required>
                             </div>
                             <div class="alert alert-info mt-2 py-2 px-3">
                                 <strong> El archivo debe contener las columnas:</strong>

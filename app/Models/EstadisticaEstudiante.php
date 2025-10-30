@@ -7,8 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class EstadisticaEstudiante extends Model
 {
      protected $fillable = [
-        'carrera_id', 'gestion',
-        'cantidad_hombres', 'cantidad_mujeres', 'total'
+        'carrera_id','sede_id', 'gestion',
+        'hombres', 'mujeres', 'total'
     ];
     protected $table = 'estadisticas_estudiantes';
 

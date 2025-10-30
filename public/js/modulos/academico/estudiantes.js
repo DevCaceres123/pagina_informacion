@@ -293,20 +293,21 @@ $("#formSubirDatosExcel").on("submit", function (e) {
                 return;
             }
 
-
             const datos = response.mensaje;
 
             if (Array.isArray(datos) && datos.length > 0) {
                 // Generar cabeceras dinámicamente desde las claves del primer objeto
                 const headers = Object.keys(datos[0]);
-                 $("#alertContainer").addClass("d-none");
+                $("#alertContainer").addClass("d-none");
                 // Limpiar contenedor anterior
                 $("#previewHeaders").empty();
                 $("#previewBody").empty();
 
                 // Crear encabezados de tabla
                 headers.forEach((h) => {
-                    $("#previewHeaders").append(`<th class='bg-dark text-light'>${h.toUpperCase()}</th>`);
+                    $("#previewHeaders").append(
+                        `<th class='bg-dark text-light'>${h.toUpperCase()}</th>`
+                    );
                 });
 
                 // Crear filas de datos
@@ -329,10 +330,182 @@ $("#formSubirDatosExcel").on("submit", function (e) {
 });
 
 function mensajeAlertaTexto(mensaje, tipo) {
-    let alertClass = tipo === "exito" ? "alert-success d-block" : "alert-danger d-block";
+    let alertClass =
+        tipo === "exito" ? "alert-success d-block" : "alert-danger d-block";
 
     $("#alertContainer")
         .removeClass("d-none alert-success alert-danger")
         .addClass(alertClass)
         .html(mensaje);
+}
+
+// funcion pra subir los datos del archivo
+$("#btnConfirmar").on("click", function (e) {
+    e.preventDefault();
+
+    // Obtenemos el formulario completo
+    let form = $("#formSubirDatosExcel")[0];
+
+    // Creamos el FormData (necesario para enviar archivos)
+    let formData = new FormData(form);
+
+    // Verificamos que se haya seleccionado un archivo
+    if (!$("#archivo").val()) {
+        alert(
+            "Por favor selecciona un archivo CSV o Excel antes de continuar."
+        );
+        return;
+    }
+
+    // Deshabilitamos el botón mientras se sube
+    $("#btnConfirmar").prop("disabled", true).text("Importando...");
+
+    crud(
+        "admin/subirDatosEstudiantecsv",
+        "POST",
+        null,
+        formData,
+        function (error, response) {
+            $("#btnConfirmar")
+                .prop("disabled", false)
+                .text("Subir Definitivamente");
+
+            // Verificamos que no haya un error o que todos los campos sean llenados
+            if (response.tipo === "errores") {
+                mensajeAlerta(response.mensaje, "errores");
+                return;
+            }
+
+            if (response.tipo != "error_validacion") {
+                // Mostrar los mensajes de validación (cabeceras faltantes o columnas extra)
+                mostrarErroresImportacion(
+                    response.errores_validacion,
+                    response.errores_personalizados
+                );
+
+                $("#previewContainer").addClass("d-none");
+                $("#previewTable tbody").empty();
+                $("#previewTable thead tr").empty();
+                return;
+            }
+        }
+    );
+});
+
+function mostrarErroresImportacion(
+    erroresValidacion = [],
+    erroresPersonalizados = []
+) {
+    const alertContainer = $("#alertContainer");
+
+    // Limpiamos el contenido anterior
+    alertContainer.removeClass("d-none alert-success alert-danger").empty();
+
+    // Si no hay errores, mostramos un mensaje verde de éxito
+    if (erroresValidacion.length === 0 && erroresPersonalizados.length === 0) {
+        alertContainer
+            .addClass("alert-success")
+            .html("<strong>✅ Importación completada con éxito.</strong>");
+        return;
+    }
+
+    // Si hay errores, mostramos en rojo
+    alertContainer.addClass("alert-danger");
+
+    let html =
+        "<strong>Se encontraron errores en la importación:</strong><ul class='mt-2'>";
+
+    // 🔸 Errores de validación (columnas, formatos, etc.)
+    erroresValidacion.forEach((err) => {
+        html += `
+            <li>
+                <b>Fila ${err.row ?? "?"}</b>: ${
+            err.errors ? err.errors.join(", ") : "Error de validación"
+        }
+            </li>
+        `;
+    });
+
+    // 🔸 Errores personalizados (carrera, sede o relación inexistente)
+    erroresPersonalizados.forEach((err) => {
+        html += `
+            <li>
+                <b>Fila ${err.fila ?? "?"}</b> – Campo: <b>${err.campo}</b><br>
+                Valor: <i>${err.valor}</i><br>
+                Mensaje: ${err.mensaje}
+            </li>
+        `;
+    });
+
+    html += "</ul>";
+
+    alertContainer.html(html);
+}
+
+// Validar al seleccionar pdf
+$("#archivo").on("change", function () {
+    let archivo = this.files[0];
+    if (validarArchivos(archivo, "csv") == false) {
+        $(this).val(""); // Limpiar input
+    }
+});
+
+// funcion que nos servira para validar imagenes y pdf
+function validarArchivos(archivos, tipo) {
+    const maxSizeImagen = 3 * 1024 * 1024; // 3 MB
+    const maxSizeCsv = 30 * 1024 * 1024; // 30 MB
+
+    if (tipo === "imagen") {
+        for (let i = 0; i < archivos.length; i++) {
+            const file = archivos[i];
+
+            if (!file.type.match("image.*")) {
+                mensajeAlerta(
+                    `El archivo "${file.name}" no es una imagen.`,
+                    "error"
+                );
+
+                return false;
+            }
+
+            if (file.size > maxSizeImagen) {
+                mensajeAlerta(
+                    `La imagen "${file.name}" excede el tamaño máximo de 3 MB.`,
+                    "error"
+                );
+
+                return false;
+            }
+        }
+    }
+
+    if (tipo === "csv") {
+        if (!archivos) {
+            mensajeAlerta("No se seleccionó ningún archivo.", "error");
+            return false;
+        }
+
+        // Obtener la extensión del archivo
+        const extension = archivos.name.split(".").pop().toLowerCase();
+
+        if (extension !== "csv") {
+            mensajeAlerta(
+                `El archivo "${archivos.name}" no es un CSV.`,
+                "error"
+            );
+            return false;
+        }
+
+        // Validar tamaño (por ejemplo 30 MB)
+        const maxSizeCsv = 30 * 1024 * 1024; // 30 MB en bytes
+        if (archivos.size > maxSizeCsv) {
+            mensajeAlerta(
+                `El archivo "${archivos.name}" excede el tamaño máximo de 30 MB.`,
+                "error"
+            );
+            return false;
+        }
+    }
+
+    return true; // Si pasa todas las validaciones
 }

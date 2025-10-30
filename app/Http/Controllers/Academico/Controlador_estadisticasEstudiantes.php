@@ -12,6 +12,7 @@ use Exception;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\PreviewEstudiantesImport;
+use App\Imports\EstudiantesImport;
 
 class Controlador_estadisticasEstudiantes extends Controller
 {
@@ -206,10 +207,9 @@ class Controlador_estadisticasEstudiantes extends Controller
     public function previsualizarExcel(Request $request)
     {
         try {
-            // Validar el archivo
-            // $request->validate([
-            //     'archivo' => 'required|mimes:xlsx,xls,csv'
-            // ]);
+            $request->validate([
+                 'archivo' => 'required|mimes:csv,txt',
+            ]);
 
             // Convertir a colección
             $collection = Excel::toCollection(new \App\Imports\PreviewEstudiantesImport(), $request->file('archivo'))->first();
@@ -224,21 +224,23 @@ class Controlador_estadisticasEstudiantes extends Controller
 
             // 🔹 2. Definir cabeceras esperadas
             $expectedHeaders = [
-                'sede',
                 'carrera',
+                'sede',
                 'gestion',
-                'total',                            
+                'femenino',
+                'masculino',
+                'total',
             ];
 
             // 🔹 3. Comparar cabeceras
             $faltantes = array_diff($expectedHeaders, $headers);
-            
+
 
             if (!empty($faltantes) || !empty($extras)) {
                 $mensaje = [];
                 if (!empty($faltantes)) {
                     $mensaje[] = 'Faltan las columnas: <b>' . implode(', ', $faltantes) . '</b>';
-                }               
+                }
 
                 $this->mensaje('error', implode(' | ', $mensaje));
                 return response()->json($this->mensaje, 200);
@@ -253,6 +255,60 @@ class Controlador_estadisticasEstudiantes extends Controller
             return response()->json($this->mensaje, 200);
         }
     }
+
+
+    public function subirDatosEstudiantecsv(Request $request)
+    {
+        // 1️⃣ Validar que se suba un archivo válido
+        $request->validate([
+            'archivo' => 'required|mimes:csv,xlsx,xls',
+        ]);
+
+        DB::beginTransaction();
+
+        try {
+            // 2️⃣ Cargar el importador
+            $import = new EstudiantesImport();
+
+            // 3️⃣ Ejecutar la importación
+            Excel::import($import, $request->file('archivo'));
+
+            // 4️⃣ Capturar errores
+            $erroresValidacion = $import->failures();
+            $erroresPersonalizados = $import->erroresPersonalizados;
+
+            // 5️⃣ Si hay cualquier tipo de error -> rollback y no guardar nada
+            if (count($erroresValidacion) > 0 || count($erroresPersonalizados) > 0) {
+                DB::rollBack();
+
+                return response()->json([
+                    'estado' => 'error_validacion',
+                    'mensaje' => 'La importación fue cancelada. Se detectaron errores en los datos.',
+                    'errores_validacion' => $erroresValidacion,
+                    'errores_personalizados' => $erroresPersonalizados,
+                ], 200);
+            }
+
+            // 6️⃣ Si todo está correcto, confirmamos la transacción
+            DB::commit();
+
+            return response()->json([
+                'estado' => 'exito',
+                'mensaje' => 'Importación completada exitosamente',
+                'filas_insertadas' => $import->filasInsertadas,
+            ], 200);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return response()->json([
+                'estado' => 'error',
+                'mensaje' => 'Ocurrió un error inesperado durante la importación',
+                'detalle' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
 
     /**
      * Show the form for creating a new resource.

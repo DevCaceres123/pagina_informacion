@@ -172,6 +172,7 @@ Route::prefix('/admin')->middleware([Autenticados::class])->group(function () {
         Route::put('actualizar_registro_estudiante/{id_carrera}', 'actualizar_registro_estudiante')->name('estudiantes.actualizar_registro_estudiante');
         Route::post('generar_reporte_estudiante', 'generar_reporte_estudiante')->name('estudiantes.generar_reporte_estudiante');
         Route::post('previsualizarExcel', 'previsualizarExcel')->name('estudiantes.previsualizarExcel');
+        Route::post('subirDatosEstudiantecsv', 'subirDatosEstudiantecsv')->name('estudiantes.subirDatosEstudiantecsv');
       
     });
 
