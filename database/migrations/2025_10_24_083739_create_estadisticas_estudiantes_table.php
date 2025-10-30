@@ -12,13 +12,26 @@ return new class () extends Migration {
     {
         Schema::create('estadisticas_estudiantes', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('carrera_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('sede_id')->constrained()->cascadeOnDelete();
+            $table->unsignedBigInteger('carrera_id');
+            $table->unsignedBigInteger('sede_id');
             $table->year('gestion');
             $table->integer('hombres')->default(0);
             $table->integer('mujeres')->default(0);
             $table->integer('total')->default(0);
             $table->timestamps();
+
+            $table->foreign('carrera_id')
+                ->references('id')
+                ->on('carreras')
+                ->onDelete('restrict')
+                ->onUpdate('cascade');
+
+            
+            $table->foreign('sede_id')
+                ->references('id')
+                ->on('sedes')
+                ->onDelete('restrict')
+                ->onUpdate('cascade');
         });
     }
 
