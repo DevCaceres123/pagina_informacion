@@ -32,7 +32,7 @@ class CarreraSedeSeeder extends Seeder
             'enfermeria' => ['achacachi','caranavi','viacha','villa esperanza'],
             'gestion turistica y hotelera' => ['villa esperanza'],
             'historia' => ['villa esperanza'],
-            'ingenieria agronomica' => ['caranavi', 'san pablo','villa esperanza'],
+            'ingenieria agronomica' => ['caranavi', 'san pablo','villa esperanza','caranavi - san pablo'],
             'ingenieria ambiental' => ['villa esperanza'],
             'ingenieria autotronica' => ['viacha','villa esperanza'],
             'ingenieria civil' => ['villa esperanza'],
@@ -60,11 +60,11 @@ class CarreraSedeSeeder extends Seeder
 
             if ($carrera) {
                 $sedeIds = Sede::whereIn('nombre', $sedes)->pluck('id')->toArray();
-                echo "Carrera: $nombreCarrera\n";
-                echo "Sedes encontradas: " . implode(', ', $sedeIds) . "\n";
+                // echo "Carrera: $nombreCarrera\n";
+                // echo "Sedes encontradas: " . implode(', ', $sedeIds) . "\n";
                 $carrera->sedes()->sync($sedeIds);
             } else {
-                echo "Carrera NO encontrada: $nombreCarrera\n";
+                //echo "Carrera NO encontrada: $nombreCarrera\n";
             }
         }
 

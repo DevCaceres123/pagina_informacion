@@ -57,7 +57,7 @@ class SedeSeeder extends Seeder
                 'usuario_id' => 1,
             ],
             [
-                'nombre' => 'Mapiri',
+                'nombre' => 'Mapiri-charopampa',
                 'descripcion' => 'Convocatorias y llamados públicos',
                 'estado' => 'activo',
                 'usuario_id' => 1,
@@ -80,8 +80,15 @@ class SedeSeeder extends Seeder
                 'estado' => 'activo',
                 'usuario_id' => 1,
             ],
+            
             [
-                'nombre' => 'San Pablo',
+                'nombre' => 'Caranavi - San Pablo',
+                'descripcion' => 'Convocatorias y llamados públicos',
+                'estado' => 'activo',
+                'usuario_id' => 1,
+            ],
+            [
+                'nombre' => 'San antonio',
                 'descripcion' => 'Convocatorias y llamados públicos',
                 'estado' => 'activo',
                 'usuario_id' => 1,
