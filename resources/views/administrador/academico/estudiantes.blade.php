@@ -46,7 +46,7 @@
                                     <th>Hombres</th>
                                     <th>Mujeres</th>
                                     <th>Total</th>
-                                    <th>Acciones</th>
+                                    <th class="text-uppercase">Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -60,9 +60,14 @@
                             <i class="fas fa-save me-2"></i> Guardar Totales
                         </button> --}}
 
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                        <button type="button" class="btn btn-primary me-2" data-bs-toggle="modal"
                             data-bs-target="#modalReporte">
                             <i class="fas fa-file-pdf me-2"></i> Generar Reporte
+                        </button>
+
+                        <button type="button" class="btn btn-info" data-bs-toggle="modal"
+                            data-bs-target="#modalSubirDatos">
+                            <i class="fas fa-file-pdf me-2"></i>Subir datos
                         </button>
                     </div>
 
@@ -99,6 +104,82 @@
                     <button type="button" id="generarReporte" class="btn btn-success">
                         <i class="fas fa-file-pdf me-2"></i> Generar PDF
                     </button>
+                    </form>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="modal fade" id="modalSubirDatos" tabindex="-1" aria-labelledby="modalReporteLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"> <i class=""></i>Importar Estudiantes desde Excel</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        @if (session('success'))
+                            <div class="alert alert-success">{{ session('success') }}</div>
+                        @endif
+
+                        <form id="formSubirDatosExcel" enctype="multipart/form-data">
+                            <div class="mb-3">
+                                <label for="archivo" class="form-label">Seleccionar archivo Excel</label>
+                                <input type="file" name="archivo" id="archivo" class="form-control form-lg" required>
+                            </div>
+
+                            <div id="alertContainer" class="alert d-none" role="alert"></div>
+                            <div id="previewContainer" class=" d-none">
+
+                                <h4 class="text-center fw-bolder mb-2 text-primary-emphasis text-uppercase">
+                                    <i class="fas fa-eye me-2"></i> Vista Previa de Registros
+                                </h4>
+
+
+                                <div class="card card-preview-data shadow-lg border-0">
+                                    <div class="card-body p-4">
+
+                                        {{-- Indicador de Fila --}}
+                                        <div class="alert alert-info py-2 mb-3 text-center fw-semibold" role="alert">
+                                            <i class="fas fa-info-circle me-2"></i> Mostrando los primeros 10 registros
+                                            para
+                                            validación.
+                                        </div>
+
+                                        {{-- Contenedor de la Tabla --}}
+                                        <div class="table-responsive table-container-custom">
+                                            <table
+                                                class="table table-striped table-sm align-middle text-center mb-0"
+                                                id="previewTable">
+                                                <thead class="sticky-top table-header-custom">
+                                                    <tr id="previewHeaders" class="text-uppercase fw-bold"></tr>
+                                                </thead>
+                                                <tbody id="previewBody">
+                                                    {{-- Los datos cargados aquí --}}
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+                                        {{-- Footer de Acción --}}
+                                        <div class="text-center pt-4 border-top mt-4">
+                                            <button type="button" id="btnConfirmar"
+                                                class="btn btn-success btn-lg px-5 fw-bold btn-confirmar-custom shadow-lg">
+                                                <i class="fas fa-cloud-upload-alt me-2"></i> Subir Definitivamente
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary" id="btn-importar">Importar</button>
                     </form>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                 </div>

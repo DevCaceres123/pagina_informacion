@@ -68,6 +68,7 @@ function listar() {
             },
             {
                 data: "estadisticas[0].cantidad_hombres",
+                className: "table-td text-uppercase",
                 title: "Hombres",
                 render: function (data, type, row) {
                     return `<input type="number" class="form-control form-control-sm text-center hombres" 
@@ -78,6 +79,7 @@ function listar() {
             },
             {
                 data: "estadisticas[0].cantidad_mujeres",
+                className: "table-td text-uppercase",
                 title: "Mujeres",
                 render: function (data, type, row) {
                     return `<input type="number" class="form-control form-control-sm text-center mujeres" 
@@ -221,69 +223,116 @@ $("#generarReporte").on("click", function (e) {
         gestion: gestion,
     };
 
-    crud("admin/generar_reporte_estudiante", "POST", null, datos, function (error, response) {
-        if (error || !response) {
-            mensajeAlerta("Error al cargar la información", "error");
-            return;
-        }
+    crud(
+        "admin/generar_reporte_estudiante",
+        "POST",
+        null,
+        datos,
+        function (error, response) {
+            if (error || !response) {
+                mensajeAlerta("Error al cargar la información", "error");
+                return;
+            }
 
-        if (response.tipo != "exito") {
-            mensajeAlerta(response.mensaje, response.tipo);
-            return;
-        }
+            if (response.tipo != "exito") {
+                mensajeAlerta(response.mensaje, response.tipo);
+                return;
+            }
 
-        //si todo esta correcto muestra el mensaje de correcto
-        //$("#modalReporte").modal("hide");        
-        
-        mensajeAlerta('Reporte generado espere porfavor....', "exito");
-        
-        setTimeout(() => {
-            let pdfUrl = generarURlBlob(response.mensaje);
-            window.open(pdfUrl, "_blank");
-        }, 1500);
-    });
+            //si todo esta correcto muestra el mensaje de correcto
+            //$("#modalReporte").modal("hide");
+
+            mensajeAlerta("Reporte generado espere porfavor....", "exito");
+
+            setTimeout(() => {
+                let pdfUrl = generarURlBlob(response.mensaje);
+                window.open(pdfUrl, "_blank");
+            }, 1500);
+        }
+    );
 });
 
-// $('#guardar_totales').on('click', function() {
-//     const table = $('#tabla_estudiantes').DataTable();
-//     const gestion = $('#gestion').val(); // si quieres mandar el año
-
-//     const allData = [];
-
-//     table.rows().every(function() {
-//         const $row = $(this.node());
-//         const checked = $row.find('.editar-fila').is(':checked');
-//         if (!checked) return;
-
-//         const id = $row.find('button.actualizar_informacion').data('id');
-//         const hombres = parseInt($row.find('input.hombres').val()) || 0;
-//         const mujeres = parseInt($row.find('input.mujeres').val()) || 0;
-//         const total = parseInt($row.find('input.total').val()) || 0;
-
-//         allData.push({ id, hombres, mujeres, total, gestion });
-//     });
-
-//     console.log("Datos masivos:", allData);
-
-//     // Aquí enviarías por AJAX a Laravel
-//     /*
-//     $.post('/ruta/guardar_estadisticas', { estadisticas: allData, _token: $('input[name=_token]').val() }, function(response){
-//         alert('Totales guardados!');
-//     });
-//     */
-// });
-
-
-
 function generarURlBlob(pdfbase64) {
-
     // Convertir Base64 a un Blob
     const byteCharacters = atob(pdfbase64); // Decodifica el Base64
-    const byteNumbers = Array.from(byteCharacters).map(c => c.charCodeAt(0));
+    const byteNumbers = Array.from(byteCharacters).map((c) => c.charCodeAt(0));
     const byteArray = new Uint8Array(byteNumbers);
-    const blob = new Blob([byteArray], { type: 'application/pdf' });
+    const blob = new Blob([byteArray], { type: "application/pdf" });
 
     // Crear una URL para el Blob
     return URL.createObjectURL(blob);
 }
 
+$("#formSubirDatosExcel").on("submit", function (e) {
+    e.preventDefault();
+    //$("#btnGuardarInfraestructura").prop("disabled", true);
+    let formData = new FormData(this);
+
+    crud(
+        "admin/previsualizarExcel",
+        "POST",
+        null,
+        formData,
+        function (error, response) {
+            // $("#btnGuardarInfraestructura").prop("disabled", false);
+
+            // Verificamos que no haya un error o que todos los campos sean llenados
+            if (response.tipo === "errores") {
+                mensajeAlerta(response.mensaje, "errores");
+                return;
+            }
+
+            if (response.tipo != "exito") {
+                // Mostrar los mensajes de validación (cabeceras faltantes o columnas extra)
+                mensajeAlertaTexto(response.mensaje, response.tipo);
+
+                // Si el tipo es error, también ocultamos la vista previa si estaba visible
+                $("#previewContainer").addClass("d-none");
+                $("#previewTable tbody").empty();
+                $("#previewTable thead tr").empty();
+                return;
+            }
+
+
+            const datos = response.mensaje;
+
+            if (Array.isArray(datos) && datos.length > 0) {
+                // Generar cabeceras dinámicamente desde las claves del primer objeto
+                const headers = Object.keys(datos[0]);
+                 $("#alertContainer").addClass("d-none");
+                // Limpiar contenedor anterior
+                $("#previewHeaders").empty();
+                $("#previewBody").empty();
+
+                // Crear encabezados de tabla
+                headers.forEach((h) => {
+                    $("#previewHeaders").append(`<th>${h.toUpperCase()}</th>`);
+                });
+
+                // Crear filas de datos
+                datos.forEach((fila) => {
+                    let htmlFila = "<tr>";
+                    headers.forEach((h) => {
+                        htmlFila += `<td>${fila[h] ?? ""}</td>`;
+                    });
+                    htmlFila += "</tr>";
+                    $("#previewBody").append(htmlFila);
+                });
+
+                // Mostrar la tabla de previsualización
+                $("#previewContainer").removeClass("d-none");
+            } else {
+                mensajeAlerta("No se encontraron datos para mostrar.", "info");
+            }
+        }
+    );
+});
+
+function mensajeAlertaTexto(mensaje, tipo) {
+    let alertClass = tipo === "exito" ? "alert-success d-block" : "alert-danger d-block";
+
+    $("#alertContainer")
+        .removeClass("d-none alert-success alert-danger")
+        .addClass(alertClass)
+        .html(mensaje);
+}

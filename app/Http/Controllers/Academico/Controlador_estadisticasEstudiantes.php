@@ -10,6 +10,8 @@ use App\Models\EstadisticaEstudiante;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\PreviewEstudiantesImport;
 
 class Controlador_estadisticasEstudiantes extends Controller
 {
@@ -174,7 +176,7 @@ class Controlador_estadisticasEstudiantes extends Controller
                     ];
                 }
 
-                
+
                 $pdf = \PDF::loadView('administrador.academico.reporteEstudiante', [
                     'tipo' => 'sede',
                     'resumenSedes' => $resumenSedes,
@@ -195,6 +197,59 @@ class Controlador_estadisticasEstudiantes extends Controller
 
             $this->mensaje("error", "error" . $e->getMessage());
 
+            return response()->json($this->mensaje, 200);
+        }
+    }
+
+
+
+    public function previsualizarExcel(Request $request)
+    {
+        try {
+            // Validar el archivo
+            // $request->validate([
+            //     'archivo' => 'required|mimes:xlsx,xls,csv'
+            // ]);
+
+            // Convertir a colección
+            $collection = Excel::toCollection(new \App\Imports\PreviewEstudiantesImport(), $request->file('archivo'))->first();
+
+            if ($collection->isEmpty()) {
+                $this->mensaje('error', 'El archivo está vacío o no tiene datos.');
+                return response()->json($this->mensaje, 200);
+            }
+
+            // 🔹 1. Obtener cabeceras reales (primera fila)
+            $headers = $collection->first()->keys()->toArray();
+
+            // 🔹 2. Definir cabeceras esperadas
+            $expectedHeaders = [
+                'sede',
+                'carrera',
+                'gestion',
+                'total',                            
+            ];
+
+            // 🔹 3. Comparar cabeceras
+            $faltantes = array_diff($expectedHeaders, $headers);
+            
+
+            if (!empty($faltantes) || !empty($extras)) {
+                $mensaje = [];
+                if (!empty($faltantes)) {
+                    $mensaje[] = 'Faltan las columnas: <b>' . implode(', ', $faltantes) . '</b>';
+                }               
+
+                $this->mensaje('error', implode(' | ', $mensaje));
+                return response()->json($this->mensaje, 200);
+            }
+
+            // 🔹 4. Si todo está bien, enviamos vista previa
+            $this->mensaje('exito', $collection->take(10));
+            return response()->json($this->mensaje, 200);
+
+        } catch (\Exception $e) {
+            $this->mensaje('error', 'Error al leer el archivo: ' . $e->getMessage());
             return response()->json($this->mensaje, 200);
         }
     }
