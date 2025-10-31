@@ -37,23 +37,16 @@
             font-weight: normal;
         }
 
-        /* 🏷️ Info de Filtros */
-        .info {
-            text-align: center;
-            font-size: 11px;
-            margin-bottom: 5px;
-            /* Reducimos el margen inferior aquí */
-            color: #555;
-            border-bottom: 1px solid #ddd;
-            padding-bottom: 10px;
-        }
+
 
         /* 👤 Bloque de Generador */
         .info-generador {
-            text-align: right;
+            position: relative;
+            width: 100%;
+            height: 16px;
             font-size: 10px;
             color: #777;
-            margin-top: 10px;
+            margin-top: 25px;
             margin-bottom: 15px;
             /* Espaciado antes del inicio del reporte */
             padding-top: 5px;
@@ -62,6 +55,18 @@
             /* Separador sutil con línea discontinua */
             padding-right: 15px;
             /* Pequeño margen para que no toque el borde del PDF */
+        }
+        .info-generador .gestion{
+            position: absolute;
+            top: 0;
+            left: 0;
+            
+        }
+
+         .info-generador .usuario{
+            position: absolute;
+            top: 0;
+            right: 0;
         }
 
         .info-generador strong {
@@ -159,8 +164,17 @@
     </style>
 
     <div class="info-generador">
-        Documento generado por: <strong>{{ $usuarioGenerador['nombres'] ?? 'sin' }}
-            {{ $usuarioGenerador['apellidos'] ?? 'datos' }}</strong>
+          <p class="text-muted gestion">Gestion: 
+            <strong>
+                {{ $gestion ?? 'sin' }}                    
+            </strong>
+        </p>
+
+        <p class="usuario">Documento generado por: 
+            <strong>{{ $usuarioGenerador['nombres'] ?? 'sin' }}
+                    {{ $usuarioGenerador['apellidos'] ?? 'datos' }}
+            </strong>
+        </p>
     </div>
     {{-- 🔹 Reporte por Carrera --}}
     @if ($tipo === 'carrera')
