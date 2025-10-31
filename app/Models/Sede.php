@@ -34,6 +34,10 @@ class Sede extends Model
         return $this->hasOne('App\Models\ImgSede');
     }
 
+    public function estadistica_estudiantes(){
+        return $this->hasMany('App\Models\EstadisticaEstudiante');
+    }
+
 
 
     protected static function boot()

@@ -48,17 +48,22 @@ class Controlador_estadisticasEstudiantes extends Controller
     {
         $gestion = $request->input('fecha', date('Y')); // por defecto el año actual
 
-        $query = Carrera::with(['sedes', 'estadisticas' => function ($q) use ($gestion) {
+        $query = EstadisticaEstudiante::with(['carrera', 'sede' => function ($q) use ($gestion) {
 
-            $q->select(['id','cantidad_hombres','cantidad_mujeres','total','carrera_id'])
-              ->where('gestion', $gestion);
-        }])->orderBy('id', 'desc');
+            $q->select(['id','nombre']);              
+        }])
+        ->select(['id','hombres','mujeres','total','carrera_id','sede_id'])    
+        ->where('gestion', $gestion)    
+        ->orderBy('id', 'desc');
 
         if (!empty($request->search['value'])) {
 
             $query->where(function ($q) use ($request) {
-                $q->where('nombre', 'like', '%' . $request->search['value'] . '%')
-                  ->orWhereHas('sedes', function ($sedeQuery) use ($request) {
+                
+                  $q->orWhereHas('sede', function ($sedeQuery) use ($request) {
+                      $sedeQuery->where('nombre', 'like', '%' . $request->search['value'] . '%');
+                  })
+                  ->orWhereHas('carrera', function ($sedeQuery) use ($request) {
                       $sedeQuery->where('nombre', 'like', '%' . $request->search['value'] . '%');
                   });
             });

@@ -35,16 +35,20 @@ function listar() {
                 data: null,
                 className: "table-td",
                 render: function (data, type, row, meta) {
+                    // 🔢 Obtenemos el índice real de la fila, considerando la paginación
+                    let index = meta.row + meta.settings._iDisplayStart + 1;
+
+                    // 🧩 Devolvemos el número de fila + checkbox
                     return `
-        <div class="d-flex align-items-center justify-content-between">
-            <span>${meta.row + 1}</span>
-            <input type="checkbox" class="editar-fila" />
-        </div>
-    `;
+                        <div class="d-flex align-items-center justify-content-between">
+                            <span>${index}</span>
+                            <input type="checkbox" class="editar-fila" />
+                        </div>
+                    `;
                 },
             },
             {
-                data: "nombre",
+                data: "carrera.nombre",
                 className: "table-td text-uppercase",
                 render: function (data) {
                     return `                            
@@ -53,21 +57,14 @@ function listar() {
                 },
             },
             {
-                data: "sedes",
+                data: "sede.nombre",
                 className: "table-td text-uppercase",
-                render: function (sedes) {
-                    // sedes es un array de objetos [{nombre: "Sede1"}, {nombre: "Sede2"}]
-                    if (!sedes || sedes.length === 0) return "";
-                    return sedes
-                        .map(
-                            (s) =>
-                                `<span class="badge bg-secondary">${s.nombre}</span>`
-                        )
-                        .join(" ");
+                render: function (data) {
+                    return `<span class="badge bg-secondary">${data}</span>`;
                 },
             },
             {
-                data: "estadisticas[0].cantidad_hombres",
+                data: "hombres",
                 className: "table-td text-uppercase",
                 title: "Hombres",
                 render: function (data, type, row) {
@@ -78,7 +75,7 @@ function listar() {
                 },
             },
             {
-                data: "estadisticas[0].cantidad_mujeres",
+                data: "mujeres",
                 className: "table-td text-uppercase",
                 title: "Mujeres",
                 render: function (data, type, row) {
@@ -90,7 +87,7 @@ function listar() {
             },
 
             {
-                data: "estadisticas[0].total",
+                data: "total",
                 className: "table-td text-uppercase ",
                 title: "Total",
                 render: function (data, type, row) {
@@ -393,9 +390,9 @@ $("#btnConfirmar").on("click", function (e) {
             mostrarErroresImportacion(
                 response.errores_validacion,
                 response.errores_personalizados,
-                response.filas_insertadas,
+                response.filas_insertadas
             );
-            $("#archivo").val('');
+            $("#archivo").val("");
 
             $("#previewContainer").addClass("d-none");
             $("#previewTable tbody").empty();
@@ -418,7 +415,9 @@ function mostrarErroresImportacion(
     if (erroresValidacion.length === 0 && erroresPersonalizados.length === 0) {
         alertContainer
             .addClass("alert-success")
-            .html(`<strong>✅ Importación completada con éxito.</strong> Filas insertadas:${filas_insertadas}`);
+            .html(
+                `<strong>✅ Importación completada con éxito.</strong> Filas insertadas:${filas_insertadas}`
+            );
         return;
     }
 

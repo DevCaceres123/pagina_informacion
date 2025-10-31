@@ -15,7 +15,12 @@ class EstadisticaEstudiante extends Model
 
     public function carrera()
     {
-        return $this->belongsTo(Carrera::class);
+        return $this->belongsTo('App\Models\Carrera');
+    }
+
+    public function sede()
+    {
+        return $this->belongsTo('App\Models\Sede');
     }
 
     // // Calcula total automáticamente
