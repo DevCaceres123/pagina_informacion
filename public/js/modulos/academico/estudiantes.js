@@ -376,11 +376,12 @@ $("#btnConfirmar").on("click", function (e) {
                 return;
             }
 
-            if (response.tipo != "error_validacion") {
+            if (response.tipo == "error_validacion") {
                 // Mostrar los mensajes de validación (cabeceras faltantes o columnas extra)
                 mostrarErroresImportacion(
                     response.errores_validacion,
-                    response.errores_personalizados
+                    response.errores_personalizados,
+                    null
                 );
 
                 $("#previewContainer").addClass("d-none");
@@ -388,13 +389,25 @@ $("#btnConfirmar").on("click", function (e) {
                 $("#previewTable thead tr").empty();
                 return;
             }
+
+            mostrarErroresImportacion(
+                response.errores_validacion,
+                response.errores_personalizados,
+                response.filas_insertadas,
+            );
+            $("#archivo").val('');
+
+            $("#previewContainer").addClass("d-none");
+            $("#previewTable tbody").empty();
+            $("#previewTable thead tr").empty();
         }
     );
 });
 
 function mostrarErroresImportacion(
     erroresValidacion = [],
-    erroresPersonalizados = []
+    erroresPersonalizados = [],
+    filas_insertadas
 ) {
     const alertContainer = $("#alertContainer");
 
@@ -405,7 +418,7 @@ function mostrarErroresImportacion(
     if (erroresValidacion.length === 0 && erroresPersonalizados.length === 0) {
         alertContainer
             .addClass("alert-success")
-            .html("<strong>✅ Importación completada con éxito.</strong>");
+            .html(`<strong>✅ Importación completada con éxito.</strong> Filas insertadas:${filas_insertadas}`);
         return;
     }
 

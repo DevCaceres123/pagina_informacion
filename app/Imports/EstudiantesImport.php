@@ -78,15 +78,19 @@ class EstudiantesImport implements ToModel, WithHeadingRow, WithValidation, Skip
         $this->filasInsertadas++;
 
 
-        // ✅ Si todo está correcto, retornamos el modelo para que se inserte
-        return new EstadisticaEstudiante([
-            'carrera_id' => $carrera->id,
-            'sede_id'    => $sede->id,
-            'gestion'    => $row['gestion'] ?? 0,
-            'mujeres'    => $row['femenino'] ?? 0,
-            'hombres'    => $row['masculino'] ?? 0,
-            'total'      => $row['total'] ?? 0,
-        ]);
+        // Si todo está bien, actualizamos o insertamos
+        return EstadisticaEstudiante::updateOrCreate(
+            [
+                'carrera_id' => $carrera->id,
+                'sede_id'    => $sede->id,
+                'gestion'    => $row['gestion'],
+            ],
+            [
+                'mujeres' => $row['femenino'] ?? 0,
+                'hombres' => $row['masculino'] ?? 0,
+                'total'   => $row['total'] ?? 0,
+            ]
+        );
     }
 
     /**
