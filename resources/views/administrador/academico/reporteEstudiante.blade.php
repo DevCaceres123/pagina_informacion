@@ -6,169 +6,300 @@
 
 @section('contenido')
     <style>
+        /* 🎨 Tipografía y Estilo Base */
         body {
-            font-family: DejaVu Sans, sans-serif;
-            font-size: 12px;
+            font-family: Arial, Helvetica, sans-serif;
+            /* Tipografía más estándar y profesional */
+            font-size: 10px;
+            /* Reducimos ligeramente la fuente para más espacio */
             color: #333;
+            margin: 0;
+            padding: 0;
         }
 
-        h2,
+        /* 🏛️ Encabezados del Reporte */
+        h2 {
+            text-align: center;
+            margin-bottom: 2px;
+            color: #1a237e;
+            /* Azul de la universidad */
+            font-size: 18px;
+            font-weight: bold;
+        }
+
         h3 {
             text-align: center;
-            margin: 5px 0;
-            color: #1a237e;
+            margin-top: 2px;
+            margin-bottom: 15px;
+            color: #2c3e50;
+            /* Gris oscuro para subtítulos */
+            font-size: 14px;
+            font-weight: normal;
         }
 
+        /* 🏷️ Info de Filtros */
         .info {
             text-align: center;
-            font-size: 12px;
-            margin-bottom: 20px;
-            color: #444;
+            font-size: 11px;
+            margin-bottom: 5px;
+            /* Reducimos el margen inferior aquí */
+            color: #555;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
         }
 
+        /* 👤 Bloque de Generador */
+        .info-generador {
+            text-align: right;
+            font-size: 10px;
+            color: #777;
+            margin-top: 10px;
+            margin-bottom: 15px;
+            /* Espaciado antes del inicio del reporte */
+            padding-top: 5px;
+            padding-bottom: 5px;
+            border-bottom: 1px dashed #ccc;
+            /* Separador sutil con línea discontinua */
+            padding-right: 15px;
+            /* Pequeño margen para que no toque el borde del PDF */
+        }
+
+        .info-generador strong {
+            color: #333;
+            font-weight: bold;
+        }
+
+        /* 📊 Tabla Principal */
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 10px;
+            margin-top: 15px;
         }
 
+        /* Eliminamos bordes de celda, usamos solo bordes horizontales */
         th,
         td {
-            border: 1px solid #555;
-            padding: 6px 8px;
-            text-align: center;
+            border: none;
+            padding: 8px 10px;
+            text-align: left;
+            /* Alineación a la izquierda para mejor lectura, excepto números */
         }
 
+        /* 📌 Encabezados de Columna */
         th {
-            background-color: #e8eaf6;
-            color: #1a237e;
+            background-color: #2c3e50;
+            /* Azul muy oscuro o gris corporativo */
+            color: white;
             font-weight: bold;
+            text-transform: uppercase;
+            border-bottom: 3px solid #1a237e;
+            /* Línea de color de la universidad */
+            font-size: 10px;
+            vertical-align: middle;
         }
 
-        tr:nth-child(even) {
-            background-color: #f8f9fa;
+        /* 📈 Filas de Datos */
+        tbody tr:nth-child(even) {
+            background-color: #f7f9fc;
+            /* Rayado muy sutil */
         }
 
-        tr:hover td {
-            background-color: #e3f2fd;
+        tbody tr {
+            border-bottom: 1px solid #eee;
+            /* Divisores de fila suaves */
         }
 
+        /* 🔢 Alineación de números y totales */
+        .col-numerica {
+            text-align: right;
+        }
+
+        /* 🌟 Filas de Totales (Subtotales y General) */
         .total-row {
             font-weight: bold;
-            background-color: #c5cae9;
+            background-color: #e8eaf6 !important;
+            /* Mantenemos un color claro para los totales */
             color: #1a237e;
+            border-top: 2px solid #1a237e;
+            /* Línea gruesa antes de los totales */
         }
 
-        .footer {
-            margin-top: 25px;
-            text-align: right;
-            font-size: 11px;
-            color: #555;
+        .total-row td {
+            padding: 8px 10px;
         }
 
-        .titulo-seccion {
-            background-color: #1a237e;
+        /* 🛑 Fila de TOTAL GENERAL */
+        #total-general-row {
+            background-color: #1a237e !important;
             color: white;
-            padding: 8px;
-            border-radius: 4px;
+            border-top: 4px solid #000;
+            font-size: 12px;
+        }
+
+        /* 📘 Título de la Sección */
+        .titulo-seccion {
+            background-color: #3f51b5;
+            /* Un azul ligeramente diferente para destacar */
+            color: white;
+            padding: 6px 10px;
+            border-radius: 2px;
             font-weight: bold;
             text-align: left;
-            margin-top: 20px;
+            margin-top: 25px;
+            text-transform: uppercase;
+        }
+
+        /* 📝 Pie de Página */
+        .footer {
+            margin-top: 40px;
+            text-align: right;
+            font-size: 9px;
+            color: #777;
         }
     </style>
 
-    <h2>Universidad Pública de El Alto</h2>
-    <h3>Reporte de Estudiantes — Gestión {{ $gestion }}</h3>
-    <div class="info">
-        Tipo de reporte: <strong>{{ ucfirst($tipo) }}</strong>
+    <div class="info-generador">
+        Documento generado por: <strong>{{ $usuarioGenerador['nombres'] ?? 'sin' }}
+            {{ $usuarioGenerador['apellidos'] ?? 'datos' }}</strong>
     </div>
-
     {{-- 🔹 Reporte por Carrera --}}
     @if ($tipo === 'carrera')
         @php
-            $total_hombres = $estadisticas->sum('cantidad_hombres');
-            $total_mujeres = $estadisticas->sum('cantidad_mujeres');
-            $total_general = $estadisticas->sum('total');
+            $total_hombres = 0;
+            $total_mujeres = 0;
+            $total_general = 0;
+
+            // Agrupar por carrera
+            $porCarrera = $estadisticas->groupBy('carrera');
         @endphp
 
         <div class="titulo-seccion">Detalle por Carrera</div>
-
         <table>
             <thead>
                 <tr>
                     <th>#</th>
                     <th>Carrera</th>
-                    {{-- <th>Sedes</th> --}}
-                    <th>Hombres</th>
-                    <th>Mujeres</th>
-                    <th>Total</th>
+                    <th>Sede</th>
+                    <th class="col-numerica">Hombres</th>
+                    <th class="col-numerica">Mujeres</th>
+                    <th class="col-numerica">Total</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach ($estadisticas as $index => $e)
-                    <tr>
-                        <td>{{ $index + 1 }}</td>
-                        <td>{{ $e->carrera->nombre ?? 'Sin carrera' }}</td>
-                        {{-- <td>
-                            @foreach ($e->carrera->sedes as $s)
-                                {{ $s->nombre }}<br>
-                            @endforeach
-                        </td> --}}
-                        <td>{{ $e->cantidad_hombres ?? 0 }}</td>
-                        <td>{{ $e->cantidad_mujeres ?? 0 }}</td>
-                        <td>{{ $e->total ?? 0 }}</td>
+                @php $index = 1; @endphp
+                @foreach ($porCarrera as $carrera => $sedes)
+                    @php
+                        $totalCarreraHombres = $sedes->sum('total_masculino');
+                        $totalCarreraMujeres = $sedes->sum('total_femenino');
+                        $totalCarrera = $sedes->sum('total');
+                    @endphp
+
+                    <tr class="total-row">
+                        <td>{{ $index++ }}</td>
+                        <td colspan="2" style="text-align: left;">{{ $carrera }} (Subtotal)</td>
+                        <td class="col-numerica">{{ $totalCarreraHombres }}</td>
+                        <td class="col-numerica">{{ $totalCarreraMujeres }}</td>
+                        <td class="col-numerica">{{ $totalCarrera }}</td>
                     </tr>
+
+                    @foreach ($sedes as $s)
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td>{{ $s->sede }}</td>
+                            <td class="col-numerica">{{ $s->total_masculino }}</td>
+                            <td class="col-numerica">{{ $s->total_femenino }}</td>
+                            <td class="col-numerica">{{ $s->total }}</td>
+                        </tr>
+                    @endforeach
+
+                    @php
+                        $total_hombres += $totalCarreraHombres;
+                        $total_mujeres += $totalCarreraMujeres;
+                        $total_general += $totalCarrera;
+                    @endphp
                 @endforeach
-                <tr class="total-row">
-                    <td colspan="2">TOTALES GENERALES</td>
-                    <td>{{ $total_hombres }}</td>
-                    <td>{{ $total_mujeres }}</td>
-                    <td>{{ $total_general }}</td>
+
+                <tr id="total-general-row">
+                    <td colspan="3" style="text-align: left;">TOTALES GENERALES</td>
+                    <td class="col-numerica">{{ $total_hombres }}</td>
+                    <td class="col-numerica">{{ $total_mujeres }}</td>
+                    <td class="col-numerica">{{ $total_general }}</td>
                 </tr>
             </tbody>
         </table>
     @endif
+
 
 
     {{-- 🔹 Reporte por Sede --}}
     @if ($tipo === 'sede')
         @php
-            $total_hombres = collect($resumenSedes)->sum('total_hombres');
-            $total_mujeres = collect($resumenSedes)->sum('total_mujeres');
-            $total_general = collect($resumenSedes)->sum('total_general');
+            $total_hombres = 0;
+            $total_mujeres = 0;
+            $total_general = 0;
+
+            // Agrupar por sede
+            $porSede = $estadisticas->groupBy('sede');
         @endphp
 
         <div class="titulo-seccion">Detalle por Sede</div>
-
         <table>
             <thead>
                 <tr>
                     <th>#</th>
                     <th>Sede</th>
-                    <th>Hombres</th>
-                    <th>Mujeres</th>
-                    <th>Total</th>
+                    <th>Carrera</th>
+                    <th class="col-numerica">Hombres</th>
+                    <th class="col-numerica">Mujeres</th>
+                    <th class="col-numerica">Total</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach ($resumenSedes as $index => $s)
-                    <tr>
-                        <td>{{ $index + 1 }}</td>
-                        <td>{{ $s['sede'] }}</td>
-                        <td>{{ $s['total_hombres'] }}</td>
-                        <td>{{ $s['total_mujeres'] }}</td>
-                        <td>{{ $s['total_general'] }}</td>
+                @php $index = 1; @endphp
+                @foreach ($porSede as $sede => $carreras)
+                    @php
+                        $totalSedeHombres = $carreras->sum('total_masculino');
+                        $totalSedeMujeres = $carreras->sum('total_femenino');
+                        $totalSede = $carreras->sum('total');
+                    @endphp
+
+                    <tr class="total-row">
+                        <td>{{ $index++ }}</td>
+                        <td colspan="2" style="text-align: left;">{{ $sede }} (Subtotal)</td>
+                        <td class="col-numerica">{{ $totalSedeHombres }}</td>
+                        <td class="col-numerica">{{ $totalSedeMujeres }}</td>
+                        <td class="col-numerica">{{ $totalSede }}</td>
                     </tr>
+
+                    @foreach ($carreras as $c)
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td>{{ $c->carrera }}</td>
+                            <td class="col-numerica">{{ $c->total_masculino }}</td>
+                            <td class="col-numerica">{{ $c->total_femenino }}</td>
+                            <td class="col-numerica">{{ $c->total }}</td>
+                        </tr>
+                    @endforeach
+
+                    @php
+                        $total_hombres += $totalSedeHombres;
+                        $total_mujeres += $totalSedeMujeres;
+                        $total_general += $totalSede;
+                    @endphp
                 @endforeach
-                <tr class="total-row">
-                    <td colspan="2">TOTALES GENERALES</td>
-                    <td>{{ $total_hombres }}</td>
-                    <td>{{ $total_mujeres }}</td>
-                    <td>{{ $total_general }}</td>
+
+                <tr id="total-general-row">
+                    <td colspan="3" style="text-align: left;">TOTALES GENERALES</td>
+                    <td class="col-numerica">{{ $total_hombres }}</td>
+                    <td class="col-numerica">{{ $total_mujeres }}</td>
+                    <td class="col-numerica">{{ $total_general }}</td>
                 </tr>
             </tbody>
         </table>
     @endif
+
 
     <div class="footer">
         <p>Generado automáticamente el {{ now()->format('d/m/Y H:i') }}</p>

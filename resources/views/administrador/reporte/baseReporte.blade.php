@@ -21,25 +21,25 @@
             border-bottom: 3px solid #851a1a; 
             padding-bottom: 5px;
         }
-        header table {
+        header .tabla_header {
             width: 100%;
             border-collapse: collapse;
         }
-        header td {
+        header .tabla_header td {
             vertical-align: middle;
         }
-        header img {
+        header .tabla_header img {
             max-height: 60px;
         }
-        header .titulo {
+        header .tabla_header .titulo {
             text-align: center;
         }
-        header h1 {
+        header .tabla_header h1 {
             font-size: 20px;
             margin: 0;
             color: #851a1a;
         }
-        header h2 {
+        header .tabla_header h2 {
             font-size: 14px;
             margin: 0;
             font-weight: normal;
@@ -82,7 +82,7 @@
 <body>
 
 <header>
-    <table>
+    <table class="tabla_header">
         <tr>            
             <!-- Logo izquierdo -->
             <td style="width: 20%; text-align: left;">

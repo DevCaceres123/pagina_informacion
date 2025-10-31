@@ -50,22 +50,22 @@ class Controlador_estadisticasEstudiantes extends Controller
 
         $query = EstadisticaEstudiante::with(['carrera', 'sede' => function ($q) use ($gestion) {
 
-            $q->select(['id','nombre']);              
+            $q->select(['id','nombre']);
         }])
-        ->select(['id','hombres','mujeres','total','carrera_id','sede_id'])    
-        ->where('gestion', $gestion)    
+        ->select(['id','hombres','mujeres','total','carrera_id','sede_id'])
+        ->where('gestion', $gestion)
         ->orderBy('id', 'desc');
 
         if (!empty($request->search['value'])) {
 
             $query->where(function ($q) use ($request) {
-                
-                  $q->orWhereHas('sede', function ($sedeQuery) use ($request) {
-                      $sedeQuery->where('nombre', 'like', '%' . $request->search['value'] . '%');
-                  })
-                  ->orWhereHas('carrera', function ($sedeQuery) use ($request) {
-                      $sedeQuery->where('nombre', 'like', '%' . $request->search['value'] . '%');
-                  });
+
+                $q->orWhereHas('sede', function ($sedeQuery) use ($request) {
+                    $sedeQuery->where('nombre', 'like', '%' . $request->search['value'] . '%');
+                })
+                ->orWhereHas('carrera', function ($sedeQuery) use ($request) {
+                    $sedeQuery->where('nombre', 'like', '%' . $request->search['value'] . '%');
+                });
             });
         }
 
@@ -91,7 +91,7 @@ class Controlador_estadisticasEstudiantes extends Controller
 
     public function actualizar_registro_estudiante(Request $request, String $id)
     {
-        
+
         DB::beginTransaction();
         try {
 
@@ -99,8 +99,8 @@ class Controlador_estadisticasEstudiantes extends Controller
 
             // updateOrCreate: busca por condiciones y si existe actualiza, si no crea
             $estadistica = EstadisticaEstudiante::find($request->id);
-            $estadistica->hombres=$request->hombres;
-            $estadistica->mujeres=$request->mujeres;
+            $estadistica->hombres = $request->hombres;
+            $estadistica->mujeres = $request->mujeres;
             $estadistica->total = $request->hombres + $request->mujeres;
             $estadistica->save();
 
@@ -130,61 +130,59 @@ class Controlador_estadisticasEstudiantes extends Controller
             $estadisticas = collect();
 
 
-            // 🔹 Reporte por CARRERA
             if ($tipo === 'carrera') {
-                $estadisticas = EstadisticaEstudiante::with('carrera')
-                    ->whereIn('carrera_id', $seleccionados)
-                    ->where('gestion', $gestion)
+                // Obtener los datos filtrados
+                $estadisticas = DB::table('estadisticas_estudiantes')
+                    ->join('carreras', 'estadisticas_estudiantes.carrera_id', '=', 'carreras.id')
+                    ->join('sedes', 'estadisticas_estudiantes.sede_id', '=', 'sedes.id')
+                    ->select(
+                        'carreras.nombre as carrera',
+                        'sedes.nombre as sede',
+                        'estadisticas_estudiantes.gestion',
+                        DB::raw('SUM(estadisticas_estudiantes.hombres) as total_masculino'),
+                        DB::raw('SUM(estadisticas_estudiantes.mujeres) as total_femenino'),
+                        DB::raw('SUM(estadisticas_estudiantes.total) as total')
+                    )
+                    ->whereIn('estadisticas_estudiantes.carrera_id', $seleccionados)
+                    ->where('estadisticas_estudiantes.gestion', $gestion)
+                    ->groupBy('carreras.nombre', 'sedes.nombre', 'estadisticas_estudiantes.gestion')
                     ->get();
 
-                $pdf = \PDF::loadView('administrador.academico.reporteEstudiante', [
-                    'tipo' => 'carrera',
-                    'estadisticas' => $estadisticas,
-                    'gestion' => $gestion
-                ]);
+
             }
+
 
             if ($request->tipo === 'sede') {
 
-                // Obtener las carreras asociadas a las sedes seleccionadas
-                $carrerasPorSede = DB::table('carrera_sede')
-                    ->whereIn('sede_id', $seleccionados)
-                    ->get()
-                    ->groupBy('sede_id');
+               $estadisticas = DB::table('estadisticas_estudiantes')
+                    ->join('carreras', 'estadisticas_estudiantes.carrera_id', '=', 'carreras.id')
+                    ->join('sedes', 'estadisticas_estudiantes.sede_id', '=', 'sedes.id')
+                    ->select(
+                        'sedes.nombre as sede',
+                        'carreras.nombre as carrera',
+                        'estadisticas_estudiantes.gestion',
+                        DB::raw('SUM(estadisticas_estudiantes.hombres) as total_masculino'),
+                        DB::raw('SUM(estadisticas_estudiantes.mujeres) as total_femenino'),
+                        DB::raw('SUM(estadisticas_estudiantes.total) as total')
+                    )
+                    ->whereIn('estadisticas_estudiantes.sede_id', $seleccionados)
+                    ->where('estadisticas_estudiantes.gestion', $gestion)
+                    ->groupBy('sedes.nombre', 'carreras.nombre', 'estadisticas_estudiantes.gestion')
+                    ->get();
 
-                $resumenSedes = [];
-
-                foreach ($carrerasPorSede as $sedeId => $carreras) {
-                    $carrerasIds = $carreras->pluck('carrera_id');
-
-                    // Obtener estadísticas de esas carreras
-                    $estadisticas = EstadisticaEstudiante::whereIn('carrera_id', $carrerasIds)
-                        ->where('gestion', $gestion)
-                        ->get();
-
-                    // Hacer sumatorias de campos numéricos
-                    $total_hombres = $estadisticas->sum('cantidad_hombres');
-                    $total_mujeres = $estadisticas->sum('cantidad_mujeres');
-                    $total_general = $estadisticas->sum('total');
-
-                    $sede = Sede::find($sedeId);
-
-                    $resumenSedes[] = [
-                        'sede' => $sede->nombre ?? 'Sin nombre',
-                        'total_hombres' => $total_hombres,
-                        'total_mujeres' => $total_mujeres,
-                        'total_general' => $total_general,
-                    ];
-                }
-
-
-                $pdf = \PDF::loadView('administrador.academico.reporteEstudiante', [
-                    'tipo' => 'sede',
-                    'resumenSedes' => $resumenSedes,
-                    'gestion' => $gestion
-                ]);
             }
+              $nombreCompletoUsuario = auth()
+                ->user()
+                ->only(['nombres', 'apellidos']);
 
+            
+            // Cargar la vista PDF
+            $pdf = \PDF::loadView('administrador.academico.reporteEstudiante', [
+                'tipo' => $tipo,
+                'estadisticas' => $estadisticas,
+                'gestion' => $gestion,
+                'usuarioGenerador'=> $nombreCompletoUsuario,
+            ]);
             // Render PDF y devolverlo en base64
             $pdfContent = $pdf->output();
             $pdfb64 = base64_encode($pdfContent);
