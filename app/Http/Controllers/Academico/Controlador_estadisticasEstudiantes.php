@@ -91,23 +91,18 @@ class Controlador_estadisticasEstudiantes extends Controller
 
     public function actualizar_registro_estudiante(Request $request, String $id)
     {
+        
         DB::beginTransaction();
         try {
 
             $anio = $request->gestion;
 
             // updateOrCreate: busca por condiciones y si existe actualiza, si no crea
-            $estadistica = EstadisticaEstudiante::updateOrCreate(
-                [
-                    'carrera_id' => $id,  // condición de búsqueda
-                    'gestion' => $anio,   // año actual
-                ],
-                [
-                    'cantidad_hombres' => $request->hombres ?? 0,
-                    'cantidad_mujeres' => $request->mujeres ?? 0,
-                    'total' => ($request->hombres ?? 0) + ($request->mujeres ?? 0),
-                ]
-            );
+            $estadistica = EstadisticaEstudiante::find($request->id);
+            $estadistica->hombres=$request->hombres;
+            $estadistica->mujeres=$request->mujeres;
+            $estadistica->total = $request->hombres + $request->mujeres;
+            $estadistica->save();
 
             DB::commit();
 

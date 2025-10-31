@@ -397,6 +397,7 @@ $("#btnConfirmar").on("click", function (e) {
             $("#previewContainer").addClass("d-none");
             $("#previewTable tbody").empty();
             $("#previewTable thead tr").empty();
+            actualizarTabla();
         }
     );
 });
