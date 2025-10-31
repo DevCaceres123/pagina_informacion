@@ -216,7 +216,7 @@
             // Agregar "Listar todo"
             $container.append(`
             <div class="mb-2">
-                <div class="form-check">
+                <div class="form-check text-capitalize">
                     <input class="form-check-input filtroCheck" type="checkbox" id="checkTodo">
                     <label class="form-check-label fw-bold text-primary" for="checkTodo">Listar todo</label>
                 </div>
@@ -231,7 +231,7 @@
             data.forEach((item, index) => {
                 const col = $(`
                 <div class="col-md-6 mb-2">
-                    <div class="form-check">
+                    <div class="form-check text-capitalize">
                         <input class="form-check-input filtroCheck check-item" type="checkbox" value="${item.id}" id="${tipo}${item.id}">
                         <label class="form-check-label" for="${tipo}${item.id}">${item.nombre}</label>
                     </div>

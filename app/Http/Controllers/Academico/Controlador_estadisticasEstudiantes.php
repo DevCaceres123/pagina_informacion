@@ -31,15 +31,16 @@ class Controlador_estadisticasEstudiantes extends Controller
             ->pluck('gestion'); // devuelve solo los valores de la columna
 
 
-        $sedes = Sede::where('estado', 'activo')->get();
+        
 
         // Cargamos todas las carreras con sus sedes y estadísticas de la gestión seleccionada
         $carreras = Carrera::with(['sedes', 'estadisticas' => function ($q) {
             // $q->where('gestion', $gestion);
-        }])->get();
+        }])->orderBy('nombre', 'asc')
+          ->get();
 
 
-        $sedes = Sede::where('estado', 'activo')->get();
+        $sedes = Sede::where('estado', 'activo')->orderBy('nombre', 'asc')->get();
 
         return view('administrador.academico.estudiantes', compact('sedes', 'carreras', 'gestionActual', 'gestiones'));
     }
