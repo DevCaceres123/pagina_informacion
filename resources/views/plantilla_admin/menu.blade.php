@@ -147,14 +147,14 @@
                                 </li>
 
                                  <li class="nav-item">
-                                    <a class="nav-link" href="">Titulados</a>
+                                    <a class="nav-link" href="{{route('titulados.index')}}">Titulados</a>
                                 </li>
                                  <li class="nav-item">
-                                    <a class="nav-link" href="">Docentes</a>
+                                    <a class="nav-link" href="{{route('docentes.index')}}">Docentes</a>
                                 </li>
 
                                  <li class="nav-item">
-                                    <a class="nav-link" href="">Administrativos</a>
+                                    <a class="nav-link" href="{{route('administrativos.index')}}">Administrativos</a>
                                 </li>
                                 
                             </ul>

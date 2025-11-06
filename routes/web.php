@@ -12,6 +12,9 @@ use App\Http\Controllers\Infraestructuras\Controlador_infraestructura;
 use App\Http\Controllers\Publicaciones\Controlador_noticias;
 use App\Http\Controllers\Publicaciones\Controlador_convocatorias;
 use App\Http\Controllers\Academico\Controlador_estadisticasEstudiantes;
+use App\Http\Controllers\Academico\Controlador_estadisticasTitulados;
+use App\Http\Controllers\Academico\Controlador_estadisticasDocente;
+use App\Http\Controllers\Academico\Controlador_estadisticasAdministrativo;
 use App\Http\Middleware\Autenticados;
 use App\Http\Middleware\No_autenticados;
 use Illuminate\Support\Facades\Route;
@@ -173,6 +176,31 @@ Route::prefix('/admin')->middleware([Autenticados::class])->group(function () {
         Route::post('generar_reporte_estudiante', 'generar_reporte_estudiante')->name('estudiantes.generar_reporte_estudiante');
         Route::post('previsualizarExcel', 'previsualizarExcel')->name('estudiantes.previsualizarExcel');
         Route::post('subirDatosEstudiantecsv', 'subirDatosEstudiantecsv')->name('estudiantes.subirDatosEstudiantecsv');
+      
+    });
+
+
+
+    // CONTROLADOR PARA LA ESTADISTICA DE LOS TITULADOS
+    Route::controller(Controlador_estadisticasTitulados::class)->group(function () {
+        Route::resource('titulados', Controlador_estadisticasTitulados::class);
+    
+      
+    });
+
+
+    // CONTROLADOR PARA LA ESTADISTICA DE LOS DOCENTES
+    Route::controller(Controlador_estadisticasDocente::class)->group(function () {
+      Route::resource('docentes', Controlador_estadisticasDocente::class);
+    
+      
+    });
+
+
+    // CONTROLADOR PARA LA ESTADISTICA DE LOS ADMINISTRATIVOS
+    Route::controller(Controlador_estadisticasAdministrativo::class)->group(function () {
+      Route::resource('administrativos', Controlador_estadisticasAdministrativo::class);
+    
       
     });
 
