@@ -8,7 +8,7 @@
                     <div class="row align-items-center">
                         <div class="col">
                             <h4 class="card-title mb-0 text-light fw-bold">
-                                <i class="fas   me-2"></i> LISTA DE CONVOCATORIAS
+                               <i class="fas fa-newspaper  me-2"></i> LISTA DE CONVOCATORIAS
                             </h4>
                         </div>
                         <div class="col-auto">

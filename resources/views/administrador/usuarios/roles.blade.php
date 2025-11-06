@@ -5,10 +5,12 @@
     <div class="row">
         <div class="col-12">
             <div class="card">
-                <div class="card-header">
+                <div class="card-header bg-dark border-start border-5 border-primary py-3">
                     <div class="row align-items-center">
                         <div class="col">
-                            <h4 class="card-title">LISTA DE ROLES</h4>
+                            <h4 class="card-title mb-0 text-light fw-bold">
+                                 <i class="fas fa-user-shield  me-2"></i> LISTA DE ROLES
+                            </h4>
                         </div>
                         <div class="col-auto">
                             <button class="btn btn-primary" onclick="abrirModalRol()">

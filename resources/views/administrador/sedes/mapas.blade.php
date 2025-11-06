@@ -6,8 +6,8 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css" />
 
-    <div class="container mt-4">
-        <h3 class="mb-3">Registrar ubicación geoespacial</h3>
+    <div class="container mt-4 ">
+        <h3 class="mb-3 bg-dark border-start border-5 border-primary py-3  text-light fw-bold text-center">Registrar ubicación geoespacial</h3>
 
         @if (session('success'))
             <div class="alert alert-success">{{ session('success') }}</div>

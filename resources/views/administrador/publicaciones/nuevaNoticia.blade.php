@@ -4,7 +4,7 @@
     <div class="container py-5">
         <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
             {{-- Encabezado --}}
-            <div class="card-header bg-gradient bg-secondary text-white text-center p-4">
+            <div class="card-header  bg-dark  text-white text-center p-4">
                 <h4 class="card-title mb-0 fw-bold fs-3">
                     <i class="fas fa-newspaper me-2"></i> Publicar Nueva Noticia <span class="ms-3 fs-16">Campos obligatorios
                         <strong class="text-danger">(*)</strong>
