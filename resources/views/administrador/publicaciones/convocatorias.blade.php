@@ -22,7 +22,7 @@
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table" id="tabla_listar_convocatorias">
+                        <table class="table table table-bordered table-md table-hover" id="tabla_listar_convocatorias">
                             <thead class="table-light">
                                 <tr>
                                     <th>Nº</th>

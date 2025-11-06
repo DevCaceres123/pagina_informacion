@@ -20,7 +20,7 @@
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table" id="tabla_listar_noticias">
+                        <table class="table table-bordered table-md table-hover" id="tabla_listar_noticias">
                             <thead class="table-light">
                                 <tr>
                                     <th>Nº</th>

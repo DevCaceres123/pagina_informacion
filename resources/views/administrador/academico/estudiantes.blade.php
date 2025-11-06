@@ -36,7 +36,7 @@
 
 
                     <div class="table-responsive">
-                        <table class="table table-bordered align-middle text-center shadow-sm table-striped"
+                        <table class="table table-bordered align-middle text-center shadow-sm table-striped table-hover"
                             id="tabla_estudiantes">
                             <thead class="table-light">
                                 <tr>
