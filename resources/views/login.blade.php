@@ -73,18 +73,18 @@
                                                 <input type="password" class="form-control" name="password"
                                                     id="password" placeholder="Ingrese la contraseña">
                                             </div><!--end form-group-->
-                                        </form>
 
-                                        <div class="form-group mb-0 row">
-                                            <div class="col-12">
-                                                <div class="d-grid mt-3">
-                                                    <button class="btn text-light btn-primary" type="button"
-                                                        id="btn_ingresar_usuario">INGRESAR <i
-                                                            class="fas fa-sign-in-alt ms-1"></i></button>
+
+                                            <div class="form-group mb-0 row">
+                                                <div class="col-12">
+                                                    <div class="d-grid mt-3">
+                                                        <button class="btn text-light btn-primary" type="submit"
+                                                            id="btn_ingresar_usuario">INGRESAR <i
+                                                                class="fas fa-sign-in-alt ms-1"></i></button>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-
+                                        </form>
                                     </div>
                                 </div>
                             </div>
