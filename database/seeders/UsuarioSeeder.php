@@ -26,7 +26,7 @@ class UsuarioSeeder extends Seeder
 
         $usuario = new User();
         $usuario->usuario = 'admin';
-        $usuario->password = Hash::make('rodry');
+        $usuario->password = Hash::make('1234');
         $usuario->ci = '10028685';
         $usuario->nombres = 'Admin';
         $usuario->apellidos = 'admin admin';
