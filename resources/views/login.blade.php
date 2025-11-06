@@ -9,7 +9,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
     <!-- App favicon -->
-    <link rel="shortcut icon" href="{{ asset('admin_template/images/favicon.ico') }}">
+    <link rel="shortcut icon" href="{{ asset('assets/disbedc_logo.webp') }}">
 
     <!-- App css -->
     <link href="{{ asset('admin_template/css/bootstrap.min.css') }}" rel="stylesheet" type="text/css" />
