@@ -9,7 +9,7 @@
                 <h5 class="mb-0 fw-bold">
                     <i class="fas fa-user-graduate me-2"></i> Registro de Titulados
                 </h5>
-                <span class="badge bg-light text-primary fw-bold fs-5 text-uppercase"
+                <span class="badge text-light fw-bold fs-5 text-uppercase"
                     id='fecha_filtrada'>{{ \Carbon\Carbon::parse($colacionSeleccionada)->translatedFormat('d \d\e F Y') }}</span>
             </div>
 

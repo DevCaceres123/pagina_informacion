@@ -143,7 +143,8 @@ class Controlador_estadisticasEstudiantes extends Controller
                         DB::raw('SUM(estadisticas_estudiantes.hombres) as total_masculino'),
                         DB::raw('SUM(estadisticas_estudiantes.mujeres) as total_femenino'),
                         DB::raw('SUM(estadisticas_estudiantes.total) as total')
-                    )
+                    )                    
+                    ->where('sedes.estado', 'activo')
                     ->whereIn('estadisticas_estudiantes.carrera_id', $seleccionados)
                     ->where('estadisticas_estudiantes.gestion', $gestion)
                     ->groupBy('carreras.nombre', 'sedes.nombre', 'estadisticas_estudiantes.gestion')
@@ -166,6 +167,7 @@ class Controlador_estadisticasEstudiantes extends Controller
                         DB::raw('SUM(estadisticas_estudiantes.mujeres) as total_femenino'),
                         DB::raw('SUM(estadisticas_estudiantes.total) as total')
                     )
+                    ->where('carreras.estado', 'activo')
                     ->whereIn('estadisticas_estudiantes.sede_id', $seleccionados)
                     ->where('estadisticas_estudiantes.gestion', $gestion)
                     ->groupBy('sedes.nombre', 'carreras.nombre', 'estadisticas_estudiantes.gestion')
