@@ -9,6 +9,9 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use App\Models\EstadisticaTitulado;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class Controlador_login extends Controller
 {
@@ -91,8 +94,31 @@ class Controlador_login extends Controller
      */
     public function inicio()
     {
+        $gestionActual = date('Y');
         $data['menu']   = 0;
         //$data['usuario_estacion'] = User::with(['estacion'])->find(Auth::user()->id);
+
+
+        $estadisticas_por_fecha = EstadisticaTitulado::select(
+            DB::raw('DATE(fecha_colacion) as fecha_colacion'),
+            DB::raw('COUNT(*) as total')
+        )
+            ->whereYear('fecha_colacion', $gestionActual)
+            ->groupBy(DB::raw('DATE(fecha_colacion)'))
+            ->orderBy('fecha_colacion')
+            ->get()
+            ->map(function ($item) {
+                $item->mes = Carbon::parse($item->fecha_colacion)
+                    ->locale('es')
+                    ->translatedFormat('F'); // Nombre del mes en español
+                return $item;
+            });
+
+        $data['fechas_colacion'] = $estadisticas_por_fecha->pluck('mes'); // ["mayo", "enero", ...]
+        $data['totales'] = $estadisticas_por_fecha->pluck('total'); // [6000, 5000, ...]
+
+        
+
         return view('inicio', $data);
     }
     /**
@@ -102,7 +128,8 @@ class Controlador_login extends Controller
     /**
      * CERRAR LA SESSIÓN
      */
-    public function cerrar_session(Request $request){
+    public function cerrar_session(Request $request)
+    {
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();

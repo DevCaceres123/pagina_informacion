@@ -293,40 +293,38 @@
     </script>
 
     <script>
+        const meses = @json($fechas_colacion); // ["mayo", "enero", ...]
+        const totales = @json($totales); // [6000, 5000, ...]
 
-        //ESTO ES PARA VER CUANTOS ESTUAINTES CRECIERON POR CADA ANIO
-        const ctxTitulaciones = document.getElementById('titulacionesChart').getContext('2d');
-
-        // Meses del año
-        const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre',
-            'Noviembre', 'Diciembre'
+        // Generar colores dinámicos para cada barra
+        const colors = [
+            'rgba(255, 99, 132, 0.7)',
+            'rgba(54, 162, 235, 0.7)',
+            'rgba(255, 206, 86, 0.7)',
+            'rgba(75, 192, 192, 0.7)',
+            'rgba(153, 102, 255, 0.7)',
+            'rgba(255, 159, 64, 0.7)',
+            'rgba(199, 199, 199, 0.7)',
+            'rgba(83, 102, 255, 0.7)',
+            'rgba(255, 99, 255, 0.7)',
+            'rgba(99, 255, 132, 0.7)',
+            'rgba(54, 162, 100, 0.7)',
+            'rgba(200, 159, 64, 0.7)'
         ];
 
-        // Datos de ejemplo: 3 rondas de titulación
-        const ronda1 = [5, 0, 8, 0, 10, 0, 7, 0, 9, 0, 0, 0];
-        const ronda2 = [0, 4, 0, 6, 0, 7, 0, 5, 0, 6, 0, 8];
-        const ronda3 = [0, 0, 2, 0, 3, 0, 4, 0, 5, 0, 6, 0];
+        const ctxTitulaciones = document.getElementById('titulacionesChart').getContext('2d');
 
         new Chart(ctxTitulaciones, {
             type: 'bar',
             data: {
                 labels: meses,
                 datasets: [{
-                        label: 'Ronda 1',
-                        data: ronda1,
-                        backgroundColor: 'rgba(255, 206, 86, 0.7)'
-                    },
-                    {
-                        label: 'Ronda 2',
-                        data: ronda2,
-                        backgroundColor: 'rgba(54, 162, 235, 0.7)'
-                    },
-                    {
-                        label: 'Ronda 3',
-                        data: ronda3,
-                        backgroundColor: 'rgba(75, 192, 192, 0.7)'
-                    }
-                ]
+                    label: 'Total titulados',
+                    data: totales,
+                    backgroundColor: colors.slice(0, totales.length),
+                    borderColor: colors.slice(0, totales.length).map(c => c.replace('0.7', '1')),
+                    borderWidth: 1
+                }]
             },
             options: {
                 responsive: true,
@@ -348,11 +346,13 @@
                     }
                 },
                 scales: {
+                    x: {
+                        // Reduce el ancho de las barras aunque haya pocas
+                        barPercentage: 0.5, // % del espacio de cada categoría
+                        categoryPercentage: 0.5, // % de cada barra dentro de la categoría
+                    },
                     y: {
-                        beginAtZero: true,
-                        ticks: {
-                            stepSize: 2
-                        }
+                        beginAtZero: true
                     }
                 }
             }
@@ -363,7 +363,6 @@
 
 
     <script>
-
         // ESTO ES PARA MOSTRAR LOS DATOS DE CADA ESTUDIANTE SEGUN SEDE
         // Labels = carreras
         const labels = [];
