@@ -104,6 +104,7 @@
                 <div class="modal-body">
                     <form id="formReporte">
 
+                        <!-- FILTRAR POR -->
                         <div class="mb-3">
                             <label for="tipoReporte" class="form-label fw-bold">Filtrar por:</label>
                             <select id="tipoReporte" class="form-select shadow-sm">
@@ -113,21 +114,43 @@
                             </select>
                         </div>
 
+                        <!-- NUEVO: GRADO ACADÉMICO -->
+                        <div class="mb-3 p-2 border rounded-3 mb-1">
+                            <label class="form-label fw-bold">Grado académico:</label>
+                            <div class="d-flex flex-wrap gap-3">
+                                <div class="form-check">
+                                    <input class="form-check-input grado-check" type="checkbox" value="tecnico medio"
+                                        id="gradoMedio" checked>
+                                    <label class="form-check-label" for="gradoMedio">Tecnico Medio</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input grado-check" type="checkbox" value="tecnico superior"
+                                        id="gradoSuperior" checked>
+                                    <label class="form-check-label" for="gradoSuperior">Tecnico Superior</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input grado-check" type="checkbox" value="licenciatura"
+                                        id="gradoLicenciatura" checked>
+                                    <label class="form-check-label" for="gradoLicenciatura">Licenciatura</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- CHECKS DE SEDE / CARRERA -->
                         <div id="checkboxesContainer" class="d-none mt-3"></div>
 
-
-
+                    </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" id="generarReporte" class="btn btn-success">
                         <i class="fas fa-file-pdf me-2"></i> Generar PDF
                     </button>
-                    </form>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                 </div>
             </div>
         </div>
     </div>
+
 
 
 
@@ -284,8 +307,6 @@
     <script src="{{ asset('js/modulos/academico/titulados.js') }}" type="module"></script>
 
     <script>
-
-        
         $("#anio").on("change", function() {
             const anioSeleccionado = $(this).val();
 

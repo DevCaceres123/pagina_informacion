@@ -190,6 +190,7 @@ Route::prefix('/admin')->middleware([Autenticados::class])->group(function () {
         Route::post('previsualizarTitulados', 'previsualizarTitulados')->name('titulados.previsualizarTitulados');
         Route::post('subirDatosTituladoscsv', 'subirDatosTituladoscsv')->name('titulados.subirDatosTituladoscsv');      
         Route::get('listarFechasColacion', 'listarFechasColacion')->name('titulados.listarFechasColacion');
+        Route::post('generar_reporte_titulados', 'generar_reporte_titulados')->name('titulados.generar_reporte_titulados');     
     });
 
 

@@ -131,7 +131,7 @@ function listar() {
 
     // Permite filtrar por una fecha diferente
     $("#btnFiltrar").on("click", function (e) {
-        e.preventDefault();        
+        e.preventDefault();
         const textoVisible = $("#fecha_filtro option:selected").text(); // ej: "12 de marzo"
         $("#fecha_filtrada").text(` ${textoVisible}`);
         tabla.ajax.reload();
@@ -416,6 +416,7 @@ $("#btnConfirmar").on("click", function (e) {
     );
 });
 
+//funcion prara mostrar los errores de importacion
 function mostrarErroresImportacion(
     erroresValidacion = [],
     erroresPersonalizados = [],
@@ -478,3 +479,66 @@ function mensajeAlertaTexto(mensaje, tipo) {
         .addClass(alertClass)
         .html(mensaje);
 }
+
+// funcion para genrar el reporte
+$("#generarReporte").on("click", () => {
+    const tipo = $("#tipoReporte").val();
+    const gestion = $("#fecha_filtro").val();
+
+    const getChecked = (sel) =>
+        $(sel + ":checked")
+            .map((_, el) => el.value)
+            .get();
+    const seleccionados = getChecked(".check-item");
+    const grados = getChecked(".grado-check");
+
+    if (!tipo) return mensajeAlerta("Seleccione tipo.", "warning");
+    if (!seleccionados.length)
+        return mensajeAlerta(`Seleccione alguna ${tipo}.`, "warning");
+    if (!grados.length)
+        return mensajeAlerta("Seleccione algún grado académico.", "warning");
+
+    const datos = { tipo, seleccionados, grados, gestion };
+    
+
+    crud(
+        "admin/generar_reporte_titulados",
+        "POST",
+        null,
+        datos,
+        function (error, response) {
+            if (error || !response) {
+                mensajeAlerta("Error al cargar la información", "error");
+                return;
+            }
+
+            if (response.tipo != "exito") {
+                mensajeAlerta(response.mensaje, response.tipo);
+                return;
+            }
+
+            //si todo esta correcto muestra el mensaje de correcto
+            //$("#modalReporte").modal("hide");
+
+            mensajeAlerta("Reporte generado espere porfavor....", "exito");
+
+            setTimeout(() => {
+                let pdfUrl = generarURlBlob(response.mensaje);
+                window.open(pdfUrl, "_blank");
+            }, 1500);
+        }
+    );
+});
+
+
+function generarURlBlob(pdfbase64) {
+    // Convertir Base64 a un Blob
+    const byteCharacters = atob(pdfbase64); // Decodifica el Base64
+    const byteNumbers = Array.from(byteCharacters).map((c) => c.charCodeAt(0));
+    const byteArray = new Uint8Array(byteNumbers);
+    const blob = new Blob([byteArray], { type: "application/pdf" });
+
+    // Crear una URL para el Blob
+    return URL.createObjectURL(blob);
+}
+
