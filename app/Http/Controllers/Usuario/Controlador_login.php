@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use App\Models\EstadisticaTitulado;
+use App\Models\EstadisticaEstudiante;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -98,7 +99,7 @@ class Controlador_login extends Controller
         $data['menu']   = 0;
         //$data['usuario_estacion'] = User::with(['estacion'])->find(Auth::user()->id);
 
-
+        // SECCION PARA LA TABLA COMPARATIVA DE TITULADOS POR FECHA DE COLACIÓN
         $estadisticas_por_fecha = EstadisticaTitulado::select(
             DB::raw('DATE(fecha_colacion) as fecha_colacion'),
             DB::raw('COUNT(*) as total')
@@ -117,10 +118,31 @@ class Controlador_login extends Controller
         $data['fechas_colacion'] = $estadisticas_por_fecha->pluck('mes'); // ["mayo", "enero", ...]
         $data['totales'] = $estadisticas_por_fecha->pluck('total'); // [6000, 5000, ...]
 
-        
+        $crecimientoAnios=$this->crecimientoEstudiantesAnio();
+        $data['anios_crecimiento'] = $crecimientoAnios->pluck('gestion');
+        $data['totales_crecimiento'] = $crecimientoAnios->pluck('total');
 
         return view('inicio', $data);
     }
+
+    public function crecimientoEstudiantesAnio()
+    {
+
+        $estadisticas_por_fecha = EstadisticaEstudiante::select(
+            'gestion',
+            DB::raw('SUM(total) as total')
+        )
+        ->groupBy('gestion')
+        ->orderBy('gestion')
+        ->get();
+
+
+        return $estadisticas_por_fecha;
+
+    }
+
+
+
     /**
      * FIN PARA INGRESAR AL INICIO
      */

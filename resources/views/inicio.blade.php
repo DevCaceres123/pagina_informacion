@@ -217,80 +217,56 @@
 @section('scripts')
 
     <script>
-        ///  ESTO ES PARA LA TABLA DE CRECIEMNETO DE TITULADOS
         const ctxCrecimiento = document.getElementById('crecimientoEstudiantesChart').getContext('2d');
 
-        // Datos de ejemplo
-        const anios = [2020, 2021, 2022, 2023, 2024, 2025];
-        const cantidadEstudiantes = [120, 180, 250, 310, 420, 560];
+        // Datos dinámicos desde Laravel
+        const anios = @json($anios_crecimiento); // [2023, 2025]
+        const cantidadEstudiantes = @json($totales_crecimiento); // [68236, 1398]
 
-        new Chart(ctxCrecimiento, {
+        const minY = Math.min(...cantidadEstudiantes) - 50; // margen más grande
+        const maxY = Math.max(...cantidadEstudiantes) + 50;
+
+        const miGrafico = new Chart(ctxCrecimiento, {
             type: 'line',
             data: {
                 labels: anios,
                 datasets: [{
-                    label: 'Estudiantes',
+                    label: 'Cantidad de estudiantes',
                     data: cantidadEstudiantes,
+                    borderColor: 'blue',
+                    backgroundColor: 'rgba(0,0,255,0.1)',
+                    tension: 0.2, // suaviza la curva
                     fill: true,
-                    tension: 0.4,
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                    pointBackgroundColor: 'rgba(75, 192, 192, 1)',
-                    pointRadius: 5,
-                    pointHoverRadius: 7,
-                    borderWidth: 3
+                    pointRadius: 5
                 }]
             },
             options: {
                 responsive: true,
                 plugins: {
                     legend: {
-                        display: true,
-                        position: 'top',
-                        labels: {
-                            color: '#333',
-                            font: {
-                                size: 14
-                            }
-                        }
+                        display: true
                     },
                     tooltip: {
-                        backgroundColor: '#fff',
-                        titleColor: '#333',
-                        bodyColor: '#333',
-                        borderColor: '#ddd',
-                        borderWidth: 1
+                        enabled: true
                     }
                 },
                 scales: {
                     y: {
-                        beginAtZero: true,
-                        ticks: {
-                            stepSize: 100,
-                            color: '#666',
-                            font: {
-                                size: 13
-                            }
-                        },
-                        grid: {
-                            color: '#eee'
-                        }
+                        min: minY,
+                        max: maxY
+                        // stepSize se puede omitir para que Chart.js lo calcule automáticamente
                     },
                     x: {
-                        ticks: {
-                            color: '#666',
-                            font: {
-                                size: 13
-                            }
-                        },
-                        grid: {
-                            display: false
+                        title: {
+                            display: true,
+                            text: 'Años'
                         }
                     }
                 }
             }
         });
     </script>
+
 
     <script>
         const meses = @json($fechas_colacion); // ["mayo", "enero", ...]
