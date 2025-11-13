@@ -97,6 +97,16 @@ class Controlador_login extends Controller
     {
         $gestionActual = date('Y');
         $data['menu']   = 0;
+
+        $data['catntidad_usuarios']= User::where('estado', 'activo')->count();
+        $data['cantidad_carreras']= DB::table('carreras')->where('estado', 'activo')->count();
+        $data['cantidad_sedes']= DB::table('sedes')->where('estado', 'activo')->count();
+        $data['ultima_noticia'] = DB::table('noticias')
+            ->where('estado_noticia', 'activo')
+            ->orderBy('created_at', 'desc')
+            ->first();
+
+
         //$data['usuario_estacion'] = User::with(['estacion'])->find(Auth::user()->id);
 
         // SECCION PARA LA TABLA COMPARATIVA DE TITULADOS POR FECHA DE COLACIÓN

@@ -84,7 +84,7 @@
                     <div class="d-flex justify-content-between align-items-center border-bottom pb-3">
                         <div>
                             <p class="text-dark mb-0 fw-semibold fs-14">Usuarios</p>
-                            <h3 class="mt-2 mb-0 fw-bold">{{ $usuarios ?? '15' }}</h3>
+                            <h3 class="mt-2 mb-0 fw-bold">{{ $catntidad_usuarios ?? '15' }}</h3>
                         </div>
                         <div class="icon-bg icon-bg-blue">
                             <i class="fas fa-users h3 mb-0"></i>
@@ -105,7 +105,7 @@
                     <div class="d-flex justify-content-between align-items-center border-bottom pb-3">
                         <div>
                             <p class="text-dark mb-0 fw-semibold fs-14">Carreras</p>
-                            <h3 class="mt-2 mb-0 fw-bold">{{ $carreras ?? '37' }}</h3>
+                            <h3 class="mt-2 mb-0 fw-bold">{{ $cantidad_carreras ?? '37' }}</h3>
                         </div>
                         <div class="icon-bg icon-bg-green">
                             <i class="fas fa-graduation-cap h3 mb-0"></i>
@@ -126,7 +126,7 @@
                     <div class="d-flex justify-content-between align-items-center border-bottom pb-3">
                         <div>
                             <p class="text-dark mb-0 fw-semibold fs-14">Sedes</p>
-                            <h3 class="mt-2 mb-0 fw-bold">{{ $sedes ?? '13' }}</h3>
+                            <h3 class="mt-2 mb-0 fw-bold">{{ $cantidad_sedes ?? '13' }}</h3>
                         </div>
                         <div class="icon-bg icon-bg-yellow">
                             <i class="fas fa-school h3 mb-0"></i>
@@ -148,7 +148,7 @@
                         <div>
                             <p class="text-dark mb-0 fw-semibold fs-14">Última Noticia</p>
                             <h6 class="mt-2 mb-0 fw-bold text-truncate" style="max-width: 160px;">
-                                {{ $ultimaNoticia->titulo ?? 'Sin noticias' }}
+                                {{ $ultima_noticia->titulo ?? 'Sin noticias' }}
                             </h6>
                         </div>
                         <div class="icon-bg icon-bg-red">
@@ -156,8 +156,8 @@
                         </div>
                     </div>
                     <p class="text-muted small mt-3">
-                        Publicada el 24 de octubre de 2025
-                        {{-- {{ $ultimaNoticia ? $ultimaNoticia->created_at->format('d/m/Y') : '--/--/----' }} --}}
+                        
+                        {{ $ultima_noticia ? $ultima_noticia->created_at : '--/--/----' }}
                     </p>
                 </div>
             </div>
