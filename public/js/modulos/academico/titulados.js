@@ -90,7 +90,9 @@ function listar() {
                 className: "table-td text-uppercase",
                 render: function (data) {
                     return `                            
-                       <span class="badge ${data === 'masculino'  ? 'bg-success'  : 'bg-danger'} ">${data}</span>
+                       <span class="badge ${
+                           data === "masculino" ? "bg-success" : "bg-danger"
+                       } ">${data}</span>
                     `;
                 },
             },
@@ -129,7 +131,9 @@ function listar() {
 
     // Permite filtrar por una fecha diferente
     $("#btnFiltrar").on("click", function (e) {
-        e.preventDefault();
+        e.preventDefault();        
+        const textoVisible = $("#fecha_filtro option:selected").text(); // ej: "12 de marzo"
+        $("#fecha_filtrada").text(` ${textoVisible}`);
         tabla.ajax.reload();
     });
 }
@@ -216,7 +220,9 @@ $("#tabla_titulados").on("change", ".editar-fila", function () {
         $row.find("td:eq(1)").text(nombreNuevo);
         $row.find("td:eq(2)").text(docNuevo);
         $row.find("td:eq(5)").html(
-            `<span class="badge  ${generoNuevo === 'masculino'  ? 'bg-success'  : 'bg-danger'} ">${generoNuevo}</span>`
+            `<span class="badge  ${
+                generoNuevo === "masculino" ? "bg-success" : "bg-danger"
+            } ">${generoNuevo}</span>`
         );
         $row.find("td:eq(6)").html(
             `<span class="badge bg-primary">${gradoNuevo}</span>`
@@ -247,7 +253,7 @@ $("#tabla_titulados").on("click", ".actualizar_informacion", function (e) {
         $row.find("td:eq(6)").text().trim();
 
     // 🔹 Puedes armar un objeto con toda la data
-    const datos = {        
+    const datos = {
         nombreCompleto: nombre,
         documentoIdentidad: documento,
         genero: genero,
@@ -276,11 +282,7 @@ $("#tabla_titulados").on("click", ".actualizar_informacion", function (e) {
     );
 });
 
-
-
-
 // previsualizar datos en tabla
-
 
 $("#formSubirDatosExcel").on("submit", function (e) {
     e.preventDefault();
@@ -348,8 +350,6 @@ $("#formSubirDatosExcel").on("submit", function (e) {
     );
 });
 
-
-
 // funcion pra subir los datos del archivo
 $("#btnConfirmar").on("click", function (e) {
     e.preventDefault();
@@ -416,7 +416,6 @@ $("#btnConfirmar").on("click", function (e) {
     );
 });
 
-
 function mostrarErroresImportacion(
     erroresValidacion = [],
     erroresPersonalizados = [],
@@ -469,8 +468,6 @@ function mostrarErroresImportacion(
 
     alertContainer.html(html);
 }
-
-
 
 function mensajeAlertaTexto(mensaje, tipo) {
     let alertClass =

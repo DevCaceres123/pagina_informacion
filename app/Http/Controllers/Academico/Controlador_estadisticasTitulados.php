@@ -62,7 +62,7 @@ class Controlador_estadisticasTitulados extends Controller
 
             $q->select(['id','nombre']);
         }])
-        ->select(['id','nombreCompleto','documentoIdentidad','genero','grado_academico','carrera_id','sede_id'])
+        ->select(['id','nombreCompleto','documentoIdentidad','genero','grado_academico','carrera_id','sede_id','fecha_colacion'])
         ->whereYear('fecha_colacion', $gestion) // filtra por año de colación
         ->orderBy('id', 'desc');
 
@@ -254,6 +254,31 @@ class Controlador_estadisticasTitulados extends Controller
                 'detalle' => $e->getMessage(),
             ], 500);
         }
+    }
+    public function listarFechasColacion(Request $request)
+    {
+        $gestion = $request->input('anio', date('Y'));
+
+        $colaciones = EstadisticaTitulado::select('fecha_colacion')
+            ->whereYear('fecha_colacion', $gestion)
+            ->distinct()
+            ->orderByDesc('fecha_colacion')
+            ->pluck('fecha_colacion');
+
+        // Formatear cada fecha
+        $fechas = $colaciones->map(function ($fecha) {
+            return [
+                'valor' => $fecha, // lo que usas para filtrar
+                'texto' => Carbon::parse($fecha)
+                    ->locale('es')
+                    ->translatedFormat('d \d\e F Y'), // lo que se muestra
+            ];
+        });
+
+        return response()->json([
+            'tipo' => 'exito',
+            'mensaje' => $fechas,
+        ]);
     }
 
     public function mensaje($titulo, $mensaje)

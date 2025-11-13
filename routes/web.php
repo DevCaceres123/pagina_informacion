@@ -189,6 +189,7 @@ Route::prefix('/admin')->middleware([Autenticados::class])->group(function () {
         Route::put('actualizar_registro_titulado/{id_carrera}', 'actualizar_registro_titulado')->name('titulados.actualizar_registro_titulado');
         Route::post('previsualizarTitulados', 'previsualizarTitulados')->name('titulados.previsualizarTitulados');
         Route::post('subirDatosTituladoscsv', 'subirDatosTituladoscsv')->name('titulados.subirDatosTituladoscsv');      
+        Route::get('listarFechasColacion', 'listarFechasColacion')->name('titulados.listarFechasColacion');
     });
 
 

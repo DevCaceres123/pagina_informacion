@@ -9,7 +9,8 @@
                 <h5 class="mb-0 fw-bold">
                     <i class="fas fa-user-graduate me-2"></i> Registro de Titulados
                 </h5>
-                <span class="badge bg-light text-primary fw-bold fs-6">Gestión {{ date('Y') }}</span>
+                <span class="badge bg-light text-primary fw-bold fs-5 text-uppercase"
+                    id='fecha_filtrada'>{{ \Carbon\Carbon::parse($colacionSeleccionada)->translatedFormat('d \d\e F Y') }}</span>
             </div>
 
             <div class="card-body">
@@ -38,7 +39,7 @@
                                 @foreach ($colaciones as $fecha)
                                     <option value="{{ $fecha }}"
                                         {{ $fecha == $colacionSeleccionada ? 'selected' : '' }}>
-                                        {{ \Carbon\Carbon::parse($fecha)->translatedFormat('d \d\e F \d\e Y') }}
+                                        {{ \Carbon\Carbon::parse($fecha)->translatedFormat('d \d\e F Y') }}
                                     </option>
                                 @endforeach
                             </select>
@@ -162,7 +163,7 @@
                                     <li><code>grado_academico</code> → <span class="text-dark">licenciatura</span>, <span
                                             class="text-dark">técnico superior</span>, <span class="text-dark">técnico
                                             medio</span></li>
-                                    
+
                                 </ul>
                             </div>
 
@@ -281,5 +282,46 @@
 
 
     <script src="{{ asset('js/modulos/academico/titulados.js') }}" type="module"></script>
+
+    <script>
+
+        
+        $("#anio").on("change", function() {
+            const anioSeleccionado = $(this).val();
+
+            $.ajax({
+                url: "listarFechasColacion",
+                method: "GET",
+                data: {
+                    anio: anioSeleccionado
+                },
+                success: function(response) {
+                    if (response.tipo !== "exito") {
+                        mensajeAlerta(response.mensaje, "errores");
+                        return;
+                    }
+
+                    const fechas = response.mensaje;
+                    $("#fecha_filtro").empty();
+
+                    fechas.forEach((f) => {
+                        // f.valor → YYYY-MM-DD (para el filtro)
+                        // f.texto → "13 noviembre" (formateado por Carbon)
+                        $("#fecha_filtro").append(
+                            `<option value="${f.valor}">${f.texto}</option>`
+                        );
+                    });
+
+                    // Actualizar badge
+                    const primera = fechas.length > 0 ? fechas[0].texto : "N/A";
+                    $("#fecha_filtrada").text(` ${primera}`);
+                },
+                error: function() {
+                    console.error("Error al obtener las fechas de colación.");
+                },
+            });
+        });
+    </script>
+
 
 @endsection
