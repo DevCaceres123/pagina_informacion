@@ -339,51 +339,29 @@
 
 
     <script>
-        // ESTO ES PARA MOSTRAR LOS DATOS DE CADA ESTUDIANTE SEGUN SEDE
-        // Labels = carreras
-        const labels = [];
-        for (let i = 1; i <= 37; i++) {
-            labels.push(' Prueba' + i);
-        }
+        // Datos desde Laravel
+        const sedeCarrera = @json($sede_carrera);
+        console.log(sedeCarrera);
 
-        // Sedes
-        const sedes = [
-            'CARANAVI', 'VIACHA', 'VILLA ESPERANZA', 'ACHACACHI', 'BATALLAS',
-            'CHAGUAYA', 'GUAQUI', 'ANCORAIMES', 'PALOS BLANCOS', 'COROICO - CRUZ LOMA',
-            'SAN ANTONIO', 'MAPIRI-CHAROPAMPA', 'CARANAVI - SAN PABLO'
+        const ctx = document.getElementById('estudiantesStackedChart').getContext('2d');
+
+        // Colores por sede (puedes agregar más si tienes más sedes)
+        const colores = [
+            '#7FCFC0', '#F49090', '#F6D26A', '#A77ACF', '#FFA07A',
+            '#20B2AA', '#FFB6C1', '#87CEFA', '#FFD700', '#8FBC8F'
         ];
 
-        // Solo 3 colores fijos
-        const colores = ['#7FCFC0', '#F49090', '#F6D26A']; // azul, verde, naranja
-
-        // Datasets: un dataset por sede
-        const datasets = sedes.map((sede, sedeIndex) => {
-            const data = [];
-            const backgroundColor = [];
-
-            for (let i = 0; i < 37; i++) {
-                // 70% probabilidad que haya estudiantes
-                const estudiantes = Math.random() > 0.3 ? Math.floor(Math.random() * 50) + 1 : 0;
-                data.push(estudiantes);
-
-                // Color fijo según carrera (3 colores)
-                backgroundColor.push(colores[i % colores.length]);
-            }
-
-            return {
-                label: sede,
-                data: data,
-                backgroundColor: backgroundColor
-            };
+        // Asignar un color a cada sede
+        sedeCarrera.datasets.forEach((ds, index) => {
+            ds.backgroundColor = colores[index % colores.length]; // un color por sede
         });
 
-        // Crear gráfico Stacked Bar
-        const ctx = document.getElementById('estudiantesStackedChart').getContext('2d');
+        // Crear gráfico stacked bar
         new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: labels,
-                datasets: datasets
+                labels: sedeCarrera.labels, // Carreras
+                datasets: sedeCarrera.datasets
             },
             options: {
                 responsive: true,

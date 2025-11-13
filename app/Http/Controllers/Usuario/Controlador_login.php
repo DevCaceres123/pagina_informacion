@@ -118,9 +118,15 @@ class Controlador_login extends Controller
         $data['fechas_colacion'] = $estadisticas_por_fecha->pluck('mes'); // ["mayo", "enero", ...]
         $data['totales'] = $estadisticas_por_fecha->pluck('total'); // [6000, 5000, ...]
 
-        $crecimientoAnios=$this->crecimientoEstudiantesAnio();
+        // SECCION PARA LA TABLA COMPARATIVA DE ESTUDIANTES POR AÑO DE GESTIÓN
+        $crecimientoAnios = $this->crecimientoEstudiantesAnio();
         $data['anios_crecimiento'] = $crecimientoAnios->pluck('gestion');
         $data['totales_crecimiento'] = $crecimientoAnios->pluck('total');
+
+        // SECCION PARA LA TABLA COMPARATIVA DE ESTUDIANTES POR SEDE Y CARRERA
+
+        $data['sede_carrera'] = $this->estudiantesPorSedeCarrera();
+
 
         return view('inicio', $data);
     }
@@ -140,6 +146,74 @@ class Controlador_login extends Controller
         return $estadisticas_por_fecha;
 
     }
+
+    public function estudiantesPorSedeCarrera()
+    {
+        // Obtener todas las carreras
+        $carreras = DB::table('carreras')->where('estado', 'activo')->pluck('nombre', 'id'); // ['id' => 'nombre']
+
+        // Abreviar nombres de carreras
+        $carrerasAbreviadas = $carreras->map(function ($nombre) {
+            $mapa = [
+                'administracion' => 'Adm.',
+                'ingenieria' => 'Ing.',
+                'medicina' => 'Med.',
+                'derecho' => 'Der.',
+                'arquitectura' => 'Arq.',
+                'ciencias'      => 'Cien.',
+                'educacion'     => 'Edu.',
+                // agrega más según tus carreras
+            ];
+
+            // Separar la primera palabra
+            $palabras = explode(' ', $nombre);
+            $primera = strtolower($palabras[0]);
+
+            // Reemplazar con abreviatura si existe en el mapa
+            if (isset($mapa[$primera])) {
+                $palabras[0] = $mapa[$primera];
+            }
+
+            // Unir de nuevo las palabras
+            return implode(' ', $palabras);
+        });
+
+        // Obtener todas las sedes
+        $sedes = DB::table('sedes')->where('estado', 'activo')->pluck('nombre', 'id');
+
+        // Obtener estadísticas por carrera y sede
+        $datos = DB::table('estadisticas_estudiantes')
+            ->select('carrera_id', 'sede_id', DB::raw('SUM(total) as total_estudiantes'))
+            ->groupBy('carrera_id', 'sede_id')
+            ->get();
+
+        // Inicializar datasets para Chart.js
+        $datasets = [];
+
+        foreach ($sedes as $sedeId => $sedeNombre) {
+            $data = [];
+            foreach ($carreras as $carreraId => $carreraNombre) {
+                $registro = $datos->firstWhere(function ($item) use ($sedeId, $carreraId) {
+                    return $item->sede_id == $sedeId && $item->carrera_id == $carreraId;
+                });
+                $data[] = $registro ? $registro->total_estudiantes : 0;
+            }
+
+            $datasets[] = [
+                'label' => $sedeNombre,
+                'data' => $data,
+                'backgroundColor' => null
+            ];
+        }
+
+        // Retornar labels abreviadas
+        return [
+            'labels' => $carrerasAbreviadas->values(),
+            'datasets' => $datasets,
+            'sedes' => $sedes->values()
+        ];
+    }
+
 
 
 
