@@ -327,7 +327,7 @@ class Controlador_estadisticasTitulados extends Controller
                 ->orderBy('estadistica_titulados.grado_academico')
                 ->get();
 
-            return $estadisticas;   
+            
 
             // Obtener datos del usuario
             $usuario = auth()->user()->only(['nombres', 'apellidos']);
