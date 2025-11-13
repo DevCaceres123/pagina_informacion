@@ -15,37 +15,54 @@
             <div class="card-body">
                 <form action="" method="POST">
 
-                    <div class="row mb-4">
-
+                    <div class="row g-3 align-items-end">
+                        <!-- Filtro por año -->
                         <div class="col-md-3">
-                            <label for="gestion_filtro" class="form-label fw-bold">Ver estadísticas de:</label>
-                            <select name="gestion_filtro" id="gestion_filtro" class="form-select shadow-sm">
-                                @php
-                                    // Agregamos la gestión actual como primera opción
-                                    $todasGestiones = collect([$gestionActual])->merge($gestiones);
-                                @endphp
+                            <label class="form-label fw-bold">Año:</label>
+                            <!-- Filtro por año -->
+                            <select id="anio" name="anio" class="form-select shadow-sm">
+                                @foreach ($anios as $anio)
+                                    <option value="{{ $anio }}" {{ $anio == $anioSeleccionado ? 'selected' : '' }}>
+                                        {{ $anio }}
+                                    </option>
+                                @endforeach
+                            </select>
 
-                                @foreach ($todasGestiones as $g)
-                                    <option value="{{ $g }}" {{ $g == $gestionActual ? 'selected' : '' }}>
-                                        {{ $g }}
+                        </div>
+
+                        <!-- Filtro por colación -->
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold">Colación:</label>
+                            <!-- Filtro por colación -->
+                            <select id="fecha_filtro" name="fecha_filtro" class="form-select shadow-sm">
+                                @foreach ($colaciones as $fecha)
+                                    <option value="{{ $fecha }}"
+                                        {{ $fecha == $colacionSeleccionada ? 'selected' : '' }}>
+                                        {{ \Carbon\Carbon::parse($fecha)->translatedFormat('d \d\e F \d\e Y') }}
                                     </option>
                                 @endforeach
                             </select>
                         </div>
+
+                        <div class="col-md-2">
+                            <button class="btn btn-primary w-100" type="button" id="btnFiltrar">Filtrar</button>
+                        </div>
                     </div>
 
 
+
                     <div class="table-responsive">
-                        <table class="table table-bordered align-middle text-center shadow-sm table-striped"
-                            id="tabla_estudiantes">
+                        <table class="table table-bordered align-middle shadow-sm table-striped" id="tabla_titulados">
                             <thead class="table-light">
                                 <tr>
                                     <th>#</th>
+                                    <th>Nombre</th>
+                                    <th>Documento</th>
                                     <th>Carrera</th>
                                     <th>Sedes</th>
-                                    <th>Hombres</th>
-                                    <th>Mujeres</th>
-                                    <th>Total</th>
+                                    <th>Genero</th>
+                                    <th>Grado Academico</th>
+
                                     <th class="text-uppercase">Acciones</th>
                                 </tr>
                             </thead>
@@ -133,10 +150,23 @@
                                     accept=".csv, text/csv" required>
                             </div>
                             <div class="alert alert-info mt-2 py-2 px-3">
-                                <strong> El archivo debe contener las columnas:</strong>
-                                <code> carrera </code>|<code> sede </code>|<code> gestion </code>|
-                                <code> femenino </code>|<code> masculino </code>|<code> total </code>.
+                                <strong>El archivo CSV debe contener las siguientes columnas:</strong>
+                                <ul class="mb-0 mt-2">
+                                    <li><code>nombre_completo</code></li>
+                                    <li><code>documento</code></li>
+                                    <li><code>carrera</code></li>
+                                    <li><code>sede</code></li>
+                                    <li><code>genero</code> → <span class="text-success">masculino</span> / <span
+                                            class="text-primary">femenino</span></li>
+                                    <li><code>Fecha</code></li>
+                                    <li><code>grado_academico</code> → <span class="text-dark">licenciatura</span>, <span
+                                            class="text-dark">técnico superior</span>, <span class="text-dark">técnico
+                                            medio</span></li>
+                                    
+                                </ul>
                             </div>
+
+
 
                             <div id="alertContainer" class="alert d-none" role="alert"></div>
                             <div id="previewContainer" class=" d-none">
@@ -250,6 +280,6 @@
     </script>
 
 
-    <script src="{{ asset('js/modulos/academico/estudiantes.js') }}" type="module"></script>
+    <script src="{{ asset('js/modulos/academico/titulados.js') }}" type="module"></script>
 
 @endsection

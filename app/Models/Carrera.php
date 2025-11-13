@@ -20,6 +20,10 @@ class Carrera extends Model
         return $this->hasMany('App\Models\EstadisticaEstudiante');
     }
 
+    public function estadistica_titulados(){
+        return $this->hasMany('App\Models\EstadisticaTitualado');
+    }
+
     public function docentes()
     {
         return $this->hasMany('App\Models\Docente');

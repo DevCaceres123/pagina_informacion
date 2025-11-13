@@ -33,6 +33,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         \App\Models\Noticia::factory(500)->create();
+        //\App\Models\EstadisticaTitulado::factory(5000)->create();
 
     }
 }

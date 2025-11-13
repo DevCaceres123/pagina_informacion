@@ -176,6 +176,7 @@ Route::prefix('/admin')->middleware([Autenticados::class])->group(function () {
         Route::post('generar_reporte_estudiante', 'generar_reporte_estudiante')->name('estudiantes.generar_reporte_estudiante');
         Route::post('previsualizarExcel', 'previsualizarExcel')->name('estudiantes.previsualizarExcel');
         Route::post('subirDatosEstudiantecsv', 'subirDatosEstudiantecsv')->name('estudiantes.subirDatosEstudiantecsv');
+        
       
     });
 
@@ -184,8 +185,10 @@ Route::prefix('/admin')->middleware([Autenticados::class])->group(function () {
     // CONTROLADOR PARA LA ESTADISTICA DE LOS TITULADOS
     Route::controller(Controlador_estadisticasTitulados::class)->group(function () {
         Route::resource('titulados', Controlador_estadisticasTitulados::class);
-    
-      
+        Route::get('listarTitulados', 'listarTitulados')->name('titulados.listarTitulados');
+        Route::put('actualizar_registro_titulado/{id_carrera}', 'actualizar_registro_titulado')->name('titulados.actualizar_registro_titulado');
+        Route::post('previsualizarTitulados', 'previsualizarTitulados')->name('titulados.previsualizarTitulados');
+        Route::post('subirDatosTituladoscsv', 'subirDatosTituladoscsv')->name('titulados.subirDatosTituladoscsv');      
     });
 
 

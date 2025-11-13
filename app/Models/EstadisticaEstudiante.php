@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class EstadisticaEstudiante extends Model
 {
-     protected $fillable = [
+    protected $fillable = [
         'carrera_id','sede_id', 'gestion',
         'hombres', 'mujeres', 'total'
     ];
