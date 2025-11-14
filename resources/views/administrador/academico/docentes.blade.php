@@ -36,8 +36,7 @@
 
 
                     <div class="table-responsive">
-                        <table class="table table-bordered  shadow-sm table-striped"
-                            id="tabla_docentes">
+                        <table class="table table-bordered  shadow-sm table-striped" id="tabla_docentes">
                             <thead class="table-light">
                                 <tr>
                                     <th>#</th>
@@ -135,9 +134,19 @@
                                     accept=".csv, text/csv" required>
                             </div>
                             <div class="alert alert-info mt-2 py-2 px-3">
-                                <strong> El archivo debe contener las columnas:</strong>
-                                <code> carrera </code>|<code> sede </code>|<code> gestion </code>|
-                                <code> femenino </code>|<code> masculino </code>|<code> total </code>.
+                                <strong>El archivo CSV debe contener las siguientes columnas:</strong>
+                                <ul class="mb-0 mt-2">
+                                    <li><code>nombre_completo</code></li>
+                                    <li><code>documento</code></li>
+                                    <li><code>carrera</code></li>
+                                    <li><code>sede</code></li>
+                                    <li><code>genero</code> → <span class="text-success">masculino</span> / <span
+                                            class="text-primary">femenino</span></li>
+                                    <li><code>gestion</code></li>
+                                    <li><code>profesion</code></li>
+                                    <li><code>grado_academico</code></li>
+
+                                </ul>
                             </div>
 
                             <div id="alertContainer" class="alert d-none" role="alert"></div>
@@ -181,7 +190,6 @@
                                     </div>
                                 </div>
                             </div>
-
                     </div>
 
                 </div>
