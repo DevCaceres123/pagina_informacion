@@ -47,6 +47,7 @@
                                     <th>genero</th>
                                     <th>profesion</th>
                                     <th>grado academico</th>
+                                    <th>estado</th>
                                     <th class="text-uppercase">Acciones</th>
                                 </tr>
                             </thead>

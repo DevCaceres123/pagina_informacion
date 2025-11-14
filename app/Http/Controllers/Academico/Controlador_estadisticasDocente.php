@@ -52,7 +52,7 @@ class Controlador_estadisticasDocente extends Controller
                 $q->select(['id', 'nombre']);
             }
         ])
-         ->select(['id','nombreCompleto','documentoIdentidad','genero','profesion','grado_academico','carrera_id','sede_id'])
+         ->select(['id','nombreCompleto','documentoIdentidad','genero','profesion','grado_academico','estado','carrera_id','sede_id'])
          ->where('gestion', $gestion)
          ->orderBy('id', 'desc');
 

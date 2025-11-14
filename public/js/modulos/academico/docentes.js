@@ -104,7 +104,7 @@ function listar() {
                 },
             },
 
-             {
+            {
                 data: "grado_academico",
                 className: "table-td text-uppercase",
                 render: function (data) {
@@ -112,7 +112,18 @@ function listar() {
                         ${data}
                     `;
                 },
-            },            
+            },
+            {
+                data: 'estado',
+                className: "table-td text-uppercase",
+                render: function (data, type, row) {
+                      return `                            
+                       <span class="badge ${
+                           data === "activo" ? "bg-primary" : "bg-danger"
+                       } ">${data}</span>
+                    `;
+                },
+            },
 
             {
                 data: null,
@@ -146,8 +157,6 @@ function listar() {
 function actualizarTabla() {
     tabla.ajax.reload(null, false); // Recarga los datos sin resetear el paginado
 }
-
-
 
 $("#tabla_docentes").on("change", ".editar-fila", function () {
     const $row = $(this).closest("tr");
@@ -191,7 +200,6 @@ $("#tabla_docentes").on("change", ".editar-fila", function () {
         gradoCelda.html(
             `<input type="text" class="form-control form-control-sm" name="grado" value="${grado}" />`
         );
-        
 
         generoCelda.html(`
             <select class="form-select form-select-sm" name="genero">
@@ -203,8 +211,6 @@ $("#tabla_docentes").on("change", ".editar-fila", function () {
                 }>Femenino</option>
             </select>
         `);
-
-        
     } else {
         // 🔴 Desactivar modo edición
         $row.removeClass("table-warning");
@@ -235,8 +241,6 @@ $("#tabla_docentes").on("change", ".editar-fila", function () {
     }
 });
 
-
-
 // Cuando se hace clic en el botón de actualizar
 $("#tabla_docentes").on("click", ".actualizar_informacion", function (e) {
     e.preventDefault();
@@ -259,8 +263,8 @@ $("#tabla_docentes").on("click", ".actualizar_informacion", function (e) {
         $row.find("input[name='profesion']").val() ||
         $row.find("td:eq(6)").text().trim();
 
-      const grado =
-         $row.find("input[name='grado']").val() ||
+    const grado =
+        $row.find("input[name='grado']").val() ||
         $row.find("td:eq(7)").text().trim();
 
     // 🔹 Puedes armar un objeto con toda la data

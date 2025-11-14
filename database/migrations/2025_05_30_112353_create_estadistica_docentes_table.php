@@ -20,7 +20,8 @@ return new class extends Migration
             $table->enum('genero', ['masculino','femenino']);
             $table->year('gestion');
             $table->string('profesion', 200);
-            $table->string('grado_academico', 200);                    
+            $table->string('grado_academico', 200);
+             $table->enum('estado', ['activo','inactivo']);                    
 
             $table->foreign('carrera_id')
                 ->references('id')
