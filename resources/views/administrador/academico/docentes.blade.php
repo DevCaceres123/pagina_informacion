@@ -36,16 +36,18 @@
 
 
                     <div class="table-responsive">
-                        <table class="table table-bordered align-middle text-center shadow-sm table-striped"
-                            id="tabla_estudiantes">
+                        <table class="table table-bordered  shadow-sm table-striped"
+                            id="tabla_docentes">
                             <thead class="table-light">
                                 <tr>
                                     <th>#</th>
-                                    <th>Carrera</th>
-                                    <th>Sedes</th>
-                                    <th>Hombres</th>
-                                    <th>Mujeres</th>
-                                    <th>Total</th>
+                                    <th>Nombre y apellidos</th>
+                                    <th>Nro. Documento</th>
+                                    <th>carrera</th>
+                                    <th>sede</th>
+                                    <th>genero</th>
+                                    <th>profesion</th>
+                                    <th>grado academico</th>
                                     <th class="text-uppercase">Acciones</th>
                                 </tr>
                             </thead>
@@ -250,6 +252,6 @@
     </script>
 
 
-    <script src="{{ asset('js/modulos/academico/estudiantes.js') }}" type="module"></script>
+    <script src="{{ asset('js/modulos/academico/docentes.js') }}" type="module"></script>
 
 @endsection
