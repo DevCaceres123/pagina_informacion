@@ -10,7 +10,7 @@ class EstadisticaDocente extends Model
 
      protected $fillable = [
         'carrera_id','sede_id', 'gestion',
-        'hombres', 'mujeres', 'total'
+        'nombreCompleto', 'documentoIdentidad', 'genero', 'profesion', 'grado_academico',
     ];
 
     public function carrera()
