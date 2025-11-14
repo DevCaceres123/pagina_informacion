@@ -12,13 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('estadistica_docentes', function (Blueprint $table) {
-            $table->id();                        
+            $table->id();       
+            $table->string('nombreCompleto', 200);
+            $table->string('documentoIdentidad', 100);                 
             $table->unsignedBigInteger('carrera_id');
             $table->unsignedBigInteger('sede_id');
+            $table->enum('genero', ['masculino','femenino']);
             $table->year('gestion');
-            $table->integer('hombres')->default(0);
-            $table->integer('mujeres')->default(0);
-            $table->integer('total')->default(0);
+            $table->string('profesion', 200);
+            $table->string('grado_academico', 200);                    
 
             $table->foreign('carrera_id')
                 ->references('id')
