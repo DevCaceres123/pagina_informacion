@@ -196,10 +196,11 @@ Route::prefix('/admin')->middleware([Autenticados::class])->group(function () {
 
     // CONTROLADOR PARA LA ESTADISTICA DE LOS DOCENTES
     Route::controller(Controlador_estadisticasDocente::class)->group(function () {
-    Route::resource('docentes', Controlador_estadisticasDocente::class);
-    Route::get('listarDocentes', 'listarDocentes')->name('docentes.listarDocentes');
-    Route::put('actualizar_registro_docente/{id_titulado}', 'actualizar_registro_docente')->name('docentes.actualizar_registro_titulado');
-      
+        Route::resource('docentes', Controlador_estadisticasDocente::class);
+        Route::get('listarDocentes', 'listarDocentes')->name('docentes.listarDocentes');
+        Route::put('actualizar_registro_docente/{id_titulado}', 'actualizar_registro_docente')->name('docentes.actualizar_registro_titulado');
+        Route::post('previsualizarDocentes', 'previsualizarDocentes')->name('docentes.previsualizarDocentes');
+        Route::post('subirDatosDocentescsv', 'subirDatosDocentescsv')->name('docentes.subirDatosDocentescsv');
     });
 
 

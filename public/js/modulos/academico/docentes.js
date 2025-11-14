@@ -57,7 +57,7 @@ function listar() {
                 },
             },
             {
-                data: "documentoIdentidad",
+                data: "documento_identidad",
                 className: "table-td text-uppercase",
                 render: function (data) {
                     return `                            
@@ -114,10 +114,10 @@ function listar() {
                 },
             },
             {
-                data: 'estado',
+                data: "estado",
                 className: "table-td text-uppercase",
                 render: function (data, type, row) {
-                      return `                            
+                    return `                            
                        <span class="badge ${
                            data === "activo" ? "bg-primary" : "bg-danger"
                        } ">${data}</span>
@@ -299,3 +299,222 @@ $("#tabla_docentes").on("click", ".actualizar_informacion", function (e) {
         }
     );
 });
+
+// previsualizar datos en tabla
+$("#formSubirDatosExcel").on("submit", function (e) {
+    e.preventDefault();
+    $("#btn-importar").prop("disabled", true);
+    let formData = new FormData(this);
+
+    crud(
+        "admin/previsualizarDocentes",
+        "POST",
+        null,
+        formData,
+        function (error, response) {
+            $("#btn-importar").prop("disabled", false);
+
+            // Verificamos que no haya un error o que todos los campos sean llenados
+            if (response.tipo === "errores") {
+                mensajeAlerta(response.mensaje, "errores");
+                return;
+            }
+
+            if (response.tipo != "exito") {
+                // Mostrar los mensajes de validación (cabeceras faltantes o columnas extra)
+                mensajeAlertaTexto(response.mensaje, response.tipo);
+
+                // Si el tipo es error, también ocultamos la vista previa si estaba visible
+                $("#previewContainer").addClass("d-none");
+                $("#previewTable tbody").empty();
+                $("#previewTable thead tr").empty();
+                return;
+            }
+
+            const datos = response.mensaje;
+
+            if (Array.isArray(datos) && datos.length > 0) {
+                // Generar cabeceras dinámicamente desde las claves del primer objeto
+                const headers = Object.keys(datos[0]);
+                $("#alertContainer").addClass("d-none");
+                // Limpiar contenedor anterior
+                $("#previewHeaders").empty();
+                $("#previewBody").empty();
+
+                // Crear encabezados de tabla
+                headers.forEach((h) => {
+                    $("#previewHeaders").append(
+                        `<th class='bg-dark text-light'>${h.toUpperCase()}</th>`
+                    );
+                });
+
+                // Crear filas de datos
+                datos.forEach((fila) => {
+                    let htmlFila = "<tr>";
+                    headers.forEach((h) => {
+                        htmlFila += `<td>${fila[h] ?? ""}</td>`;
+                    });
+                    htmlFila += "</tr>";
+                    $("#previewBody").append(htmlFila);
+                });
+
+                // Mostrar la tabla de previsualización
+                $("#previewContainer").removeClass("d-none");
+            } else {
+                mensajeAlerta("No se encontraron datos para mostrar.", "info");
+            }
+        }
+    );
+});
+
+// funcion pra subir los datos del archivo
+$("#btnConfirmar").on("click", function (e) {
+    e.preventDefault();
+
+    Swal.fire({
+        title: "⚠️ ¡Atención!",
+        html: `
+        Está a punto de <b>subir la planilla de docentes</b>.<br><br>
+        <b>IMPORTANTE:</b> Solo se mantendrán <b>activos</b> los docentes 
+        que estén en el archivo.<br><br>
+        Si falta algún docente en el archivo, 
+        <b>será marcado automáticamente como INACTIVO</b> en el sistema.<br><br>
+        Por favor, asegúrese de que el archivo esté completo.
+    `,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Sí, subir archivo",
+        cancelButtonText: "Cancelar",
+    }).then(async function (result) {
+        if (result.isConfirmed) {
+            // Obtenemos el formulario completo
+            let form = $("#formSubirDatosExcel")[0];
+
+            // Creamos el FormData (necesario para enviar archivos)
+            let formData = new FormData(form);
+
+            // Verificamos que se haya seleccionado un archivo
+            if (!$("#archivo").val()) {
+                alert(
+                    "Por favor selecciona un archivo CSV o Excel antes de continuar."
+                );
+                return;
+            }
+
+            // Deshabilitamos el botón mientras se sube
+            $("#btnConfirmar").prop("disablde", true).text("Importando...");
+
+            crud(
+                "admin/subirDatosDocentescsv",
+                "POST",
+                null,
+                formData,
+                function (error, response) {
+                    $("#btnConfirmar")
+                        .prop("disabled", false)
+                        .text("Subir Definitivamente");
+
+                    // Verificamos que no haya un error o que todos los campos sean llenados
+                    if (response.tipo === "errores") {
+                        mensajeAlerta(response.mensaje, "errores");
+                        return;
+                    }
+
+                    if (response.tipo == "error_validacion") {
+                        // Mostrar los mensajes de validación (cabeceras faltantes o columnas extra)
+                        mostrarErroresImportacion(
+                            response.errores_validacion,
+                            response.errores_personalizados,
+                            null
+                        );
+
+                        $("#previewContainer").addClass("d-none");
+                        $("#previewTable tbody").empty();
+                        $("#previewTable thead tr").empty();
+                        return;
+                    }
+
+                    mostrarErroresImportacion(
+                        response.errores_validacion,
+                        response.errores_personalizados,
+                        response.filas_insertadas
+                    );
+                    $("#archivo").val("");
+
+                    $("#previewContainer").addClass("d-none");
+                    $("#previewTable tbody").empty();
+                    $("#previewTable thead tr").empty();
+                    actualizarTabla();
+                }
+            );
+        } else {
+            alerta_top("error", "Se canceló la eliminacion");
+        }
+    });
+});
+
+//funcion prara mostrar los errores de importacion
+function mostrarErroresImportacion(
+    erroresValidacion = [],
+    erroresPersonalizados = [],
+    filas_insertadas
+) {
+    const alertContainer = $("#alertContainer");
+
+    // Limpiamos el contenido anterior
+    alertContainer.removeClass("d-none alert-success alert-danger").empty();
+
+    // Si no hay errores, mostramos un mensaje verde de éxito
+    if (erroresValidacion.length === 0 && erroresPersonalizados.length === 0) {
+        alertContainer
+            .addClass("alert-success")
+            .html(
+                `<strong>✅ Importación completada con éxito.</strong> Filas insertadas:${filas_insertadas}`
+            );
+        return;
+    }
+
+    // Si hay errores, mostramos en rojo
+    alertContainer.addClass("alert-danger");
+
+    let html =
+        "<strong>Se encontraron errores en la importación:</strong><ul class='mt-2'>";
+
+    // 🔸 Errores de validación (columnas, formatos, etc.)
+    erroresValidacion.forEach((err) => {
+        html += `
+            <li>
+                <b>Fila ${err.row ?? "?"}</b>: ${
+            err.errors ? err.errors.join(", ") : "Error de validación"
+        }
+            </li>
+        `;
+    });
+
+    // 🔸 Errores personalizados (carrera, sede o relación inexistente)
+    erroresPersonalizados.forEach((err) => {
+        html += `
+            <li>
+                <b>Fila ${err.fila ?? "?"}</b> – Campo: <b>${err.campo}</b><br>
+                Valor: <i>${err.valor}</i><br>
+                Mensaje: ${err.mensaje}
+            </li>
+        `;
+    });
+
+    html += "</ul>";
+
+    alertContainer.html(html);
+}
+
+function mensajeAlertaTexto(mensaje, tipo) {
+    let alertClass =
+        tipo === "exito" ? "alert-success d-block" : "alert-danger d-block";
+
+    $("#alertContainer")
+        .removeClass("d-none alert-success alert-danger")
+        .addClass(alertClass)
+        .html(mensaje);
+}

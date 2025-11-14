@@ -12,6 +12,7 @@ use Exception;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Validation\Rule;
+use App\Imports\DocenteImport;
 
 class Controlador_estadisticasDocente extends Controller
 {
@@ -52,7 +53,7 @@ class Controlador_estadisticasDocente extends Controller
                 $q->select(['id', 'nombre']);
             }
         ])
-         ->select(['id','nombreCompleto','documentoIdentidad','genero','profesion','grado_academico','estado','carrera_id','sede_id'])
+         ->select(['id','nombreCompleto','documento_identidad','genero','profesion','grado_academico','estado','carrera_id','sede_id'])
          ->where('gestion', $gestion)
          ->orderBy('id', 'desc');
 
@@ -65,7 +66,9 @@ class Controlador_estadisticasDocente extends Controller
                 })
                 ->orWhereHas('carrera', function ($sedeQuery) use ($request) {
                     $sedeQuery->where('nombre', 'like', '%' . $request->search['value'] . '%');
-                });
+                })
+                ->orWhere('documento_identidad', 'like', '%' . $request->search['value'] . '%')
+                ->orWhere('estado', 'like', '%' . $request->search['value'] . '%');
             });
         }
 
@@ -93,7 +96,7 @@ class Controlador_estadisticasDocente extends Controller
 
     public function actualizar_registro_docente(Request $request, String $id)
     {
-        
+
 
         try {
 
@@ -104,7 +107,7 @@ class Controlador_estadisticasDocente extends Controller
                     'required',
                     'max:50',
                     'min:3',
-                    Rule::unique('estadistica_docentes', 'documentoIdentidad')->ignore($id),
+                    Rule::unique('estadistica_docentes', 'documento_identidad')->ignore($id),
                 ],
                 'genero' => 'required|in:masculino,femenino',
                 'grado_academico' => 'required|max:100|min:3',
@@ -115,7 +118,7 @@ class Controlador_estadisticasDocente extends Controller
 
             $docente = EstadisticaDocente::find($id);
             $docente->nombreCompleto = $request->nombreCompleto;
-            $docente->documentoIdentidad = $request->documentoIdentidad;
+            $docente->documento_identidad = $request->documentoIdentidad;
             $docente->genero = $request->genero;
             $docente->grado_academico = $request->grado_academico;
             $docente->profesion = $request->profesion;
@@ -130,6 +133,115 @@ class Controlador_estadisticasDocente extends Controller
 
             $this->mensaje("error", "Error " . $e->getMessage());
             return response()->json($this->mensaje, 200);
+        }
+    }
+
+
+    public function previsualizarDocentes(Request $request)
+    {
+        try {
+            $request->validate([
+                 'archivo' => 'required|mimes:csv,txt',
+            ]);
+
+            // Convertir a colección
+            $collection = Excel::toCollection(new \App\Imports\PreviewDocenteImport(), $request->file('archivo'))->first();
+
+            if ($collection->isEmpty()) {
+                $this->mensaje('error', 'El archivo está vacío o no tiene datos.');
+                return response()->json($this->mensaje, 200);
+            }
+
+            // 🔹 1. Obtener cabeceras reales (primera fila)
+            $headers = $collection->first()->keys()->toArray();
+
+            // 🔹 2. Definir cabeceras esperadas
+            $expectedHeaders = [
+                'nombre_completo',
+                'documento',
+                'carrera',
+                'sede',
+                'genero',
+                'gestion',
+                'profesion',
+                'grado_academico',
+            ];
+
+            // 🔹 3. Comparar cabeceras
+            $faltantes = array_diff($expectedHeaders, $headers);
+
+
+            if (!empty($faltantes)) {
+                $mensaje = [];
+                if (!empty($faltantes)) {
+                    $mensaje[] = 'Faltan las columnas: <b>' . implode(', ', $faltantes) . '</b>';
+                }
+
+                $this->mensaje('error', implode(' | ', $mensaje));
+                return response()->json($this->mensaje, 200);
+            }
+
+            // 🔹 4. Si todo está bien, enviamos vista previa
+            $this->mensaje('exito', $collection->take(3));
+            return response()->json($this->mensaje, 200);
+
+        } catch (\Exception $e) {
+            $this->mensaje('error', 'Error al leer el archivo: ' . $e->getMessage());
+            return response()->json($this->mensaje, 200);
+        }
+    }
+
+
+
+    public function subirDatosDocentescsv(Request $request)
+    {
+        // 1️⃣ Validar que se suba un archivo válido
+        $request->validate([
+            'archivo' => 'required|mimes:csv,xlsx,xls',
+        ]);
+
+        DB::beginTransaction();
+
+        try {
+            // 2️⃣ Cargar el importador
+            $import = new DocenteImport();
+
+            // 3️⃣ Ejecutar la importación
+            Excel::import($import, $request->file('archivo'));
+
+            // 4️⃣ Capturar errores
+            $erroresValidacion = $import->failures();
+            $erroresPersonalizados = $import->erroresPersonalizados;
+
+            // 5️⃣ Si hay cualquier tipo de error -> rollback y no guardar nada
+            if (count($erroresValidacion) > 0 || count($erroresPersonalizados) > 0) {
+                DB::rollBack();
+
+                return response()->json([
+                    'estado' => 'error_validacion',
+                    'mensaje' => 'La importación fue cancelada. Se detectaron errores en los datos.',
+                    'errores_validacion' => $erroresValidacion,
+                    'errores_personalizados' => $erroresPersonalizados,
+                ], 200);
+            }
+
+            // 6️⃣ Si todo está correcto, confirmamos la transacción
+            DB::commit();
+
+            return response()->json([
+                'estado' => 'exito',
+                'mensaje' => 'Importación completada exitosamente',
+                'filas_insertadas' => $import->filasInsertadas,
+            ], 200);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return response()->json([
+                'estado' => 'error',
+                'mensaje' => 'Ocurrió un error inesperado durante la importación',
+                'detalle' => $e->getMessage(),
+            ], 500);
         }
     }
 

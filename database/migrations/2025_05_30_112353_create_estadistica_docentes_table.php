@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('estadistica_docentes', function (Blueprint $table) {
             $table->id();       
             $table->string('nombreCompleto', 200);
-            $table->string('documentoIdentidad', 100);                 
+            $table->string('documento_identidad', 100);                 
             $table->unsignedBigInteger('carrera_id');
             $table->unsignedBigInteger('sede_id');
             $table->enum('genero', ['masculino','femenino']);
@@ -37,6 +37,9 @@ return new class extends Migration
                 ->onUpdate('cascade');
             
             $table->timestamps();
+
+            // Indices e indice unico compuesto
+            $table->unique(['carrera_id', 'sede_id', 'documento_identidad', 'gestion'], 'unique_docente');
         });
     }
 
