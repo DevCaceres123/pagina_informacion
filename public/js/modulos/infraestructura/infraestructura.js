@@ -117,7 +117,7 @@ function listar_infraestructuras() {
                     return `
                     <button type="button" class="btn btn-sm btn-success rounded ver-planos" data-id='${row.id}
                     '>
-                        <i class="fas fa-university me-1"></i> Ver Planos
+                        <i class="fas fa-university me-1"></i> Planos
                     </button>
                 `;
                 },
