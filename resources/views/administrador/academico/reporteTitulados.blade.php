@@ -193,9 +193,17 @@
                     <th>#</th>
                     <th>SEDE</th>
                     <th>CARRERA</th>
-                    <th>TÉCNICO MEDIO</th>
-                    <th>TÉCNICO SUPERIOR</th>
-                    <th>LICENCIATURA</th>
+                    @if (in_array('tecnico medio', $gradosSeleccionadosNombres))
+                        <th>TÉCNICO MEDIO</th>
+                    @endif
+
+                    @if (in_array('tecnico superior', $gradosSeleccionadosNombres))
+                        <th>TÉCNICO SUPERIOR</th>
+                    @endif
+
+                    @if (in_array('licenciatura', $gradosSeleccionadosNombres))
+                        <th>LICENCIATURA</th>
+                    @endif
                     <th>TOTAL</th>
                 </tr>
             </thead>
@@ -218,11 +226,17 @@
 
                     @foreach ($registros->groupBy('carrera') as $carrera => $itemsCarrera)
                         @php
-                            $tecnicoMedio = $itemsCarrera->where('grado_academico', 'tecnico medio')->sum('total');
-                            $tecnicoSuperior = $itemsCarrera
-                                ->where('grado_academico', 'tecnico superior')
-                                ->sum('total');
-                            $licenciatura = $itemsCarrera->where('grado_academico', 'licenciatura')->sum('total');
+                            $tecnicoMedio = in_array('tecnico medio', $gradosSeleccionadosNombres)
+                                ? $itemsCarrera->where('grado_academico', 'tecnico medio')->sum('total')
+                                : 0;
+
+                            $tecnicoSuperior = in_array('tecnico superior', $gradosSeleccionadosNombres)
+                                ? $itemsCarrera->where('grado_academico', 'tecnico superior')->sum('total')
+                                : 0;
+
+                            $licenciatura = in_array('licenciatura', $gradosSeleccionadosNombres)
+                                ? $itemsCarrera->where('grado_academico', 'licenciatura')->sum('total')
+                                : 0;
                             $totalCarrera = $tecnicoMedio + $tecnicoSuperior + $licenciatura;
 
                             // Sumar a subtotal
@@ -231,24 +245,46 @@
                             $subtotal['licenciatura'] += $licenciatura;
                             $subtotal['total'] += $totalCarrera;
                         @endphp
-
                         <tr>
                             <td></td>
                             <td></td>
                             <td class="text-left">{{ strtolower($carrera) }}</td>
-                            <td>{{ $tecnicoMedio }}</td>
-                            <td>{{ $tecnicoSuperior }}</td>
-                            <td>{{ $licenciatura }}</td>
+
+                            @if (in_array('tecnico medio', $gradosSeleccionadosNombres))
+                                <td>{{ $tecnicoMedio }}</td>
+                            @endif
+
+                            @if (in_array('tecnico superior', $gradosSeleccionadosNombres))
+                                <td>{{ $tecnicoSuperior }}</td>
+                            @endif
+
+                            @if (in_array('licenciatura', $gradosSeleccionadosNombres))
+                                <td>{{ $licenciatura }}</td>
+                            @endif
+
                             <td>{{ $totalCarrera }}</td>
                         </tr>
                     @endforeach
 
                     <tr class="subtotal-row">
+                    <tr class="subtotal-row">
                         <td colspan="3" class="text-right">Subtotal {{ strtolower($sede) }}</td>
-                        <td>{{ $subtotal['tecnico medio'] }}</td>
-                        <td>{{ $subtotal['tecnico superior'] }}</td>
-                        <td>{{ $subtotal['licenciatura'] }}</td>
+
+                        @if (in_array('tecnico medio', $gradosSeleccionadosNombres))
+                            <td>{{ $subtotal['tecnico medio'] }}</td>
+                        @endif
+
+                        @if (in_array('tecnico superior', $gradosSeleccionadosNombres))
+                            <td>{{ $subtotal['tecnico superior'] }}</td>
+                        @endif
+
+                        @if (in_array('licenciatura', $gradosSeleccionadosNombres))
+                            <td>{{ $subtotal['licenciatura'] }}</td>
+                        @endif
+
                         <td>{{ $subtotal['total'] }}</td>
+                    </tr>
+
                     </tr>
 
                     @php
@@ -261,9 +297,19 @@
 
                 <tr class="total-general-row">
                     <td colspan="3">TOTALES GENERALES</td>
-                    <td>{{ $totalGeneral['tecnico medio'] }}</td>
-                    <td>{{ $totalGeneral['tecnico superior'] }}</td>
-                    <td>{{ $totalGeneral['licenciatura'] }}</td>
+
+                    @if (in_array('tecnico medio', $gradosSeleccionadosNombres))
+                        <td>{{ $totalGeneral['tecnico medio'] }}</td>
+                    @endif
+
+                    @if (in_array('tecnico superior', $gradosSeleccionadosNombres))
+                        <td>{{ $totalGeneral['tecnico superior'] }}</td>
+                    @endif
+
+                    @if (in_array('licenciatura', $gradosSeleccionadosNombres))
+                        <td>{{ $totalGeneral['licenciatura'] }}</td>
+                    @endif
+
                     <td>{{ $totalGeneral['total'] }}</td>
                 </tr>
             </tbody>
@@ -271,42 +317,77 @@
     @elseif ($tipo == 'carrera')
         {{-- ================== DETALLE POR CARRERA ================== --}}
         <div class="titulo-seccion">Detalle por carrera</div>
+
         <table>
             <thead>
                 <tr>
                     <th>#</th>
                     <th>CARRERA</th>
                     <th>SEDE</th>
-                    <th>TÉCNICO MEDIO</th>
-                    <th>TÉCNICO SUPERIOR</th>
-                    <th>LICENCIATURA</th>
+
+                    @if (in_array('tecnico medio', $gradosSeleccionadosNombres))
+                        <th>TÉCNICO MEDIO</th>
+                    @endif
+
+                    @if (in_array('tecnico superior', $gradosSeleccionadosNombres))
+                        <th>TÉCNICO SUPERIOR</th>
+                    @endif
+
+                    @if (in_array('licenciatura', $gradosSeleccionadosNombres))
+                        <th>LICENCIATURA</th>
+                    @endif
+
                     <th>TOTAL</th>
                 </tr>
             </thead>
+
             <tbody>
                 @php
                     $num = 1;
-                    $totalGeneral = ['tecnico medio' => 0, 'tecnico superior' => 0, 'licenciatura' => 0, 'total' => 0];
+                    $totalGeneral = [
+                        'tecnico medio' => 0,
+                        'tecnico superior' => 0,
+                        'licenciatura' => 0,
+                        'total' => 0,
+                    ];
+
                     $agrupadoPorCarrera = $estadisticas->groupBy('carrera');
                 @endphp
 
                 @foreach ($agrupadoPorCarrera as $carrera => $registros)
                     @php
-                        $subtotal = ['tecnico medio' => 0, 'tecnico superior' => 0, 'licenciatura' => 0, 'total' => 0];
+                        $subtotal = [
+                            'tecnico medio' => 0,
+                            'tecnico superior' => 0,
+                            'licenciatura' => 0,
+                            'total' => 0,
+                        ];
                     @endphp
 
+                    {{-- Fila de título por carrera --}}
                     <tr class="total-row">
                         <td>{{ $num++ }}</td>
                         <td class="text-left" colspan="6">{{ strtoupper($carrera) }}</td>
                     </tr>
 
+                    {{-- Detalle por sede de esta carrera --}}
                     @foreach ($registros->groupBy('sede') as $sede => $itemsSede)
                         @php
-                            $tecnicoMedio = $itemsSede->where('grado_academico', 'tecnico medio')->sum('total');
-                            $tecnicoSuperior = $itemsSede->where('grado_academico', 'tecnico superior')->sum('total');
-                            $licenciatura = $itemsSede->where('grado_academico', 'licenciatura')->sum('total');
+                            $tecnicoMedio = in_array('tecnico medio', $gradosSeleccionadosNombres)
+                                ? $itemsSede->where('grado_academico', 'tecnico medio')->sum('total')
+                                : 0;
+
+                            $tecnicoSuperior = in_array('tecnico superior', $gradosSeleccionadosNombres)
+                                ? $itemsSede->where('grado_academico', 'tecnico superior')->sum('total')
+                                : 0;
+
+                            $licenciatura = in_array('licenciatura', $gradosSeleccionadosNombres)
+                                ? $itemsSede->where('grado_academico', 'licenciatura')->sum('total')
+                                : 0;
+
                             $totalSede = $tecnicoMedio + $tecnicoSuperior + $licenciatura;
 
+                            // sumar al subtotal
                             $subtotal['tecnico medio'] += $tecnicoMedio;
                             $subtotal['tecnico superior'] += $tecnicoSuperior;
                             $subtotal['licenciatura'] += $licenciatura;
@@ -317,21 +398,43 @@
                             <td></td>
                             <td></td>
                             <td class="text-left">{{ strtolower($sede) }}</td>
-                            <td>{{ $tecnicoMedio }}</td>
-                            <td>{{ $tecnicoSuperior }}</td>
-                            <td>{{ $licenciatura }}</td>
+
+                            @if (in_array('tecnico medio', $gradosSeleccionadosNombres))
+                                <td>{{ $tecnicoMedio }}</td>
+                            @endif
+
+                            @if (in_array('tecnico superior', $gradosSeleccionadosNombres))
+                                <td>{{ $tecnicoSuperior }}</td>
+                            @endif
+
+                            @if (in_array('licenciatura', $gradosSeleccionadosNombres))
+                                <td>{{ $licenciatura }}</td>
+                            @endif
+
                             <td>{{ $totalSede }}</td>
                         </tr>
                     @endforeach
 
+                    {{-- SUBTOTAL DE LA CARRERA --}}
                     <tr class="subtotal-row">
                         <td colspan="3" class="text-right">Subtotal {{ strtolower($carrera) }}</td>
-                        <td>{{ $subtotal['tecnico medio'] }}</td>
-                        <td>{{ $subtotal['tecnico superior'] }}</td>
-                        <td>{{ $subtotal['licenciatura'] }}</td>
+
+                        @if (in_array('tecnico medio', $gradosSeleccionadosNombres))
+                            <td>{{ $subtotal['tecnico medio'] }}</td>
+                        @endif
+
+                        @if (in_array('tecnico superior', $gradosSeleccionadosNombres))
+                            <td>{{ $subtotal['tecnico superior'] }}</td>
+                        @endif
+
+                        @if (in_array('licenciatura', $gradosSeleccionadosNombres))
+                            <td>{{ $subtotal['licenciatura'] }}</td>
+                        @endif
+
                         <td>{{ $subtotal['total'] }}</td>
                     </tr>
 
+                    {{-- Acumular totales generales --}}
                     @php
                         $totalGeneral['tecnico medio'] += $subtotal['tecnico medio'];
                         $totalGeneral['tecnico superior'] += $subtotal['tecnico superior'];
@@ -340,13 +443,25 @@
                     @endphp
                 @endforeach
 
+                {{-- TOTAL GENERAL --}}
                 <tr class="total-general-row">
                     <td colspan="3">TOTALES GENERALES</td>
-                    <td>{{ $totalGeneral['tecnico medio'] }}</td>
-                    <td>{{ $totalGeneral['tecnico superior'] }}</td>
-                    <td>{{ $totalGeneral['licenciatura'] }}</td>
+
+                    @if (in_array('tecnico medio', $gradosSeleccionadosNombres))
+                        <td>{{ $totalGeneral['tecnico medio'] }}</td>
+                    @endif
+
+                    @if (in_array('tecnico superior', $gradosSeleccionadosNombres))
+                        <td>{{ $totalGeneral['tecnico superior'] }}</td>
+                    @endif
+
+                    @if (in_array('licenciatura', $gradosSeleccionadosNombres))
+                        <td>{{ $totalGeneral['licenciatura'] }}</td>
+                    @endif
+
                     <td>{{ $totalGeneral['total'] }}</td>
                 </tr>
+
             </tbody>
         </table>
     @endif
