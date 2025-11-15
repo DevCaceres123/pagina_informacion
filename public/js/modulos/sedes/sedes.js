@@ -106,42 +106,47 @@ function listar_afiliado() {
                 render: function (data, type, row) {
                     return ` <div class="d-flex justify-content-center">
 
-                         ${permisosGlobal.eliminar
-                            ? `
+                         ${
+                             permisosGlobal.eliminar
+                                 ? `
                         <a class="btn btn-sm btn-outline-danger px-2 d-inline-flex align-items-center eliminar_sede me-1" data-id="${row.id}" title="Eliminar Sede">
                             <i class="fas fa-window-close fs-16"></i>
                         </a>
                             `
-                            : ``
-                        }
+                                 : ``
+                         }
                       
-                             ${permisosGlobal.eliminar
-                            ? ` <a class="btn btn-sm btn-outline-warning px-2 d-inline-flex align-items-center editar_sede me-1" data-id="${row.id}" title="Editar Sede">
+                             ${
+                                 permisosGlobal.eliminar
+                                     ? ` <a class="btn btn-sm btn-outline-warning px-2 d-inline-flex align-items-center editar_sede me-1" data-id="${row.id}" title="Editar Sede">
                             <i class="fas fa-pencil-alt fs-16"></i>
                         </a>`
-                            : ``
-                        }
+                                     : ``
+                             }
                       
-                        ${permisosGlobal.eliminar
-                            ? ` <a class="btn btn-sm btn-outline-info px-2 d-inline-flex align-items-center ver_resolucion me-1" data-id="${row.id}" data-resolucion="${row.resolucion_pdf}"  title="Ver Resolucion">
+                        ${
+                            permisosGlobal.eliminar
+                                ? ` <a class="btn btn-sm btn-outline-info px-2 d-inline-flex align-items-center ver_resolucion me-1" data-id="${row.id}" data-resolucion="${row.resolucion_pdf}"  title="Ver Resolucion">
                             <i class="fas fa-file-pdf fs-16 fs-16"></i>
                         </a>`
-                            : ``
+                                : ``
                         }
                         
-                         ${permisosGlobal.eliminar
-                            ? ` <a class="btn btn-sm btn-outline-primary px-2 d-inline-flex align-items-center ver_imagenes me-1" data-id="${row.id}" title="Actualizar Imagenes">
+                         ${
+                             permisosGlobal.eliminar
+                                 ? ` <a class="btn btn-sm btn-outline-primary px-2 d-inline-flex align-items-center ver_imagenes me-1" data-id="${row.id}" title="Actualizar Imagenes">
                             <i class="fas fa-images fs-16"></i>
                         </a>`
-                            : ``
-                        }
+                                 : ``
+                         }
 
-                          ${permisosGlobal.eliminar
-                            ? ` <a href='ubicacionSede/${row.id}' class="btn btn-sm btn-outline-success px-2 d-inline-flex align-items-center me-1" data-id="${row.id}" title="Agregar Rutas">
+                          ${
+                              permisosGlobal.eliminar
+                                  ? ` <a href='ubicacionSede/${row.id}' class="btn btn-sm btn-outline-success px-2 d-inline-flex align-items-center me-1" data-id="${row.id}" title="Agregar Rutas">
                             <i class="fas fa-map-marked fs-16"></i>
                         </a>`
-                            : ``
-                        }
+                                  : ``
+                          }
                          
                         </div>`;
                 },
@@ -189,7 +194,6 @@ $("#galeria").on("change", function () {
     if (validarArchivos(archivo, "imagen") == false) {
         $(this).val(""); // Limpiar input
     }
-
 });
 
 // Validar al seleccionar PDF
@@ -199,8 +203,6 @@ $("#resolucion_archivo").on("change", function () {
     if (validarArchivos(archivo, "pdf") == false) {
         $(this).val(""); // Limpiar input
     }
-
-
 });
 
 // ver y editar la resolucion
@@ -248,27 +250,43 @@ $("#btnActualizarPdf").on("click", function () {
     // console.log(formData);
     $("#btnActualizarPdf").prop("disabled", true);
 
-    crud(
-        `admin/resolucion/${id}/actualizar_pdf`,
-        "POST",
-        null,
-        formData,
-        function (error, response) {
+    Swal.fire({
+        title: "NOTA!",
+        text: "¿Está seguro de actualizar el PDF de la Resolución?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Sí, Estoy seguro",
+        cancelButtonText: "Cancelar",
+    }).then(async function (result) {
+        if (result.isConfirmed) {
+            crud(
+                `admin/resolucion/${id}/actualizar_pdf`,
+                "POST",
+                null,
+                formData,
+                function (error, response) {
+                    $("#btnActualizarPdf").prop("disabled", false);
+                    // console.log(response);
+
+                    if (response.tipo != "exito") {
+                        mensajeAlerta(response.mensaje, response.tipo);
+                        return;
+                    }
+
+                    $("#nuevoPdf").val(""); // Limpiar input
+                    //si todo esta correcto muestra el mensaje de correcto
+                    $("#modalVerResolucion").modal("hide");
+                    mensajeAlerta(response.mensaje, response.tipo);
+                    actualizarTabla();
+                }
+            );
+        } else {
+            alerta_top("error", "Se canceló la actualización");
             $("#btnActualizarPdf").prop("disabled", false);
-            // console.log(response);
-
-            if (response.tipo != "exito") {
-                mensajeAlerta(response.mensaje, response.tipo);
-                return;
-            }
-
-            $("#nuevoPdf").val(""); // Limpiar input
-            //si todo esta correcto muestra el mensaje de correcto
-            $("#modalVerResolucion").modal("hide");
-            mensajeAlerta(response.mensaje, response.tipo);
-            actualizarTabla();
         }
-    );
+    });
 });
 
 $(document).on("click", ".eliminar_sede", function () {
@@ -352,15 +370,20 @@ function cargarGaleria(idSede) {
         '<div class="text-center w-100">Cargando...</div>'
     );
 
-    crud("admin/listarImagenes", "GET", idSede, null, function (error, response) {
-        if (response.tipo != "exito") {
-            mensajeAlerta(response.mensaje, response.tipo);
-            return;
-        }
+    crud(
+        "admin/listarImagenes",
+        "GET",
+        idSede,
+        null,
+        function (error, response) {
+            if (response.tipo != "exito") {
+                mensajeAlerta(response.mensaje, response.tipo);
+                return;
+            }
 
-        let html = "";
-        response.mensaje.forEach(element => {
-            html += `
+            let html = "";
+            response.mensaje.forEach((element) => {
+                html += `
                 <div class="col-6 col-md-3 position-relative" style="width: 220px; height: 180px;">
                     <img src="/storage/galeria_sedes/${element.imagen}" class="img-fluid rounded border" alt="Imagen" style="width: 100%; height: 100%; object-fit: contain;">
                     <button class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1 eliminar_imagen" data-id="${element.id}">
@@ -368,12 +391,11 @@ function cargarGaleria(idSede) {
                     </button>
                 </div>
             `;
-        });
-        $("#galeriaContenedor").html(html || "<p>No hay imágenes.</p>");
-
-    });
+            });
+            $("#galeriaContenedor").html(html || "<p>No hay imágenes.</p>");
+        }
+    );
 }
-
 
 // Eliminar imagen de la galeria
 
@@ -389,14 +411,20 @@ $(document).on("click", ".eliminar_imagen", function () {
         cancelButtonText: "Cancelar",
     }).then((result) => {
         if (result.isConfirmed) {
-            crud("admin/eliminarImagen", "DELETE", idImagen, null, function (error, response) {
-                if (error) {
-                    mensajeAlerta("Error al eliminar imagen", "error");
-                    return;
+            crud(
+                "admin/eliminarImagen",
+                "DELETE",
+                idImagen,
+                null,
+                function (error, response) {
+                    if (error) {
+                        mensajeAlerta("Error al eliminar imagen", "error");
+                        return;
+                    }
+                    mensajeAlerta(response.mensaje, response.tipo);
+                    cargarGaleria($("#id_sede_actual").val()); // o mantener en variable el id actual
                 }
-                mensajeAlerta(response.mensaje, response.tipo);
-                cargarGaleria($("#id_sede_actual").val()); // o mantener en variable el id actual
-            });
+            );
         }
     });
 });
@@ -404,30 +432,33 @@ $(document).on("click", ".eliminar_imagen", function () {
 // Editar sede
 $(document).on("click", ".editar_sede", function () {
     const idImagen = $(this).data("id");
-    let id_sede = $(this).data('id'); // Obtener el id del alumno desde el data-id
+    let id_sede = $(this).data("id"); // Obtener el id del alumno desde el data-id
 
-    crud("admin/sedes", "GET", id_sede + '/edit', null, function (error, response) {
+    crud(
+        "admin/sedes",
+        "GET",
+        id_sede + "/edit",
+        null,
+        function (error, response) {
+            // console.log(response);
 
-        // console.log(response);
+            if (response.tipo != "exito") {
+                mensajeAlerta(response.mensaje, response.tipo);
+                return;
+            }
+            $("#id_sede_edit").val(response.mensaje.id);
+            $("#nombre_edit").val(response.mensaje.nombre);
+            $("#descripcion_edit").val(response.mensaje.descripcion);
+            $("#resolucion_numero_edit").val(response.mensaje.resolucion);
+            $("#facebook_edit").val(response.mensaje.facebook);
+            $("#youtube_edit").val(response.mensaje.youtobe);
+            $("#whatsapp_edit").val(response.mensaje.whatsapp);
 
-        if (response.tipo != "exito") {
-            mensajeAlerta(response.mensaje, response.tipo);
-            return;
+            $("#modalSedeEdit").modal("show");
+            // si todo esta correcto muestra el mensaje de correcto
         }
-        $('#id_sede_edit').val(response.mensaje.id);
-        $('#nombre_edit').val(response.mensaje.nombre);
-        $('#descripcion_edit').val(response.mensaje.descripcion);
-        $('#resolucion_numero_edit').val(response.mensaje.resolucion);
-        $('#facebook_edit').val(response.mensaje.facebook);
-        $('#youtube_edit').val(response.mensaje.youtobe);
-        $('#whatsapp_edit').val(response.mensaje.whatsapp);
-
-        $('#modalSedeEdit').modal('show')
-        // si todo esta correcto muestra el mensaje de correcto
-    })
+    );
 });
-
-
 
 $("#formNuevaSedeEdit").on("submit", function (e) {
     e.preventDefault();
@@ -435,31 +466,36 @@ $("#formNuevaSedeEdit").on("submit", function (e) {
     let formData = new FormData(this);
     vaciar_errores("formNuevaSedeEdit");
 
-    crud("admin/actualizarDatos", "POST", null, formData, function (error, response) {
-        $("#btn_guardar_sede-edit").prop("disabled", false);
-        // console.log(response);
+    crud(
+        "admin/actualizarDatos",
+        "POST",
+        null,
+        formData,
+        function (error, response) {
+            $("#btn_guardar_sede-edit").prop("disabled", false);
+            // console.log(response);
 
-        // Verificamos que no haya un error o que todos los campos sean llenados
-        if (response.tipo === "errores") {
-            mensajeAlerta(response.mensaje, "errores");
-            return;
-        }
-        if (response.tipo != "exito") {
+            // Verificamos que no haya un error o que todos los campos sean llenados
+            if (response.tipo === "errores") {
+                mensajeAlerta(response.mensaje, "errores");
+                return;
+            }
+            if (response.tipo != "exito") {
+                mensajeAlerta(response.mensaje, response.tipo);
+                return;
+            }
+
+            // //si todo esta correcto muestra el mensaje de correcto
+            $("#modalSedeEdit").modal("hide");
+            vaciar_formulario("formNuevaSedeEdit");
             mensajeAlerta(response.mensaje, response.tipo);
-            return;
+            actualizarTabla();
         }
-
-        // //si todo esta correcto muestra el mensaje de correcto
-        $("#modalSedeEdit").modal("hide");
-        vaciar_formulario("formNuevaSedeEdit");
-        mensajeAlerta(response.mensaje, response.tipo);
-        actualizarTabla();
-    });
+    );
 });
 
 // Mostrar vistas previas al seleccionar imágenes
 $("#nuevasImagenes").on("change", function () {
-
     const contenedorVistaPrevia = $("#vistaPreviaGaleria");
     contenedorVistaPrevia.empty(); // limpiar antes de cargar nuevas vistas previas
 
@@ -469,10 +505,8 @@ $("#nuevasImagenes").on("change", function () {
         $(this).val(""); // Limpiar input
     }
 
-
     Array.from(archivos).forEach((archivo) => {
         if (!archivo.type.match("image.*")) {
-
             return;
         }
 
@@ -489,10 +523,8 @@ $("#nuevasImagenes").on("change", function () {
     });
 });
 
-
 // Agregar nuevos archivos de imagenes a la sede
 $("#formSubirImagenes").on("submit", function (e) {
-
     e.preventDefault();
 
     const input = document.getElementById("nuevasImagenes");
@@ -506,7 +538,10 @@ $("#formSubirImagenes").on("submit", function (e) {
     // Validar que todos los archivos sean imágenes
     for (let i = 0; i < files.length; i++) {
         if (!files[i].type.match("image.*")) {
-            mensajeAlerta(`El archivo ${files[i].name} no es una imagen válida.`, "error");
+            mensajeAlerta(
+                `El archivo ${files[i].name} no es una imagen válida.`,
+                "error"
+            );
             return;
         }
     }
@@ -515,50 +550,54 @@ $("#formSubirImagenes").on("submit", function (e) {
 
     const idSede = $("#id_sede_actual").val();
 
-    // Opcional: Desactivar botón para evitar doble clic    
+    // Opcional: Desactivar botón para evitar doble clic
     const btn = $("#btnAgregarImagenes");
-    btn.prop("disabled", true).html('<i class="ri-loader-4-line spin"></i> Subiendo...');
+    btn.prop("disabled", true).html(
+        '<i class="ri-loader-4-line spin"></i> Subiendo...'
+    );
 
-    crud("admin/agregarImagenes", "POST", idSede, formData, function (error, response) {
-        btn.prop("disabled", false).html('<i class="ri-upload-cloud-line me-1"></i> Subir Imágenes');
+    crud(
+        "admin/agregarImagenes",
+        "POST",
+        idSede,
+        formData,
+        function (error, response) {
+            btn.prop("disabled", false).html(
+                '<i class="ri-upload-cloud-line me-1"></i> Subir Imágenes'
+            );
 
-        if (error) {
-            mensajeAlerta("Error al subir imágenes.", "error");
-            console.error(error);
-            return;
+            if (error) {
+                mensajeAlerta("Error al subir imágenes.", "error");
+                console.error(error);
+                return;
+            }
+
+            if (response.tipo === "exito") {
+                mensajeAlerta(response.mensaje, "exito");
+                $("#nuevasImagenes").val(""); // Limpiar input
+                cargarGaleria(idSede); // Recargar galería
+                $("#vistaPreviaGaleria").empty(); // Limpiar vista previa
+            } else {
+                mensajeAlerta(response.mensaje, "error");
+            }
         }
-
-        if (response.tipo === "exito") {
-            mensajeAlerta(response.mensaje, "exito");
-            $("#nuevasImagenes").val(""); // Limpiar input
-            cargarGaleria(idSede); // Recargar galería
-            $("#vistaPreviaGaleria").empty(); // Limpiar vista previa
-
-
-        } else {
-            mensajeAlerta(response.mensaje, "error");
-        }
-    });
+    );
 });
-
-
-
-
 
 // funcion que nos servira para validar imagenes y pdf
 function validarArchivos(archivos, tipo) {
-
     const maxSizeImagen = 3 * 1024 * 1024; // 3 MB
     const maxSizePdf = 2 * 1024 * 1024; // 5 MB
 
     if (tipo === "imagen") {
-
-
         for (let i = 0; i < archivos.length; i++) {
             const file = archivos[i];
 
             if (!file.type.match("image.*")) {
-                mensajeAlerta(`El archivo "${file.name}" no es una imagen.`, "error");
+                mensajeAlerta(
+                    `El archivo "${file.name}" no es una imagen.`,
+                    "error"
+                );
 
                 return false;
             }
@@ -575,15 +614,16 @@ function validarArchivos(archivos, tipo) {
     }
 
     if (tipo === "pdf") {
-
-
         if (!archivos) {
             mensajeAlerta("No se seleccionó ningún archivo.", "error");
             return false;
         }
 
         if (archivos.type !== "application/pdf") {
-            mensajeAlerta(`El archivo "${archivos.name}" no es un PDF.`, "error");
+            mensajeAlerta(
+                `El archivo "${archivos.name}" no es un PDF.`,
+                "error"
+            );
 
             return false;
         }
@@ -600,8 +640,6 @@ function validarArchivos(archivos, tipo) {
     return true; // Si pasa todas las validaciones
 }
 
-
-
 $(document).on("click", ".ver-carreras", function () {
     let carreras = $(this).data("carreras"); // viene de data-carreras en el botón
     let lista = $("#listaCarreras");
@@ -609,7 +647,7 @@ $(document).on("click", ".ver-carreras", function () {
     lista.empty(); // limpiar antes de agregar
 
     if (carreras && carreras.length > 0) {
-        carreras.forEach(carrera => {
+        carreras.forEach((carrera) => {
             lista.append(`
         <li class="list-group-item d-flex justify-content-between align-items-center border rounded mb-2">
             <span class="fw-semibold">${carrera.nombre}</span>
