@@ -97,7 +97,7 @@
                         <div class="mb-3">
                             <label class="form-label">
                                 <i class="fas fa-file-pdf me-1"></i>MALLA CURRICULAR (PDF) <strong
-                                    class="text-danger"></strong>
+                                    class="text-danger">(*)</strong>
                             </label>
                             <input type="file" name="malla_curricular" id="malla_curricular" class="form-control"
                                 accept="application/pdf">

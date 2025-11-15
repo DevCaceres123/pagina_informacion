@@ -47,6 +47,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h6 class="modal-title m-0" id="usuarioModalLabel">Usuario</h6>
+                    <span class="ms-3 text-light">Campos obligatorios <strong class="text-danger">(*)</strong></span>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
                         onclick="cerrarModalUsuario()"></button>
                 </div>
@@ -54,7 +55,8 @@
                     <form id="form_usuario" autocomplete="off" method="POST">
                         <input type="hidden" id="usuario_id" name="usuario_id">
                         <div class="mb-3 row">
-                            <label for="ci" class="col-sm-2 col-form-label">CI</label>
+                            <label for="ci" class="col-sm-2 col-form-label">CI <strong
+                                    class="text-danger">(*)</strong></label>
                             <div class="col-sm-10">
                                 <input type="text" class="form-control " id="ci" name="ci"
                                     placeholder="Ingrese ci">
@@ -62,7 +64,8 @@
                             </div>
                         </div>
                         <div class="mb-3 row">
-                            <label for="ci" class="col-sm-2 col-form-label">Nombres</label>
+                            <label for="ci" class="col-sm-2 col-form-label">Nombres <strong
+                                    class="text-danger">(*)</strong></label>
                             <div class="col-sm-10">
                                 <input type="text" class="form-control uppercase-input"  id="nombres" name="nombres"
                                     placeholder="Ingrese nombres">
@@ -70,7 +73,8 @@
                             </div>
                         </div>
                         <div class="mb-3 row">
-                            <label for="apellidos" class="col-sm-2 col-form-label">Apellidos</label>
+                            <label for="apellidos" class="col-sm-2 col-form-label">Apellidos <strong
+                                    class="text-danger">(*)</strong></label>
                             <div class="col-sm-10">
                                 <input type="text" class="form-control uppercase-input" id="apellidos" name="apellidos"
                                     placeholder="Ingrese los apellidos">
@@ -78,7 +82,8 @@
                             </div>
                         </div>
                         <div class="mb-3 row">
-                            <label for="email" class="col-sm-2 col-form-label">Email</label>
+                            <label for="email" class="col-sm-2 col-form-label">Email <strong
+                                    class="text-danger">(*)</strong></label>
                             <div class="col-sm-10">
                                 <input type="text" class="form-control lowercase-input" id="email" name="email"
                                     placeholder="Ingrese el email">
@@ -86,7 +91,8 @@
                             </div>
                         </div>
                         <div class="mb-3 row">
-                            <label for="role" class="col-sm-2 col-form-label">Seleccione rol</label>
+                            <label for="role" class="col-sm-2 col-form-label">Selec. Rol <strong
+                                    class="text-danger">(*)</strong></label>
                             <div class="col-sm-10">
                                 <select id="roles" name="roles" class="form-control">
                                     <option selected disabled>[ ROLES ]</option>
@@ -99,7 +105,8 @@
                             </div>
                         </div>
                         <div class="mb-3 row">
-                            <label for="usuario" class="col-sm-2 col-form-label">Usuario</label>
+                            <label for="usuario" class="col-sm-2 col-form-label">Usuario <strong
+                                    class="text-danger">(*)</strong></label>
                             <div class="col-sm-10">
                                 <input type="text" class="form-control" id="usuario" name="usuario"
                                     placeholder="Ingrese el usuario">
@@ -107,7 +114,8 @@
                             </div>
                         </div>
                         <div class="mb-3 row">
-                            <label for="password" class="col-sm-2 col-form-label">Password</label>
+                            <label for="password" class="col-sm-2 col-form-label">Password <strong
+                                    class="text-danger">(*)</strong></label>
                             <div class="col-sm-10">
                                 <input type="text" class="form-control" id="password" name="password"
                                     placeholder="Ingrese la contraseña">
