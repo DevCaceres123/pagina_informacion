@@ -4,11 +4,11 @@
     <div class="row">
         <div class="col-12">
             <div class="card">
-                 <div class="card-header bg-dark border-start border-5 border-primary py-3">
+                <div class="card-header bg-dark border-start border-5 border-primary py-3">
                     <div class="row align-items-center">
                         <div class="col">
-                           <h4 class="card-title mb-0 text-light fw-bold">
-                               <i class="fas fa-home  me-2"></i> Modulo de sedes
+                            <h4 class="card-title mb-0 text-light fw-bold">
+                                <i class="fas fa-home  me-2"></i> Modulo de sedes
                             </h4>
                         </div>
                         <div class="col-auto">
@@ -211,11 +211,16 @@
                                 <label class="form-label">
                                     <i class="fab fa-whatsapp me-1"></i> NÚMERO DE WHATSAPP
                                 </label>
-                                <input type="text" class="form-control rounded" name="whatsapp" id="whatsapp"
-                                    placeholder="Ej:1234567">
-                                <div id="_whatsapp">
+
+                                <div class="input-group">
+                                    <span class="input-group-text">+591</span>
+                                    <input type="text" class="form-control rounded-end" name="whatsapp"
+                                        id="whatsapp" placeholder="71234567">
                                 </div>
+
+                                <div id="_whatsapp"></div>
                             </div>
+
 
 
                         </div>
@@ -439,8 +444,12 @@
                                 <label class="form-label">
                                     <i class="fab fa-whatsapp me-1"></i> NÚMERO DE WHATSAPP
                                 </label>
-                                <input type="text" class="form-control rounded" name="whatsapp_edit"
-                                    id="whatsapp_edit" placeholder="Ej:1234567">
+                                <div class="input-group">
+                                    <span class="input-group-text">+591</span>
+                                    <input type="text" class="form-control rounded" name="whatsapp_edit"
+                                        id="whatsapp_edit" placeholder="Ej:1234567">
+                                </div>
+
                                 <div id="_whatsapp_edit">
                                 </div>
                             </div>
