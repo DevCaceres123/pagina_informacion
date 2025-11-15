@@ -12,9 +12,11 @@
                             </h4>
                         </div>
                         <div class="col-auto">
+                            @can('admin.usuario.crear')
                             <button class="btn btn-primary" onclick="abrirModalUsuario()">
                                 <i class="fas fa-plus me-1"></i> Nuevo
                             </button>
+                            @endcan
                         </div>
                     </div>
                 </div>
@@ -249,18 +251,22 @@
             let i = 1;
             $('#tabla_listar_usuarios').DataTable({
                 responsive: true,
-                data: dato,
+                data: dato.usuario,
                 columns: [{
                         data: null,
                         className: 'table-td',
-                        render: (data, type, row) => `
-                            <button type="button" class="btn rounded-pill btn-sm btn-warning p-0.5" onclick="abrirModalUsuario('${row.id}')">
-                                <i class="las la-pen fs-18"></i>
-                            </button>
+                         render: (data, type, row) => `
+                            ${dato.permissions['editar'] ?
+                                `<button type="button" class="btn rounded-pill btn-sm btn-warning p-0.5" onclick="abrirModalUsuario('${row.id}')">
+                                            <i class="las la-pen fs-18"></i>
+                                        </button>` 
+                             : ``}
 
-                            <button type="button" class="btn rounded-pill btn-sm btn-danger p-0.5" onclick="eliminarUsuario('${row.id}')">
-                                <i class="las la-trash-alt fs-18"></i>
-                            </button>
+                           ${dato.permissions['eliminar'] ?
+                                `<button type="button" class="btn rounded-pill btn-sm btn-danger p-0.5" onclick="eliminarUsuario('${row.id}')">
+                                            <i class="las la-trash-alt fs-18"></i>
+                                        </button>` 
+                              : ``}
                         `
                     },
                     {
@@ -282,9 +288,11 @@
                         className: 'table-td',
                         render: function(data, type, row, meta) {
                             return `
-                                <div class="form-check form-switch form-switch-dark">
-                                    <input class="form-check-input" onclick="estado_usuario('${row.id}')" type="checkbox" id="customSwitchDark" ${row.estado === 'activo' ? 'checked' : ''} >
-                                </div>
+                                 ${dato.permissions['desactivar'] ?
+                                `<div class="form-check form-switch form-switch-dark">
+                                                <input class="form-check-input" onclick="estado_usuario('${row.id}')" type="checkbox" id="customSwitchDark" ${row.estado === 'activo' ? 'checked' : ''} >
+                                            </div>`
+                                : ``}
                             `;
                         }
                     },

@@ -70,6 +70,12 @@ class UsuarioSeeder extends Seeder
         // PERMISOS PARA ADMINISTRADOR DE  USUARIOS
         Permission::create(['name' => 'admin'])->syncRoles([$rol1]);
 
+        // USAURIO
+        Permission::create(['name' => 'admin.usuario.inicio'])->syncRoles([$rol1]);
+        Permission::create(['name' => 'admin.usuario.crear'])->assignRole($rol1);
+        Permission::create(['name' => 'admin.usuario.editar'])->assignRole($rol1);
+        Permission::create(['name' => 'admin.usuario.eliminar'])->assignRole($rol1);
+        Permission::create(['name' => 'admin.usuario.desactivar'])->assignRole($rol1);    
 
 
     }

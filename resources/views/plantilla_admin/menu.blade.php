@@ -29,25 +29,28 @@
                         </li><!--end nav-item-->
                     @endcan
                     <li class="nav-item">
-                        <a class="nav-link" href="#usuarios" data-bs-toggle="collapse" role="button"
-                            aria-expanded="false" aria-controls="usuarios">
-                            <i class="iconoir-fingerprint-lock-circle menu-icon"></i>
-                            <span>ADMIN USUARIOS</span>
-                        </a>
-                        <div class="collapse " id="usuarios">
-                            <ul class="nav flex-column">
-
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('user.index') }}">Usuarios</a>
-                                </li><!--end nav-item-->
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('roles.index') }}">Roles</a>
-                                </li><!--end nav-item-->
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('permisos.index') }}">Permisos</a>
-                                </li><!--end nav-item-->
-                            </ul><!--end nav-->
-                        </div><!--end startbarApplications-->
+                        @can('admin')
+                            <a class="nav-link" href="#usuarios" data-bs-toggle="collapse" role="button"
+                                aria-expanded="false" aria-controls="usuarios">
+                                <i class="iconoir-fingerprint-lock-circle menu-icon"></i>
+                                <span>ADMIN USUARIOS</span>
+                            </a>
+                            <div class="collapse " id="usuarios">
+                                <ul class="nav flex-column">
+                                    @can('admin.usuario.inicio')
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="{{ route('user.index') }}">Usuarios</a>
+                                        </li>
+                                    @endcan
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="{{ route('roles.index') }}">Roles</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="{{ route('permisos.index') }}">Permisos</a>
+                                    </li>
+                                </ul><!--end nav-->
+                            </div><!--end startbarApplications-->
+                            @endcan
                     </li><!--end nav-item-->
 
                     <li class="menu-label mt-2">
