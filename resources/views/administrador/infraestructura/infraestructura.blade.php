@@ -314,7 +314,7 @@
                                 </div>
 
                                 <div class="col-md-8 mt-2">
-                                    <label class="form-label">Ubicación</label>
+                                    <label class="form-label">Direccion</label>
                                     <input type="text" class="form-control" id="ubicacion" name="ubicacion"
                                         placeholder="Zona Juan pablo II, Av. Los Alamos, etc.">
                                     <div id="_ubicacion">
