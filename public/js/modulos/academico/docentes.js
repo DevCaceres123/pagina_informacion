@@ -446,7 +446,11 @@ $("#btnConfirmar").on("click", function (e) {
                     $("#previewContainer").addClass("d-none");
                     $("#previewTable tbody").empty();
                     $("#previewTable thead tr").empty();
-                    actualizarTabla();
+                    // actualizarTabla();
+
+                    setTimeout(() => {
+                       window.location.reload();
+                    }, 1500);
                 }
             );
         } else {
@@ -509,6 +513,75 @@ function mostrarErroresImportacion(
     alertContainer.html(html);
 }
 
+// FUNCION PARA GENERAR REPORTE PDF DE DOCENTES
+
+$("#generarReporte").on("click", function (e) {
+    e.preventDefault();
+    const tipo = $("#tipoReporte").val(); // 'sede' o 'carrera'
+    const gestion = $("#gestion_filtro").val() || $("#gestion").val(); // por si manejas año
+
+    if (!tipo) {
+        alert("Seleccione primero si desea filtrar por sede o carrera.");
+        return;
+    }
+
+    // Obtener IDs seleccionados
+    const seleccionados = [];
+    $(".check-item:checked").each(function () {
+        seleccionados.push($(this).val());
+    });
+
+    if (seleccionados.length === 0) {
+        alert('Seleccione al menos una opción o marque "Listar todo".');
+        return;
+    }
+
+    const datos = {
+        tipo: tipo,
+        seleccionados: seleccionados,
+        gestion: gestion,
+    };
+
+    crud(
+        "admin/generar_reporte_docente",
+        "POST",
+        null,
+        datos,
+        function (error, response) {
+            if (error || !response) {
+                mensajeAlerta("Error al cargar la información", "error");
+                return;
+            }
+
+            if (response.tipo != "exito") {
+                mensajeAlerta(response.mensaje, response.tipo);
+                return;
+            }
+
+            //si todo esta correcto muestra el mensaje de correcto
+            //$("#modalReporte").modal("hide");
+
+            mensajeAlerta("Reporte generado espere porfavor....", "exito");
+
+            setTimeout(() => {
+                let pdfUrl = generarURlBlob(response.mensaje);
+                window.open(pdfUrl, "_blank");
+            }, 1500);
+        }
+    );
+});
+
+function generarURlBlob(pdfbase64) {
+    // Convertir Base64 a un Blob
+    const byteCharacters = atob(pdfbase64); // Decodifica el Base64
+    const byteNumbers = Array.from(byteCharacters).map((c) => c.charCodeAt(0));
+    const byteArray = new Uint8Array(byteNumbers);
+    const blob = new Blob([byteArray], { type: "application/pdf" });
+
+    // Crear una URL para el Blob
+    return URL.createObjectURL(blob);
+}
+
 function mensajeAlertaTexto(mensaje, tipo) {
     let alertClass =
         tipo === "exito" ? "alert-success d-block" : "alert-danger d-block";
@@ -517,4 +590,75 @@ function mensajeAlertaTexto(mensaje, tipo) {
         .removeClass("d-none alert-success alert-danger")
         .addClass(alertClass)
         .html(mensaje);
+}
+
+// Validar al seleccionar pdf
+$("#archivo").on("change", function () {
+    let archivo = this.files[0];
+    if (validarArchivos(archivo, "csv") == false) {
+        $(this).val(""); // Limpiar input
+    }
+});
+
+
+
+
+// funcion que nos servira para validar imagenes y pdf
+function validarArchivos(archivos, tipo) {
+    const maxSizeImagen = 3 * 1024 * 1024; // 3 MB
+    const maxSizeCsv = 10 * 1024 * 1024; // 10 MB
+
+    if (tipo === "imagen") {
+        for (let i = 0; i < archivos.length; i++) {
+            const file = archivos[i];
+
+            if (!file.type.match("image.*")) {
+                mensajeAlerta(
+                    `El archivo "${file.name}" no es una imagen.`,
+                    "error"
+                );
+
+                return false;
+            }
+
+            if (file.size > maxSizeImagen) {
+                mensajeAlerta(
+                    `La imagen "${file.name}" excede el tamaño máximo de 3 MB.`,
+                    "error"
+                );
+
+                return false;
+            }
+        }
+    }
+
+    if (tipo === "csv") {
+        if (!archivos) {
+            mensajeAlerta("No se seleccionó ningún archivo.", "error");
+            return false;
+        }
+
+        // Obtener la extensión del archivo
+        const extension = archivos.name.split(".").pop().toLowerCase();
+
+        if (extension !== "csv") {
+            mensajeAlerta(
+                `El archivo "${archivos.name}" no es un CSV.`,
+                "error"
+            );
+            return false;
+        }
+
+        // Validar tamaño (por ejemplo 30 MB)
+        const maxSizeCsv = 30 * 1024 * 1024; // 30 MB en bytes
+        if (archivos.size > maxSizeCsv) {
+            mensajeAlerta(
+                `El archivo "${archivos.name}" excede el tamaño máximo de 30 MB.`,
+                "error"
+            );
+            return false;
+        }
+    }
+
+    return true; // Si pasa todas las validaciones
 }
