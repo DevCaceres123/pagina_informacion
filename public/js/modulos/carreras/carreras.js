@@ -333,28 +333,42 @@ $("#btnActualizarMalla").on("click", function () {
     formData.append("id", id);
     // console.log(formData);
     $("#btnActualizarMalla").prop("disabled", true);
+    Swal.fire({
+            title: "NOTA!",
+            text: "¿Está seguro de actualizar la Malla Curricular?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Sí, Estoy seguro",
+            cancelButtonText: "Cancelar",
+        }).then(async function (result) {
+            if (result.isConfirmed) {
+                crud(
+                    `admin/malla/${id}/actualizar_malla`,
+                    "POST",
+                    null,
+                    formData,
+                    function (error, response) {
+                        $("#btnActualizarMalla").prop("disabled", false);
+                        // console.log(response);
 
-    crud(
-        `admin/malla/${id}/actualizar_malla`,
-        "POST",
-        null,
-        formData,
-        function (error, response) {
-            $("#btnActualizarMalla").prop("disabled", false);
-            // console.log(response);
-
-            if (response.tipo != "exito") {
-                mensajeAlerta(response.mensaje, response.tipo);
-                return;
+                        if (response.tipo != "exito") {
+                            mensajeAlerta(response.mensaje, response.tipo);
+                            return;
+                        }
+                        //si todo esta correcto muestra el mensaje de correcto
+                        $("#modalVerMalla").modal("hide");
+                        $("#nuevoPdf").val(""); // Limpiar input
+                        mensajeAlerta(response.mensaje, response.tipo);
+                        actualizarTabla();
+                    }
+                );
+            } else {
+                alerta_top("error", "Se canceló la actualización");
+                $("#btnActualizarMalla").prop("disabled", false);
             }
-
-            //si todo esta correcto muestra el mensaje de correcto
-            $("#modalVerMalla").modal("hide");
-            $('#nuevoPdf').val(""); // Limpiar input
-            mensajeAlerta(response.mensaje, response.tipo);
-            actualizarTabla();
-        }
-    );
+        });
 });
 
 
@@ -381,7 +395,7 @@ $("#malla_curricular").on("change", function () {
 function validarArchivos(archivos, tipo) {
 
     const maxSizeImagen = 3 * 1024 * 1024; // 3 MB
-    const maxSizePdf = 2 * 1024 * 1024; // 5 MB
+    const maxSizePdf = 3 * 1024 * 1024; // 5 MB
 
     if (tipo === "imagen") {
 
@@ -422,7 +436,7 @@ function validarArchivos(archivos, tipo) {
 
         if (archivos.size > maxSizePdf) {
             mensajeAlerta(
-                `El archivo "${archivos.name}" excede el tamaño máximo de 2 MB.`,
+                `El archivo "${archivos.name}" excede el tamaño máximo de 3 MB.`,
                 "error"
             );
 
