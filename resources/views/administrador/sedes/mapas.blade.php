@@ -7,7 +7,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css" />
 
     <div class="container mt-4 ">
-        <h3 class="mb-3 bg-dark border-start border-5 border-primary py-3  text-light fw-bold text-center">Registrar ubicación geoespacial</h3>
+        <h3 class="mb-3 bg-dark border-start border-5 border-primary py-3  text-light fw-bold text-center">Registrar
+            ubicación geoespacial</h3>
 
         @if (session('success'))
             <div class="alert alert-success">{{ session('success') }}</div>
@@ -21,13 +22,13 @@
                             <div class="col-12 col-md-4">
                                 <div class="">
                                     <label class="form-label">Ingrese Latitud (X)</label>
-                                    <input type="text" name="latitud" id="latitud" class="form-control">                                    
+                                    <input type="text" name="latitud" id="latitud" class="form-control">
                                 </div>
                             </div>
                             <div class="col-12 col-md-4">
                                 <div class="">
                                     <label class="form-label">Ingrese Longitud (Y)</label>
-                                    <input type="text" name="longitud" id="longitud" class="form-control">                                    
+                                    <input type="text" name="longitud" id="longitud" class="form-control">
                                 </div>
                             </div>
                             <div class="col-12 col-md-4 d-flex align-items-end">
@@ -91,6 +92,9 @@
                             <hr>
                             <ul id="info-poligonos" class="list-group small text-capitalize text-muted"></ul>
                         </div>
+                        <div class="text-center mb-2">
+                            <button type="submit" class="btn btn-success">Guardar ubicación</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -99,9 +103,7 @@
 
             <input type="hidden" name="geojson" id="geojson">
 
-            <div class="text-end">
-                <button type="submit" class="btn btn-success">Guardar ubicación</button>
-            </div>
+
         </form>
     </div>
 
