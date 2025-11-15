@@ -541,7 +541,12 @@ $("#generarReporte").on("click", function (e) {
         seleccionados: seleccionados,
         gestion: gestion,
     };
-
+  // Deshabilitamos el botón mientras se genera el reporte
+    let originalContent = $("#generarReporte").html();
+    $("#generarReporte")
+        .prop("disabled", true)
+        .html('<i class="fas fa-spinner fa-spin me-2"></i> Generando...');
+    
     crud(
         "admin/generar_reporte_docente",
         "POST",
@@ -567,6 +572,9 @@ $("#generarReporte").on("click", function (e) {
                 let pdfUrl = generarURlBlob(response.mensaje);
                 window.open(pdfUrl, "_blank");
             }, 1500);
+
+            // habilitar boton cunado termine
+            $("#generarReporte").prop("disabled", false).html(originalContent);
         }
     );
 });

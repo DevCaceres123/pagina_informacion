@@ -411,7 +411,11 @@ $("#btnConfirmar").on("click", function (e) {
             $("#previewContainer").addClass("d-none");
             $("#previewTable tbody").empty();
             $("#previewTable thead tr").empty();
-            actualizarTabla();
+            // actualizarTabla();
+
+            setTimeout(() => {
+                window.location.reload();
+            }, 1500);
         }
     );
 });
@@ -499,8 +503,13 @@ $("#generarReporte").on("click", () => {
         return mensajeAlerta("Seleccione algún grado académico.", "warning");
 
     const datos = { tipo, seleccionados, grados, gestion };
-    
 
+     // Deshabilitamos el botón mientras se genera el reporte
+    let originalContent = $("#generarReporte").html();
+    $("#generarReporte")
+        .prop("disabled", true)
+        .html('<i class="fas fa-spinner fa-spin me-2"></i> Generando...');
+    
     crud(
         "admin/generar_reporte_titulados",
         "POST",
@@ -526,10 +535,12 @@ $("#generarReporte").on("click", () => {
                 let pdfUrl = generarURlBlob(response.mensaje);
                 window.open(pdfUrl, "_blank");
             }, 1500);
+            
+            // habilitar boton cunado termine
+            $("#generarReporte").prop("disabled", false).html(originalContent);
         }
     );
 });
-
 
 function generarURlBlob(pdfbase64) {
     // Convertir Base64 a un Blob
@@ -542,3 +553,70 @@ function generarURlBlob(pdfbase64) {
     return URL.createObjectURL(blob);
 }
 
+// Validar al seleccionar pdf
+$("#archivo").on("change", function () {
+    let archivo = this.files[0];
+    if (validarArchivos(archivo, "csv") == false) {
+        $(this).val(""); // Limpiar input
+    }
+});
+
+// funcion que nos servira para validar imagenes y pdf
+function validarArchivos(archivos, tipo) {
+    const maxSizeImagen = 3 * 1024 * 1024; // 3 MB
+    const maxSizeCsv = 10 * 1024 * 1024; // 10 MB
+
+    if (tipo === "imagen") {
+        for (let i = 0; i < archivos.length; i++) {
+            const file = archivos[i];
+
+            if (!file.type.match("image.*")) {
+                mensajeAlerta(
+                    `El archivo "${file.name}" no es una imagen.`,
+                    "error"
+                );
+
+                return false;
+            }
+
+            if (file.size > maxSizeImagen) {
+                mensajeAlerta(
+                    `La imagen "${file.name}" excede el tamaño máximo de 3 MB.`,
+                    "error"
+                );
+
+                return false;
+            }
+        }
+    }
+
+    if (tipo === "csv") {
+        if (!archivos) {
+            mensajeAlerta("No se seleccionó ningún archivo.", "error");
+            return false;
+        }
+
+        // Obtener la extensión del archivo
+        const extension = archivos.name.split(".").pop().toLowerCase();
+
+        if (extension !== "csv") {
+            mensajeAlerta(
+                `El archivo "${archivos.name}" no es un CSV.`,
+                "error"
+            );
+            return false;
+        }
+
+        // Validar tamaño (por ejemplo 30 MB)
+        const maxSizeCsv = 30 * 1024 * 1024; // 30 MB en bytes
+        if (archivos.size > maxSizeCsv) {
+            mensajeAlerta(
+                `El archivo "${archivos.name}" excede el tamaño máximo de 30 MB.`,
+                "error"
+            );
+            return false;
+        }
+    }
+
+    return true; // Si pasa todas las validaciones
+}
