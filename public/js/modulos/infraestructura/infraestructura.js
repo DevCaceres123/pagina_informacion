@@ -55,20 +55,49 @@ function listar_infraestructuras() {
             },
             {
                 data: "estado_inmueble",
-                className: "table-td text-uppercase",
+                className: "table-td text-uppercase text-center",
                 render: function (data) {
-                    return `                            
-                       <span class="badge rounded-pill bg-primary-subtle text-primary p-1 fs-7 p-2">${data}</span>
+                    if (data === 'bueno') {
+                        return `                            
+                      <span class="badge bg-primary">${data}</span>
                     `;
+                    }
+
+                    if (data === 'regular') {
+                        return `                            
+                        <span class="badge bg-info">${data}</span>
+                    `;
+                    }
+
+                    if (data === 'malo') {
+                        return `                            
+                        <span class="badge bg-danger">${data}</span>
+                    `;
+                    }
+
                 },
             },
             {
                 data: "estado_tramite",
-                className: "table-td text-uppercase",
+                className: "table-td text-uppercase text-center",
                 render: function (data) {
-                    return `                            
-                       <span class="badge rounded-pill bg-primary-subtle text-success p-2 fs-7">${data}</span>
+                    if (data === 'inicial') {
+                        return `                            
+                      <span class="badge bg-secondary">${data}</span>
                     `;
+                    }
+
+                    if (data === 'proceso') {
+                        return `                            
+                        <span class="badge bg-info">${data}</span>
+                    `;
+                    }
+
+                    if (data === 'finalizado') {
+                        return `                            
+                        <span class="badge bg-primary">${data}</span>
+                    `;
+                    }
                 },
             },
 
@@ -347,7 +376,7 @@ $(document).on("click", ".eliminar_infraestructura", function () {
 $(document).on("click", ".actualizarUbicacion", function (e) {
     e.preventDefault();
     $("#datosUbicacionModal").modal("show");
-    const id = $(this).data("id");    
+    const id = $(this).data("id");
     let datos = { infraestructura_id: id };
 
     crud("admin/datosUbicacion", "POST", null, datos, function (error, response) {
@@ -591,7 +620,7 @@ $(document).on("click", ".generar_reporte", function () {
 
     $(".generar_reporte").prop("disabled", true);
     crud("admin/reporteInfraestructura", "GET", id_infraestructura, null, function (error, response) {
-    $(".generar_reporte").prop("disabled", false);
+        $(".generar_reporte").prop("disabled", false);
         //console.log(response);
         if (response.tipo != "exito") {
             mensajeAlerta(response.mensaje, response.tipo);
