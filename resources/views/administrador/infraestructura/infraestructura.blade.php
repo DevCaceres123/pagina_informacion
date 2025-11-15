@@ -26,6 +26,7 @@
                                     <th>Nº</th>
                                     <th>SEDE</th>
                                     <th>CREACION</th>
+                                    <th>TIEMPO TRANSCURRIDO</th>
                                     <th>ESTADO INMUEBLE</th>
                                     <th>ESTADO TRAMITE</th>
                                     <th>PLANOS</th>

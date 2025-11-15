@@ -54,6 +54,15 @@ function listar_infraestructuras() {
                 },
             },
             {
+                data: "tiempo_tramite",
+                className: "table-td text-capitalize text-center",
+                render: function (data) {
+                    return `                            
+                      <span class="badge bg-primary">${data}</span>
+                    `;
+                },
+            },
+            {
                 data: "estado_inmueble",
                 className: "table-td text-uppercase text-center",
                 render: function (data) {
