@@ -6,8 +6,6 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
-
-
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 
@@ -24,14 +22,25 @@ class UsuarioSeeder extends Seeder
         $rol1->name = 'administrador';
         $rol1->save();
 
+
+        $rol2       = new Role();
+        $rol2->name = 'cordinador';
+        $rol2->save();
+
+
+        $rol3       = new Role();
+        $rol3->name = 'encargado';
+        $rol3->save();
+
+
         $usuario = new User();
         $usuario->usuario = 'admin';
         $usuario->password = Hash::make('1234');
-        $usuario->ci = '10028685';
+        $usuario->ci = '1234567890';
         $usuario->nombres = 'Admin';
         $usuario->apellidos = 'admin admin';
         $usuario->estado = 'activo';
-        $usuario->email = 'rodrigo@gmail.com';
+        $usuario->email = 'admin@gmail.com';
         $usuario->save();
 
         $usuario->syncRoles(['administrador']);
@@ -47,5 +56,21 @@ class UsuarioSeeder extends Seeder
         $usuario2->save();
 
         $usuario2->syncRoles(['administrador']);
+
+        // PERMISOS PARA INCIO DEL SISTEMA
+        Permission::create(['name' => 'inicio'])->syncRoles([$rol1,$rol2,$rol3]);
+        Permission::create(['name' => 'inicio.usuarios'])->syncRoles([$rol1,$rol2,$rol3]);
+        Permission::create(['name' => 'inicio.carreras'])->syncRoles([$rol1,$rol2,$rol3]);
+        Permission::create(['name' => 'inicio.sedes'])->syncRoles([$rol1,$rol2,$rol3]);
+        Permission::create(['name' => 'inicio.ultima_noticia'])->syncRoles([$rol1,$rol2,$rol3]);
+        Permission::create(['name' => 'inicio.grafica_estudiantes_sede_carrera'])->syncRoles([$rol1,$rol2]);
+        Permission::create(['name' => 'inicio.grafica_titulados'])->syncRoles([$rol1,$rol2]);
+        Permission::create(['name' => 'inicio.grafica_estudiantes'])->syncRoles([$rol1,$rol2]);
+
+        // PERMISOS PARA ADMINISTRADOR DE  USUARIOS
+        Permission::create(['name' => 'admin'])->syncRoles([$rol1]);
+
+
+
     }
 }

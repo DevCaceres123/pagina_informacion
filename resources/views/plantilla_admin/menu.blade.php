@@ -16,16 +16,18 @@
             <div class="d-flex align-items-start flex-column w-100">
                 <!-- Navigation -->
                 <ul class="navbar-nav mb-auto w-100">
-                    <li class="menu-label pt-0 mt-0">
-                        <span>MENU</span>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('inicio') }}" role="button" aria-expanded="false"
-                            aria-controls="sidebarDashboards">
-                            <i class="iconoir-home-simple menu-icon"></i>
-                            <span>INICIO</span>
-                        </a>
-                    </li><!--end nav-item-->
+                    @can('inicio')
+                        <li class="menu-label pt-0 mt-0">
+                            <span>MENU</span>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('inicio') }}" role="button" aria-expanded="false"
+                                aria-controls="sidebarDashboards">
+                                <i class="iconoir-home-simple menu-icon"></i>
+                                <span>INICIO</span>
+                            </a>
+                        </li><!--end nav-item-->
+                    @endcan
                     <li class="nav-item">
                         <a class="nav-link" href="#usuarios" data-bs-toggle="collapse" role="button"
                             aria-expanded="false" aria-controls="usuarios">
