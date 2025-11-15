@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
+use App\Http\Requests\Convocatoria\ComvocatoriaRequest;
 
 class Controlador_convocatorias extends Controller
 {
@@ -87,7 +88,7 @@ class Controlador_convocatorias extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(ComvocatoriaRequest $request)
     {
         DB::beginTransaction();
         $archivosGuardados = [];

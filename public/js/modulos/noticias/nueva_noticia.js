@@ -74,7 +74,7 @@ $("#portada").on("change", function () {
 // funcion que nos servira para validar imagenes y pdf
 function validarArchivos(archivos, tipo) {
     const maxSizeImagen = 3 * 1024 * 1024; // 3 MB
-    const maxSizePdf = 2 * 1024 * 1024; // 5 MB
+    const maxSizePdf = 2 * 1024 * 1024; // 2 MB
 
     if (tipo === "imagen") {
         for (let i = 0; i < archivos.length; i++) {
