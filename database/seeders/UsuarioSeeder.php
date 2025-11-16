@@ -86,5 +86,13 @@ class UsuarioSeeder extends Seeder
         Permission::create(['name' => 'admin.rol.visualizar'])->syncRoles([$rol1]);
 
 
+        //PERMISOS
+        Permission::create(['name' => 'admin.permiso.inicio'])->syncRoles([$rol1]);
+        Permission::create(['name' => 'admin.permiso.crear'])->syncRoles([$rol1]);
+        Permission::create(['name' => 'admin.permiso.editar'])->syncRoles([$rol1]);
+        Permission::create(['name' => 'admin.permiso.eliminar'])->syncRoles([$rol1]);
+
+
+
     }
 }

@@ -47,9 +47,11 @@
                                             <a class="nav-link" href="{{ route('roles.index') }}">Roles</a>
                                         </li>
                                     @endcan
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="{{ route('permisos.index') }}">Permisos</a>
-                                    </li>
+                                    @can('admin.permiso.inicio')
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="{{ route('permisos.index') }}">Permisos</a>
+                                        </li>
+                                    @endcan
                                 </ul><!--end nav-->
                             </div><!--end startbarApplications-->
                             @endcan
