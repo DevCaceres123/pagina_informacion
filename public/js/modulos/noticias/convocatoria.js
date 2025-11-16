@@ -50,9 +50,36 @@ function listar_infraestructuras() {
                 data: "categoria.nombre",
                 className: "table-td text-capitalize",
                 render: function (data) {
-                    return `                            
-                       <span class="badge rounded-pill bg-danger text-light p-2 fs-6">${data}</span>
-                    `;
+                         
+                     if (data != 'noticias' && data != 'eventos' && data != 'comunicados' && data && 'convocatorias') {
+                        return `                            
+                         <span class="badge bg-success">${data}</span>
+                        `;
+                    }
+
+                    if (data == 'noticias') {
+                        return `                            
+                         <span class="badge bg-primary">${data}</span>
+                        `;
+                    }
+
+                    if (data == 'eventos') {
+                        return `                            
+                         <span class="badge bg-secondary">${data}</span>
+                        `;
+                    }
+
+                    if (data == 'comunicados') {
+                        return `                            
+                         <span class="badge bg-warning">${data}</span>
+                        `;
+                    }
+
+                    if (data == 'convocatorias') {
+                        return `                            
+                         <span class="badge bg-danger">${data}</span>
+                        `;
+                    }
                 },
             },
 
@@ -61,7 +88,7 @@ function listar_infraestructuras() {
                 className: "table-td text-capitalize",
                 render: function (data) {
                     return `                            
-                       <span class="badge rounded-pill bg-success text-light p-2 fs-6">${data}</span>
+                       <span class="badge bg-secondary">${data}</span>
                     `;
                 },
             },
@@ -84,7 +111,7 @@ function listar_infraestructuras() {
 
                     // Aquí verificamos el permiso de desactivar
                     let desactivarContent =
-                        permisosGlobal["estado"] == false
+                        permisosGlobal["estado"] == true
                             ? `
                             <a class="cambiar_estado_convocatoria" data-id="${row.id},${row.estado}">
                                 <div class="form-check form-switch ms-3">
@@ -108,8 +135,16 @@ function listar_infraestructuras() {
                 className: "table-td text-end",
                 render: function (data, type, row) {
                     return ` <div class="d-flex justify-content-center">
+                                          
+                        ${
+                            permisosGlobal.editar
+                        ? ` <a  href="editarConvocatoria/${row.id}" class="btn btn-sm btn-outline-warning px-2 d-inline-flex align-items-center editar_sede me-1" data-id="${row.id}" title="Editar Convocatoria">
+                            <i class="fas fa-pencil-alt fs-16"></i>
+                        </a>`
+                                     : ``
+                        }
 
-                         ${
+                        ${
                              permisosGlobal.eliminar
                                  ? `
                         <a class="btn btn-sm btn-outline-danger px-2 d-inline-flex align-items-center eliminar_convocatoria me-1" data-id="${row.id}" title="Eliminar Noticia">
@@ -118,14 +153,7 @@ function listar_infraestructuras() {
                             `
                                  : ``
                          }
-                      
-                        ${
-                            permisosGlobal.eliminar
-                        ? ` <a  href="editarConvocatoria/${row.id}" class="btn btn-sm btn-outline-warning px-2 d-inline-flex align-items-center editar_sede me-1" data-id="${row.id}" title="Editar Convocatoria">
-                            <i class="fas fa-pencil-alt fs-16"></i>
-                        </a>`
-                                     : ``
-                             }`;
+                    `;
                 },
             },
         ],

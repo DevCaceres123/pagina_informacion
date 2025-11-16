@@ -90,20 +90,19 @@
                             </ul><!--end nav-->
                         </div><!--end startbarApplications-->
                     </li><!--end nav-item-->
-                  
-                    <li class="menu-label mt-2">
-                        @can('convocatoria')
-                            <small class="label-border">
-                                <div class="border_left hidden-xs"></div>
-                                <div class="border_right"></div>
-                            </small>
-                            <span>PUBLICACIONES</span>
-                        @endcan
-                    </li>
+                    @can('publicaciones')
+                        <li class="menu-label mt-2">                        
+                                <small class="label-border">
+                                    <div class="border_left hidden-xs"></div>
+                                    <div class="border_right"></div>
+                                </small>
+                                <span>PUBLICACIONES</span>                       
+                        </li>
+                     @endcan
 
 
                     <li class="nav-item">
-                        @can('convocatoria')
+                        @can('publicaciones')
                             <a class="nav-link" href="#noticiasConvocatorias" data-bs-toggle="collapse" role="button"
                                 aria-expanded="false" aria-controls="noticiasConvocatorias">
                                 <i class="fas fa-newspaper   menu-icon"></i>
@@ -117,10 +116,12 @@
                                         <a class="nav-link" href="{{ route('noticia.index') }}">Noticias</a>
                                     </li>
                                 @endcan
-                                
-                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('convocatoria.index') }}">Convocatorias</a>
-                                </li>
+
+                                @can('convocatoria.inicio')
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="{{ route('convocatoria.index') }}">Convocatorias</a>
+                                    </li>
+                                @endcan
                                 
                             </ul><!--end nav-->
                         </div><!--end startbarApplications-->

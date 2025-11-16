@@ -12,10 +12,11 @@
                             </h4>
                         </div>
                         <div class="col-auto">
-                            
-                            <a href="{{ route('convocatoria.nuevaConvocatoria') }}" target="_blank" class="btn btn-primary"> 
-                                <i class="fas fa-plus me-1"></i> Nuevo
-                            </a>
+                            @can('convocatoria.crear')
+                                <a href="{{ route('convocatoria.nuevaConvocatoria') }}" target="_blank" class="btn btn-primary"> 
+                                    <i class="fas fa-plus me-1"></i> Nuevo
+                                </a>
+                            @endcan
                             
                         </div>
                     </div>

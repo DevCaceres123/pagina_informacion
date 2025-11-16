@@ -23,7 +23,9 @@ class Controlador_convocatorias extends Controller
      */
     public function index()
     {
-
+        if (!auth()->user()->can('convocatoria.inicio')) {
+            return redirect()->route('inicio');
+        }
         return view('administrador.publicaciones.convocatorias');
     }
 
@@ -63,9 +65,9 @@ class Controlador_convocatorias extends Controller
             'recordsFiltered' => $recordsTotal, // Ajustar si hay filtros
             'data' => $sedes,
             'permisos' => [
-                'editar' => auth()->user()->can('afiliado.editar'),
-                'eliminar' => true,
-                'estado' => auth()->user()->can('afiliado.estado'),
+                'editar' => auth()->user()->can('convocatoria.editar'),
+                'eliminar' => auth()->user()->can('convocatoria.eliminar'),
+                'estado' => auth()->user()->can('convocatoria.publicar'),
             ],
         ]);
     }

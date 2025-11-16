@@ -120,13 +120,21 @@ class UsuarioSeeder extends Seeder
         Permission::create(['name' => 'publicaciones'])->syncRoles([$rol1,$rol2]);
 
 
-        //permisos para sedenoticias
+        //permisos para noticias
         Permission::create(['name' => 'noticia.inicio'])->syncRoles([$rol1,$rol2]);
         Permission::create(['name' => 'noticia.crear'])->syncRoles([$rol1]);
         Permission::create(['name' => 'noticia.noticia_destacada'])->syncRoles([$rol1]);
         Permission::create(['name' => 'noticia.publicar'])->syncRoles([$rol1]);
         Permission::create(['name' => 'noticia.eliminar'])->syncRoles([$rol1]);
         Permission::create(['name' => 'noticia.editar'])->syncRoles([$rol1]);
+
+
+        //permisos para convocatorias
+        Permission::create(['name' => 'convocatoria.inicio'])->syncRoles([$rol1,$rol2]);
+        Permission::create(['name' => 'convocatoria.crear'])->syncRoles([$rol1]);
+        Permission::create(['name' => 'convocatoria.publicar'])->syncRoles([$rol1]);
+        Permission::create(['name' => 'convocatoria.eliminar'])->syncRoles([$rol1]);
+        Permission::create(['name' => 'convocatoria.editar'])->syncRoles([$rol1]);
 
 
     }
