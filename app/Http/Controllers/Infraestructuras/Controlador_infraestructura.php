@@ -24,6 +24,9 @@ class Controlador_infraestructura extends Controller
      */
     public function index()
     {
+        if (!auth()->user()->can('infraestructura.inicio')) {
+            return redirect()->route('inicio');
+        }
         $sedes = Sede::select('id', 'nombre')->where('estado', 'activo')->get();
         return view('administrador.infraestructura.infraestructura', compact('sedes'));
     }
@@ -66,9 +69,13 @@ class Controlador_infraestructura extends Controller
             'recordsFiltered' => $recordsTotal, // Ajustar si hay filtros
             'data' => $sedes,
             'permisos' => [
-                'editar' => auth()->user()->can('afiliado.editar'),
-                'eliminar' => true,
-                'estado' => auth()->user()->can('afiliado.estado'),
+                'planos' => auth()->user()->can('infraestructura.planos'),
+                'editar' => auth()->user()->can('infraestructura.editar'),
+                'eliminar' => auth()->user()->can('infraestructura.eliminar'),
+                'ver_documentos' => auth()->user()->can('infraestructura.ver_documentos'),
+                'cambiar_estado' => auth()->user()->can('infraestructura.cambiar_estado'),
+                'datos_ubicacion' => auth()->user()->can('infraestructura.datos_ubicacion'),
+                'generar_reporte' => auth()->user()->can('infraestructura.generar_reporte'),
             ],
         ]);
     }

@@ -115,10 +115,17 @@ function listar_infraestructuras() {
                 className: "table-td text-uppercase text-center",
                 render: function (data, type, row, meta) {
                     return `
-                    <button type="button" class="btn btn-sm btn-success rounded ver-planos" data-id='${row.id}
-                    '>
-                        <i class="fas fa-university me-1"></i> Planos
-                    </button>
+                    
+
+                     ${
+                        permisosGlobal.planos
+                            ? `
+                            <button type="button" class="btn btn-sm btn-success rounded ver-planos" data-id='${row.id}'>
+                                <i class="fas fa-university me-1" title='ver planos'></i> Planos
+                             </button>
+                            `
+                            : ``
+                    }
                 `;
                 },
             },
@@ -129,6 +136,40 @@ function listar_infraestructuras() {
                 className: "table-td text-end",
                 render: function (data, type, row) {
                     return ` <div class="d-flex justify-content-center">
+                                          
+                        ${permisosGlobal.editar
+                            ? ` <a class="btn btn-sm btn-outline-warning px-2 d-inline-flex align-items-center editar_sede me-1" data-id="${row.id}" title="Editar Infraestructura">
+                            <i class="fas fa-pencil-alt fs-16"></i>
+                        </a>`
+                            : ``
+                        }
+                      
+                        ${permisosGlobal.ver_documentos
+                            ? ` <a href='docuementosInfraestructura/${row.id}' class="btn btn-sm btn-outline-info px-2 d-inline-flex align-items-center ver_resolucion me-1"  title="Ver Documentos">
+                            <i class="fas fa-file-pdf fs-16 fs-16"></i>
+                        </a>`
+                            : ``
+                        }                
+                          ${permisosGlobal.cambiar_estado
+                            ? ` <a href='' class="btn btn-sm btn-outline-success px-2 d-inline-flex align-items-center me-1 btnCambiarEstado" data-id="${row.id}" title="Cambiar de estado">
+                            <i class="fas fa-retweet fs-16"></i>
+                        </a>`
+                            : ``
+                        }
+
+                        ${permisosGlobal.datos_ubicacion
+                            ? ` <a href='' class="btn btn-sm btn-outline-primary px-2 d-inline-flex align-items-center me-1 actualizarUbicacion" data-id="${row.id}" title="Datos de ubicacion">
+                            <i class="fas fa-university fs-16"></i>
+                        </a>`
+                            : ``
+                        }
+                         
+                         ${permisosGlobal.generar_reporte
+                            ? ` <button class="btn btn-sm btn-outline-primary px-2 d-inline-flex align-items-center me-1 generar_reporte" data-id="${row.id}" title="Generar Reporte">
+                            <i class="fas fa-file-archive  fs-16"></i>
+                        </button>`
+                            : ``
+                        }
 
                          ${permisosGlobal.eliminar
                             ? `
@@ -138,40 +179,7 @@ function listar_infraestructuras() {
                             `
                             : ``
                         }
-                      
-                             ${permisosGlobal.eliminar
-                            ? ` <a class="btn btn-sm btn-outline-warning px-2 d-inline-flex align-items-center editar_sede me-1" data-id="${row.id}" title="Editar Infraestructura">
-                            <i class="fas fa-pencil-alt fs-16"></i>
-                        </a>`
-                            : ``
-                        }
-                      
-                        ${permisosGlobal.eliminar
-                            ? ` <a href='docuementosInfraestructura/${row.id}' class="btn btn-sm btn-outline-info px-2 d-inline-flex align-items-center ver_resolucion me-1"  title="Ver Documentos">
-                            <i class="fas fa-file-pdf fs-16 fs-16"></i>
-                        </a>`
-                            : ``
-                        }                
-                          ${permisosGlobal.eliminar
-                            ? ` <a href='' class="btn btn-sm btn-outline-success px-2 d-inline-flex align-items-center me-1 btnCambiarEstado" data-id="${row.id}" title="Cambiar de estado">
-                            <i class="fas fa-retweet fs-16"></i>
-                        </a>`
-                            : ``
-                        }
 
-                        ${permisosGlobal.eliminar
-                            ? ` <a href='' class="btn btn-sm btn-outline-primary px-2 d-inline-flex align-items-center me-1 actualizarUbicacion" data-id="${row.id}" title="Datos de ubicacion">
-                            <i class="fas fa-university fs-16"></i>
-                        </a>`
-                            : ``
-                        }
-                         
-                         ${permisosGlobal.eliminar
-                            ? ` <button class="btn btn-sm btn-outline-primary px-2 d-inline-flex align-items-center me-1 generar_reporte" data-id="${row.id}" title="Generar Reporte">
-                            <i class="fas fa-file-archive  fs-16"></i>
-                        </button>`
-                            : ``
-                        }
                         </div>`;
                 },
             },

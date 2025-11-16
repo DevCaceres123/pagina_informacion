@@ -127,23 +127,25 @@
                         </div><!--end startbarApplications-->
                     </li><!--end nav-item-->
                  
+                    @can('infraestructura.inicio')
+                        <li class="menu-label mt-2">
+                            <small class="label-border">
+                                <div class="border_left hidden-xs"></div>
+                                <div class="border_right"></div>
+                            </small>
+                            <span>SEGUIMIENTO</span>
+                        </li>
+                    @endcan
 
-                    <li class="menu-label mt-2">
-                        <small class="label-border">
-                            <div class="border_left hidden-xs"></div>
-                            <div class="border_right"></div>
-                        </small>
-                        <span>SEGUIMIENTO</span>
-                    </li>
-
-                     <li class="nav-item">
-                        <a class="nav-link" href="{{route('infraestructura.index')}}" role="button"
-                            aria-expanded="false" aria-controls="sedesCarreras">
-                            <i class="fas fa-university  menu-icon"></i>
-                            <span>INFRAESTRUCTURA</span>
-                        </a>                       
-                    </li>
-
+                    @can('infraestructura.inicio')
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{route('infraestructura.index')}}" role="button"
+                                aria-expanded="false" aria-controls="sedesCarreras">
+                                <i class="fas fa-university  menu-icon"></i>
+                                <span>INFRAESTRUCTURA</span>
+                            </a>                       
+                        </li>
+                    @endcan
 
                       <li class="menu-label mt-2">
                         <small class="label-border">
