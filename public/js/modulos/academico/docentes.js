@@ -132,7 +132,7 @@ function listar() {
                     return ` <div class="d-flex justify-content-center">
 
                          ${
-                             permisosGlobal.eliminar
+                             permisosGlobal.editar
                                  ? `
                         <button class="btn btn-md btn-outline-primary px-2 d-inline-flex align-items-center actualizar_informacion me-1" data-id="${row.id}" title="Actualizar Informacion" disabled>
                             <i class="fas fa-check-circle  fs-16"></i>

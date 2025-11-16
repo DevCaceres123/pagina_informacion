@@ -178,10 +178,11 @@
                                         <a class="nav-link" href="{{route('titulados.index')}}">Titulados</a>
                                     </li>
                                 @endcan
-                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{route('docentes.index')}}">Docentes</a>
-                                </li>
-
+                                @can('docentes.inicio')
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="{{route('docentes.index')}}">Docentes</a>
+                                    </li>
+                                @endcan
                                  <li class="nav-item">
                                     <a class="nav-link" href="{{route('administrativos.index')}}">Administrativos</a>
                                 </li>

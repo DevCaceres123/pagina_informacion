@@ -163,6 +163,12 @@ class UsuarioSeeder extends Seeder
         Permission::create(['name' => 'titulados.generar_reporte'])->syncRoles([$rol1]);
         Permission::create(['name' => 'titulados.editar'])->syncRoles([$rol1]);
 
+          // permiso para los docentes
+        Permission::create(['name' => 'docentes.inicio'])->syncRoles([$rol1,$rol2]);
+        Permission::create(['name' => 'docentes.subir_datos'])->syncRoles([$rol1]);
+        Permission::create(['name' => 'docentes.generar_reporte'])->syncRoles([$rol1]);
+        Permission::create(['name' => 'docentes.editar'])->syncRoles([$rol1]);
+
 
     }
 }

@@ -18,6 +18,10 @@ class Controlador_estadisticasDocente extends Controller
 {
     public function index(Request $request)
     {
+        if (!auth()->user()->can('docentes.inicio')) {
+            return redirect()->route('inicio');
+        }
+
         $gestionActual = date('Y');
 
         // obtenemos las gestiones distintas existentes
@@ -85,9 +89,8 @@ class Controlador_estadisticasDocente extends Controller
             'recordsFiltered' => $recordsTotal, // Ajustar si hay filtros
             'data' => $sedes,
             'permisos' => [
-                'editar' => auth()->user()->can('afiliado.editar'),
-                'eliminar' => true,
-                'estado' => auth()->user()->can('afiliado.estado'),
+                'editar' => auth()->user()->can('docentes.editar'),
+               
             ],
         ]);
     }
