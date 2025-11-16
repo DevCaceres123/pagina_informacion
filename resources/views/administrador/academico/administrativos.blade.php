@@ -59,16 +59,19 @@
                         {{-- <button type="button" class="btn btn-success px-4 shadow-sm fw-bold" id="guardar_totales">
                             <i class="fas fa-save me-2"></i> Guardar Totales
                         </button> --}}
+                        @can('administrativos.generar_reporte')
+                            <button type="button" class="btn btn-primary me-2" data-bs-toggle="modal"
+                                data-bs-target="#modalReporte">
+                                <i class="fas fa-file-pdf me-2"></i> Generar Reporte
+                            </button>
+                        @endcan
 
-                        <button type="button" class="btn btn-primary me-2" data-bs-toggle="modal"
-                            data-bs-target="#modalReporte">
-                            <i class="fas fa-file-pdf me-2"></i> Generar Reporte
-                        </button>
-
-                        <button type="button" class="btn btn-info" data-bs-toggle="modal"
-                            data-bs-target="#modalSubirDatos">
-                            <i class="fas fa-file-pdf me-2"></i>Subir datos
-                        </button>
+                        @can('administrativos.subir_datos')
+                            <button type="button" class="btn btn-info" data-bs-toggle="modal"
+                                data-bs-target="#modalSubirDatos">
+                                <i class="fas fa-file-pdf me-2"></i>Subir datos
+                            </button>
+                        @endcan
                     </div>
 
                 </form>

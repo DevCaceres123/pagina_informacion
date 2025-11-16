@@ -16,6 +16,12 @@ class Controlador_estadisticasAdministrativo extends Controller
 {
     public function index(Request $request)
     {
+
+        if (!auth()->user()->can('administrativos.inicio')) {
+            return redirect()->route('inicio');
+        }
+
+
         $gestionActual = date('Y');
 
         // obtenemos las gestiones distintas existentes

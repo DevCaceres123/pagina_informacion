@@ -183,9 +183,11 @@
                                         <a class="nav-link" href="{{route('docentes.index')}}">Docentes</a>
                                     </li>
                                 @endcan
-                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{route('administrativos.index')}}">Administrativos</a>
-                                </li>
+                                @can('administrativos.inicio')
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="{{route('administrativos.index')}}">Administrativos</a>
+                                    </li>
+                                @endcan
                                 
                             </ul>
                         </div>
