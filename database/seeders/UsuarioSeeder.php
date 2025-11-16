@@ -144,7 +144,7 @@ class UsuarioSeeder extends Seeder
         Permission::create(['name' => 'infraestructura.eliminar'])->syncRoles([$rol1]);
         Permission::create(['name' => 'infraestructura.editar'])->syncRoles([$rol1]);
         Permission::create(['name' => 'infraestructura.ver_documentos'])->syncRoles([$rol1]);
-        Permission::create(['name' => 'infraestructura.cambiar_estado'])->syncRoles([$rol1]);
+        Permission::create(['name' => 'infraestructura.cambiar_estado'])->syncRoles([]);
         Permission::create(['name' => 'infraestructura.datos_ubicacion'])->syncRoles([$rol1]);
         Permission::create(['name' => 'infraestructura.generar_reporte'])->syncRoles([$rol1]);
 

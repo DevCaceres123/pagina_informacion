@@ -437,7 +437,7 @@ class Controlador_infraestructura extends Controller
             // Guardar el PDF si se envió
             $rutaPdf = $this->guardarPdf($request, $tipo, strtoupper(substr($request->tipo, 0, 1)));
             if ($rutaPdf) {
-                $infraestructura->$tipo = $rutaPdf !=null ? $rutaPdf: $nombreArchivo;
+                $infraestructura->$tipo = $rutaPdf != null ? $rutaPdf : $nombreArchivo;
                 $archivosGuardados[] = $rutaPdf; // guardar para rollback
             }
 
@@ -446,7 +446,26 @@ class Controlador_infraestructura extends Controller
                 $infraestructura->numero_nota = $request->numero_nota ?? null;
             }
 
-            $infraestructura->save();            
+            // cambiamos el estado segun el tipo de archivo que nos envien
+
+            if ($tipo == 'nota') {
+                $infraestructura->estado_tramite = 'proceso';
+            }
+
+            if ($tipo == 'contrato') {
+
+                // para poder finalizar el estado tiene que estar ya en proceso
+                if ($infraestructura->estado_tramite == 'proceso') {
+                    $infraestructura->estado_tramite = 'finalizado';
+                }
+                else{
+                    throw new Exception("aun no se cargo la Nota.");
+                    
+                }
+
+            }
+
+            $infraestructura->save();
             DB::commit();
 
             // if ($nombreArchivo != null && $rutaPdf !=null) {
@@ -468,7 +487,7 @@ class Controlador_infraestructura extends Controller
                 }
             }
 
-            $this->mensaje('error', 'error' . $e->getMessage());
+            $this->mensaje('error', 'error ' . $e->getMessage());
             return response()->json($this->mensaje, 200);
         }
     }
@@ -547,7 +566,7 @@ class Controlador_infraestructura extends Controller
         $galeria = $imagenes->map(function ($img) {
             $path = $img->nombre;
             if (!Storage::disk('private')->exists($path)) {
-                
+
             }
             $mime = Storage::disk('private')->mimeType($path);
             return [
@@ -693,7 +712,7 @@ class Controlador_infraestructura extends Controller
 
             $sede = Sede::select('nombre')->where('id', $infraestructura->sede_id)->first();
 
-            $ubicacion = DatosInfraestructura::select('distrito', 'ubicacion', 'urb', 'manzano', 'lote', 'sup_test', 'sup_lev', 'sup_adju', 'sup_util','escala')->where('infraestructura_id', $id_infraestructura)->first() ?? new \stdClass();
+            $ubicacion = DatosInfraestructura::select('distrito', 'ubicacion', 'urb', 'manzano', 'lote', 'sup_test', 'sup_lev', 'sup_adju', 'sup_util', 'escala')->where('infraestructura_id', $id_infraestructura)->first() ?? new \stdClass();
 
             // reducir calidad y convertir en base 64 una imagen
             $manager = new ImageManager(new Driver());
