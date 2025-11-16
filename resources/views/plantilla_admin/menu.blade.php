@@ -173,9 +173,11 @@
                                         <a class="nav-link" href="{{route('estudiantes.index')}}">Estudiantes</a>
                                     </li>
                                 @endcan
-                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{route('titulados.index')}}">Titulados</a>
-                                </li>
+                                @can('titulados.inicio')
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="{{route('titulados.index')}}">Titulados</a>
+                                    </li>
+                                @endcan
                                  <li class="nav-item">
                                     <a class="nav-link" href="{{route('docentes.index')}}">Docentes</a>
                                 </li>
