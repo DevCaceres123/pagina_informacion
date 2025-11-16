@@ -42,9 +42,11 @@
                                             <a class="nav-link" href="{{ route('user.index') }}">Usuarios</a>
                                         </li>
                                     @endcan
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="{{ route('roles.index') }}">Roles</a>
-                                    </li>
+                                    @can('admin.rol.inicio')
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="{{ route('roles.index') }}">Roles</a>
+                                        </li>
+                                    @endcan
                                     <li class="nav-item">
                                         <a class="nav-link" href="{{ route('permisos.index') }}">Permisos</a>
                                     </li>

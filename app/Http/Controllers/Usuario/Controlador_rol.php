@@ -18,6 +18,9 @@ class Controlador_rol extends Controller
      */
     public function index()
     {
+        if (!auth()->user()->can('admin.rol.inicio')) {
+            return redirect()->route('inicio');
+        }
         $roles      = Role::OrderBy('id', 'desc')->get();
         $permisos   = Permission::OrderBy('id', 'desc')->get();
         return view('administrador.usuarios.roles', [

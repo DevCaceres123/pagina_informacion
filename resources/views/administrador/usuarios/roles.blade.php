@@ -9,13 +9,15 @@
                     <div class="row align-items-center">
                         <div class="col">
                             <h4 class="card-title mb-0 text-light fw-bold">
-                                 <i class="fas fa-user-shield  me-2"></i> LISTA DE ROLES
+                                <i class="fas fa-user-shield  me-2"></i> LISTA DE ROLES
                             </h4>
                         </div>
                         <div class="col-auto">
-                            <button class="btn btn-primary" onclick="abrirModalRol()">
-                                <i class="fas fa-plus me-1"></i> Nuevo
-                            </button>
+                            @can('admin.rol.crear')
+                                <button class="btn btn-primary" onclick="abrirModalRol()">
+                                    <i class="fas fa-plus me-1"></i> Nuevo
+                                </button>
+                            @endcan
                         </div>
                     </div>
                 </div>
@@ -43,21 +45,28 @@
                                 class="rounded-circle thumb-xxl">
                         </div>
                         <div class="mt-3">
-                            <a href="#" class="btn btn-sm btn-outline-warning px-2 d-inline-flex align-items-center"
-                                onclick="abrirModalRol('{{ $lis->id }}')">
-                                <i class="iconoir-warning-circle fs-14 me-1"></i>
-                                Editar
-                            </a>
-                            <a href="#" class="btn btn-sm btn-outline-danger px-2 d-inline-flex align-items-center"
-                                onclick="eliminarRol('{{ $lis->id }}')">
-                                <i class="iconoir-trash fs-14 me-1"></i>
-                                Eliminar
-                            </a>
-                            <a href="#" class="btn btn-sm btn-outline-secondary px-2 d-inline-flex align-items-center"
-                                onclick="vizualizarRolPermiso('{{ $lis->id }}')">
-                                <i class="iconoir-eye fs-14 me-1"></i>
-                                Vizualizar
-                            </a>
+                            @can('admin.rol.editar')
+                                <a href="#" class="btn btn-sm btn-outline-warning px-2 d-inline-flex align-items-center"
+                                    onclick="abrirModalRol('{{ $lis->id }}')">
+                                    <i class="iconoir-warning-circle fs-14 me-1"></i>
+                                    Editar
+                                </a>
+                            @endcan
+                            @can('admin.rol.eliminar')
+                                <a href="#" class="btn btn-sm btn-outline-danger px-2 d-inline-flex align-items-center"
+                                    onclick="eliminarRol('{{ $lis->id }}')">
+                                    <i class="iconoir-trash fs-14 me-1"></i>
+                                    Eliminar
+                                </a>
+                            @endcan
+
+                            @can('admin.rol.visualizar')
+                                <a href="#" class="btn btn-sm btn-outline-secondary px-2 d-inline-flex align-items-center"
+                                    onclick="vizualizarRolPermiso('{{ $lis->id }}')">
+                                    <i class="iconoir-eye fs-14 me-1"></i>
+                                    Vizualizar
+                                </a>
+                            @endcan
                         </div>
                     </div>
                 </div>
@@ -312,8 +321,8 @@
             })
         }
 
-        let rolNombre       = document.getElementById('rolNombre');
-        let permisoListar   = document.getElementById('permisoListar');
+        let rolNombre = document.getElementById('rolNombre');
+        let permisoListar = document.getElementById('permisoListar');
         async function vizualizarRolPermiso(id) {
             permisoListar.innerHTML = '';
             try {
@@ -326,7 +335,7 @@
                 });
 
                 let data = await response.json();
-                if(data.tipo === 'success'){
+                if (data.tipo === 'success') {
                     modal_vizualizar.show();
                     rolNombre.innerHTML = data.mensaje.rol;
                     data.mensaje.permisos.forEach(elem => {
@@ -335,7 +344,7 @@
                         `;
                     });
                 }
-                if(data.tipo === 'error'){
+                if (data.tipo === 'error') {
                     alerta_top(data.tipo, data.mensaje);
                 }
 

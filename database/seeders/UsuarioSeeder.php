@@ -55,7 +55,7 @@ class UsuarioSeeder extends Seeder
         $usuario2->email = 'gloriaramosblanco9@gmail.com';
         $usuario2->save();
 
-        $usuario2->syncRoles(['administrador']);
+        $usuario2->syncRoles(['encargado']);
 
         // PERMISOS PARA INCIO DEL SISTEMA
         Permission::create(['name' => 'inicio'])->syncRoles([$rol1,$rol2,$rol3]);
@@ -76,6 +76,14 @@ class UsuarioSeeder extends Seeder
         Permission::create(['name' => 'admin.usuario.editar'])->assignRole($rol1);
         Permission::create(['name' => 'admin.usuario.eliminar'])->assignRole($rol1);
         Permission::create(['name' => 'admin.usuario.desactivar'])->assignRole($rol1);    
+
+
+         //ROL
+        Permission::create(['name' => 'admin.rol.inicio'])->syncRoles([$rol1]);
+        Permission::create(['name' => 'admin.rol.crear'])->syncRoles([$rol1]);
+        Permission::create(['name' => 'admin.rol.editar'])->syncRoles([$rol1]);
+        Permission::create(['name' => 'admin.rol.eliminar'])->syncRoles([$rol1]);
+        Permission::create(['name' => 'admin.rol.visualizar'])->syncRoles([$rol1]);
 
 
     }
