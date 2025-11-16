@@ -147,6 +147,7 @@
                         </li>
                     @endcan
 
+                    @can('academico')
                       <li class="menu-label mt-2">
                         <small class="label-border">
                             <div class="border_left hidden-xs"></div>
@@ -154,21 +155,24 @@
                         </small>
                         <span>ACADEMICO</span>
                     </li>
+                    @endcan
 
 
                     <li class="nav-item">
-                        <a class="nav-link" href="#academico" data-bs-toggle="collapse" role="button"
-                            aria-expanded="false" aria-controls="academico">
-                            <i class="fas fa-university   menu-icon"></i>
-                            <span>ACADEMICO</span>
-                        </a>
+                        @can('academico')
+                            <a class="nav-link" href="#academico" data-bs-toggle="collapse" role="button"
+                                aria-expanded="false" aria-controls="academico">
+                                <i class="fas fa-university   menu-icon"></i>
+                                <span>ACADEMICO</span>
+                            </a>
+                        @endcan
                         <div class="collapse " id="academico">
                             <ul class="nav flex-column">
-
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{route('estudiantes.index')}}">Estudiantes</a>
-                                </li>
-
+                                @can('estudiantes.inicio')
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="{{route('estudiantes.index')}}">Estudiantes</a>
+                                    </li>
+                                @endcan
                                  <li class="nav-item">
                                     <a class="nav-link" href="{{route('titulados.index')}}">Titulados</a>
                                 </li>

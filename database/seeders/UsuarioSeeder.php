@@ -148,5 +148,14 @@ class UsuarioSeeder extends Seeder
         Permission::create(['name' => 'infraestructura.datos_ubicacion'])->syncRoles([$rol1]);
         Permission::create(['name' => 'infraestructura.generar_reporte'])->syncRoles([$rol1]);
 
+        // ACADEMICO
+        Permission::create(['name' => 'academico'])->syncRoles([$rol1,$rol2]);
+
+        // permiso para los estudiantes
+        Permission::create(['name' => 'estudiantes.inicio'])->syncRoles([$rol1,$rol2]);
+        Permission::create(['name' => 'estudiantes.subir_datos'])->syncRoles([$rol1]);
+        Permission::create(['name' => 'estudiantes.generar_reporte'])->syncRoles([$rol1]);
+        Permission::create(['name' => 'estudiantes.editar'])->syncRoles([$rol1]);
+
     }
 }
