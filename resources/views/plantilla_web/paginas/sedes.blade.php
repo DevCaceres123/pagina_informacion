@@ -205,18 +205,20 @@
                     </div>
                 </div>
                 {{-- SECCIÓN RESOLUCIÓN (CORREGIDA: Ahora es su propia tarjeta fuera de Carreras) --}}
-                <div class="card card-resolution-final shadow-sm p-4 rounded-4 border-start border-warning border-5">
-                    <h4 class="fw-bold mb-3 section-title-icon"><i class="fas fa-file-contract me-2 text-warning"></i>
-                        Documento Legal</h4>
-                    <p class="">Resolución:</p>
-                    <p class="fw-bolder text-primary fs-3">{{ $sedeUnica->resolucion ?? 'Ninguno::' }}</p>
-                    <a href="{{ asset('storage/resoluciones/' . $sedeUnica->resolucion_pdf) }}" id="btnDescargarResolucion"
-                        class="btn btn-warning fw-bold w-100 btn-lg shadow-sm" download>
-                        <i class="fas fa-download me-2"></i> Descargar Resolución (PDF)
-                    </a>
-
-
-                </div>
+                @if ($sedeUnica->publicar_resolucion=='activo')
+                        
+                    <div class="card card-resolution-final shadow-sm p-4 rounded-4 border-start border-warning border-5">
+                        <h4 class="fw-bold mb-3 section-title-icon"><i class="fas fa-file-contract me-2 text-warning"></i>
+                            Documento Legal</h4>
+                        <p class="">Resolución:</p>
+                        <p class="fw-bolder text-primary fs-3">{{ $sedeUnica->resolucion ?? 'Ninguno::' }}</p>
+                        <a href="{{ asset('storage/resoluciones/' . $sedeUnica->resolucion_pdf) }}" id="btnDescargarResolucion"
+                            class="btn btn-warning fw-bold w-100 btn-lg shadow-sm" download>
+                            <i class="fas fa-download me-2"></i> Descargar Resolución (PDF)
+                        </a>
+                    </div>
+                @endif
+              
 
             </div>
 

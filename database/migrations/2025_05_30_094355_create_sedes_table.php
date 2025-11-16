@@ -15,6 +15,7 @@ return new class () extends Migration {
             $table->string('nombre')->unique();
             $table->string('descripcion', 150);
             $table->string('resolucion', 100)->nullable();
+            $table->enum('publicar_resolucion', ['activo', 'inactivo']);
             $table->string('resolucion_pdf', 100)->nullable();
             $table->string('facebook')->nullable();
             $table->string('whatsapp')->nullable();

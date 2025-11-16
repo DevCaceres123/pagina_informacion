@@ -67,7 +67,9 @@ function listar_afiliado() {
                     ${
                         permisosGlobal.ver_carreras
                             ? `
-                         <button type="button" class="btn btn-sm btn-success rounded ver-carreras" data-carreras='${JSON.stringify(data)}'>
+                         <button type="button" class="btn btn-sm btn-success rounded ver-carreras" data-carreras='${JSON.stringify(
+                             data
+                         )}'>
                             <i class="fas fa-graduation-cap me-1"></i> Ver Carreras
                          </button>
                             `
@@ -122,7 +124,7 @@ function listar_afiliado() {
                       
                         ${
                             permisosGlobal.ver_resolucion
-                                ? ` <a class="btn btn-sm btn-outline-info px-2 d-inline-flex align-items-center ver_resolucion me-1" data-id="${row.id}" data-resolucion="${row.resolucion_pdf}"  title="Ver Resolucion">
+                                ? ` <a class="btn btn-sm btn-outline-info px-2 d-inline-flex align-items-center ver_resolucion me-1" data-id="${row.id}" data-resolucion="${row.resolucion_pdf}" data-publicar_resolucion=${row.publicar_resolucion}  title="Ver Resolucion">
                             <i class="fas fa-file-pdf fs-16 fs-16"></i>
                         </a>`
                                 : ``
@@ -216,49 +218,65 @@ $("#resolucion_archivo").on("change", function () {
 $(document).on("click", ".ver_resolucion", function () {
     let id = $(this).data("id");
     let resolucion_pdf = $(this).data("resolucion");
+    let publicarResolucion = $(this).data("publicar_resolucion"); // 👈 activo o inactivo
 
-    // Opcional: Mostrar loader aquí
-
-    // Asumiendo que tu controlador devuelve la ruta en response.data.resolucion_pdf
+    // Cargar el PDF en el iframe
     let pdfUrl = `/storage/resoluciones/${resolucion_pdf}`;
     $("#iframeResolucion").attr("src", pdfUrl);
     $("#modalVerResolucion").modal("show");
 
-    // Guardar el ID actual para actualizar
+    // Guardar el ID actual para actualizar luego
     $("#btnActualizarPdf").data("id", id);
+
+    // ✅ Setear el estado del switch según publicar_resolucion
+    // Si en la BD viene como 1 / 0:
+    if (publicarResolucion == "activo") {
+        $("#publicarResolucion").prop("checked", true);
+    } else {
+        $("#publicarResolucion").prop("checked", false);
+    }
 });
 
 // Actualizar PDF
 $("#btnActualizarPdf").on("click", function () {
     let id = $(this).data("id");
     let archivo = $("#nuevoPdf")[0].files[0];
-    // console.log(archivo);
-    if (!archivo) {
-        mensajeAlerta("Selecciona un archivo PDF para actualizar.", "error");
-        return;
+    let publicar = $("#publicarResolucion").prop("checked"); // true/false
+
+    
+    // 👉 Ya NO obligamos a seleccionar archivo
+    // Solo mostramos error si hay archivo pero no es válido
+
+    if (archivo) {
+        if (archivo.type !== "application/pdf") {
+            mensajeAlerta("Solo se permite archivos PDF.", "error");
+            return;
+        }
+
+        if (archivo.size > 3 * 1024 * 1024) {
+            // 3MB
+            mensajeAlerta("El archivo no debe superar los 3 MB.", "error");
+            return;
+        }
     }
 
-    if (archivo.type !== "application/pdf") {
-        mensajeAlerta("Solo se permite archivos PDF.", "error");
-        return;
-    }
-
-    if (archivo.size > 3 * 1024 * 1024) {
-        // 3MB
-        mensajeAlerta("El archivo no debe superar los 3 MB.", "error");
-        return;
-    }
-
+    let publicarValor = publicar ? 1 : 0;
     let formData = new FormData();
-    formData.append("nuevoPdf", archivo);
+
+    // Solo adjuntamos el archivo si existe
+    if (archivo) {
+        formData.append("nuevoPdf", archivo);
+    }
+
     formData.append("_method", "POST"); // O PUT según tu ruta
     formData.append("id", id);
+    formData.append("publicar_resolucion", publicarValor);
     // console.log(formData);
     $("#btnActualizarPdf").prop("disabled", true);
 
     Swal.fire({
         title: "NOTA!",
-        text: "¿Está seguro de actualizar el PDF de la Resolución?",
+        text: "¿Está seguro de actualizar la Resolución?",
         icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#3085d6",

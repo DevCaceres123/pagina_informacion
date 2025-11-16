@@ -34,7 +34,7 @@ class Controlador_sedes extends Controller
             'carreras' => function ($query) {
                 $query->select(['nombre', 'sede_id']); // CORREGIDO
             },
-        ])->select('id', 'nombre', 'descripcion', 'resolucion', 'resolucion_pdf', 'estado')->orderBy('id', 'desc');
+        ])->select('id', 'nombre', 'descripcion', 'resolucion', 'resolucion_pdf', 'estado','publicar_resolucion')->orderBy('id', 'desc');
 
         if (!empty($request->search['value'])) {
             $query->where(function ($q) use ($request) {
@@ -181,6 +181,7 @@ class Controlador_sedes extends Controller
             $sede->facebook = $request->facebook;
             $sede->youtobe = $request->youtube;
             $sede->estado = 'activo';
+            $sede->publicar_resolucion = 'activo';
             $sede->usuario_id = auth()->user()->id;
 
             // Guardar el PDF si se envió
@@ -283,7 +284,8 @@ class Controlador_sedes extends Controller
     {
 
         $request->validate([
-            'nuevoPdf' => 'required|file|mimes:pdf|max:3072', // 3MB
+            'nuevoPdf' => 'nullable|file|mimes:pdf|max:3072', // 3MB
+            'publicar_resolucion' => 'required|in:0,1',
         ]);
 
         DB::beginTransaction();
@@ -300,8 +302,11 @@ class Controlador_sedes extends Controller
                 $archivo = $request->file('nuevoPdf');
                 $ruta = $archivo->store('resoluciones', 'public');
                 $sede->resolucion_pdf = str_replace('resoluciones/', '', $ruta); //devuelve solo el nombre del archivo
-                $sede->save();
+                
             }
+
+            $sede->publicar_resolucion = $request->publicar_resolucion == 1 ? 'activo' : 'inactivo';
+            $sede->save();
 
             DB::commit();
 

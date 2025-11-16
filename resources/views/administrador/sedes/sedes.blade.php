@@ -259,15 +259,43 @@
                         <iframe id="iframeResolucion" src="" width="100%" height="100%"
                             style="border: none;"></iframe>
                     </div>
-
                     <div class="mb-3">
-                        <label for="nuevoPdf" class="form-label fw-bold">
-                            <i class="ri-upload-cloud-line me-1"></i> Seleccionar nuevo archivo de Resolución (PDF)
-                        </label>
-                        <input type="file" id="nuevoPdf" name="nuevoPdf" class="form-control"
-                            accept="application/pdf">
-                        <div id="nombreArchivoSeleccionado" class="text-muted mt-1"></div>
+                        <div class="row align-items-center">
+                            <!-- Input de archivo -->
+                            <div class="col-12 col-md-8">
+                                <label for="nuevoPdf" class="form-label fw-bold">
+                                    <i class="ri-upload-cloud-line me-1"></i> Seleccionar nuevo archivo de Resolución (PDF)
+                                </label>
+                                <input type="file" id="nuevoPdf" name="nuevoPdf" class="form-control"
+                                    accept="application/pdf">
+                                <div id="nombreArchivoSeleccionado" class="text-muted mt-1"></div>
+                            </div>
+
+                            <!-- Switch publicar -->
+                            <div class="col-12 col-md-4">
+                                <label class="form-label fw-bold mb-1">
+                                    Publicar en la página
+                                </label>
+
+                                <div class="d-flex align-items-center">
+                                    <a id="togglePublicarResolucion" class="ms-2"
+                                        style="text-decoration: none; cursor: pointer;">
+                                        <div class="form-check form-switch m-0">
+                                            <input class="form-check-input" type="checkbox" id="publicarResolucion"
+                                                name="publicarResolucion" value="1"
+                                                style="transform: scale(1.8); cursor: pointer;">
+                                        </div>
+                                    </a>
+                                    <small class="text-muted ms-2">
+                                        Activar para que la resolución<br>sea visible en la web.
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
                     </div>
+
+
+
                 </div>
 
                 <div class="modal-footer d-flex justify-content-between">
@@ -275,7 +303,7 @@
                         <i class="ri-close-line me-1"></i> Cerrar
                     </button>
                     <button id="btnActualizarPdf" class="btn btn-success">
-                        <i class="ri-upload-cloud-line me-1"></i> Subir nuevo PDF
+                        <i class="ri-upload-cloud-line me-1"></i> Actualizar
                     </button>
                 </div>
             </div>

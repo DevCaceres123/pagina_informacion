@@ -165,7 +165,7 @@ class Controlador_pagina extends Controller
             'imagenesSede' => function ($query) {
                 $query->select(['id', 'imagen', 'sede_id']);
             },
-        ])->select('id', 'nombre', 'resolucion_pdf', 'whatsapp', 'youtobe', 'facebook', 'resolucion')
+        ])->select('id', 'nombre', 'resolucion_pdf', 'whatsapp', 'youtobe', 'facebook', 'resolucion','publicar_resolucion')
         ->where('id', $id)
         ->first();
 
