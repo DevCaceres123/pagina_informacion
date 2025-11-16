@@ -22,6 +22,9 @@ class Controlador_sedes extends Controller
      */
     public function index()
     {
+        if (!auth()->user()->can('sede.inicio')) {
+            return redirect()->route('inicio');
+        }
         return view('administrador.sedes.sedes');
     }
 
@@ -52,9 +55,13 @@ class Controlador_sedes extends Controller
             'recordsFiltered' => $recordsTotal, // Ajustar si hay filtros
             'data' => $sedes,
             'permisos' => [
-                'editar' => auth()->user()->can('afiliado.editar'),
-                'eliminar' => true,
-                'estado' => auth()->user()->can('afiliado.estado'),
+                'editar' => auth()->user()->can('sede.editar'),
+                'eliminar' => auth()->user()->can('sede.eliminar'),
+                'estado' => auth()->user()->can('sede.desactivar'),
+                'ver_carreras' => auth()->user()->can('sede.ver_carreras'),
+                'ver_resolucion' => auth()->user()->can('sede.ver_resolucion'),
+                'actualizar_imagenes' => auth()->user()->can('sede.actualizar_imagenes'),
+                'agregar_rutas' => auth()->user()->can('sede.agregar_rutas'),
             ],
         ]);
     }

@@ -64,11 +64,17 @@ function listar_afiliado() {
                 className: "table-td text-uppercase text-center",
                 render: function (data, type, row, meta) {
                     return `
-                    <button type="button" class="btn btn-sm btn-success rounded ver-carreras" data-carreras='${JSON.stringify(
-                        data
-                    )}'>
-                        <i class="fas fa-graduation-cap me-1"></i> Ver Carreras
-                    </button>
+                    ${
+                        permisosGlobal.ver_carreras
+                            ? `
+                         <button type="button" class="btn btn-sm btn-success rounded ver-carreras" data-carreras='${JSON.stringify(data)}'>
+                            <i class="fas fa-graduation-cap me-1"></i> Ver Carreras
+                         </button>
+                            `
+                            : ``
+                    }
+                    
+                 
                 `;
                 },
             },
@@ -82,7 +88,7 @@ function listar_afiliado() {
 
                     // Aquí verificamos el permiso de desactivar
                     let desactivarContent =
-                        permisosGlobal["estado"] == false
+                        permisosGlobal["estado"] == true
                             ? `
                             <a class="cambiar_estado_sede" data-id="${row.id},${row.estado}">
                                 <div class="form-check form-switch ms-3">
@@ -105,6 +111,38 @@ function listar_afiliado() {
                 className: "table-td text-end",
                 render: function (data, type, row) {
                     return ` <div class="d-flex justify-content-center">
+                                          
+                             ${
+                                 permisosGlobal.editar
+                                     ? ` <a class="btn btn-sm btn-outline-warning px-2 d-inline-flex align-items-center editar_sede me-1" data-id="${row.id}" title="Editar Sede">
+                            <i class="fas fa-pencil-alt fs-16"></i>
+                        </a>`
+                                     : ``
+                             }
+                      
+                        ${
+                            permisosGlobal.ver_resolucion
+                                ? ` <a class="btn btn-sm btn-outline-info px-2 d-inline-flex align-items-center ver_resolucion me-1" data-id="${row.id}" data-resolucion="${row.resolucion_pdf}"  title="Ver Resolucion">
+                            <i class="fas fa-file-pdf fs-16 fs-16"></i>
+                        </a>`
+                                : ``
+                        }
+                        
+                         ${
+                             permisosGlobal.actualizar_imagenes
+                                 ? ` <a class="btn btn-sm btn-outline-primary px-2 d-inline-flex align-items-center ver_imagenes me-1" data-id="${row.id}" title="Actualizar Imagenes">
+                            <i class="fas fa-images fs-16"></i>
+                        </a>`
+                                 : ``
+                         }
+
+                          ${
+                              permisosGlobal.agregar_rutas
+                                  ? ` <a href='ubicacionSede/${row.id}' class="btn btn-sm btn-outline-success px-2 d-inline-flex align-items-center me-1" data-id="${row.id}" title="Agregar Rutas">
+                            <i class="fas fa-map-marked fs-16"></i>
+                        </a>`
+                                  : ``
+                          }
 
                          ${
                              permisosGlobal.eliminar
@@ -115,38 +153,6 @@ function listar_afiliado() {
                             `
                                  : ``
                          }
-                      
-                             ${
-                                 permisosGlobal.eliminar
-                                     ? ` <a class="btn btn-sm btn-outline-warning px-2 d-inline-flex align-items-center editar_sede me-1" data-id="${row.id}" title="Editar Sede">
-                            <i class="fas fa-pencil-alt fs-16"></i>
-                        </a>`
-                                     : ``
-                             }
-                      
-                        ${
-                            permisosGlobal.eliminar
-                                ? ` <a class="btn btn-sm btn-outline-info px-2 d-inline-flex align-items-center ver_resolucion me-1" data-id="${row.id}" data-resolucion="${row.resolucion_pdf}"  title="Ver Resolucion">
-                            <i class="fas fa-file-pdf fs-16 fs-16"></i>
-                        </a>`
-                                : ``
-                        }
-                        
-                         ${
-                             permisosGlobal.eliminar
-                                 ? ` <a class="btn btn-sm btn-outline-primary px-2 d-inline-flex align-items-center ver_imagenes me-1" data-id="${row.id}" title="Actualizar Imagenes">
-                            <i class="fas fa-images fs-16"></i>
-                        </a>`
-                                 : ``
-                         }
-
-                          ${
-                              permisosGlobal.eliminar
-                                  ? ` <a href='ubicacionSede/${row.id}' class="btn btn-sm btn-outline-success px-2 d-inline-flex align-items-center me-1" data-id="${row.id}" title="Agregar Rutas">
-                            <i class="fas fa-map-marked fs-16"></i>
-                        </a>`
-                                  : ``
-                          }
                          
                         </div>`;
                 },

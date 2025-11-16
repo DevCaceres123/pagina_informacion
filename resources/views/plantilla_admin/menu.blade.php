@@ -56,30 +56,34 @@
                             </div><!--end startbarApplications-->
                             @endcan
                     </li><!--end nav-item-->
-
-                    <li class="menu-label mt-2">
-                        <small class="label-border">
-                            <div class="border_left hidden-xs"></div>
-                            <div class="border_right"></div>
-                        </small>
-                        <span>DATOS INSTITUCIONALES</span>
-                    </li>
-
+                    @can('sede_carrea')
+                        <li class="menu-label mt-2">
+                            <small class="label-border">
+                                <div class="border_left hidden-xs"></div>
+                                <div class="border_right"></div>
+                            </small>
+                            <span>DATOS INSTITUCIONALES</span>
+                        </li>
+                    @endcan
                     <li class="nav-item">
-                        <a class="nav-link" href="#sedesCarreras" data-bs-toggle="collapse" role="button"
-                            aria-expanded="false" aria-controls="sedesCarreras">
-                            <i class="fas fa-home  menu-icon"></i>
-                            <span>SEDES Y CARRERAS</span>
-                        </a>
+                        @can('sede_carrea')
+                            <a class="nav-link" href="#sedesCarreras" data-bs-toggle="collapse" role="button"
+                                aria-expanded="false" aria-controls="sedesCarreras">
+                                <i class="fas fa-home  menu-icon"></i>
+                                <span>SEDES Y CARRERAS</span>
+                            </a>
+                        @endcan
                         <div class="collapse " id="sedesCarreras">
                             <ul class="nav flex-column">
-
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('sedes.index') }}">Sedes</a>
-                                </li><!--end nav-item-->
+                                @can('sede.inicio')
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="{{ route('sedes.index') }}">Sedes</a>
+                                    </li>
+                                @endcan
                                 <li class="nav-item">
                                     <a class="nav-link" href="{{ route('carrera.index') }}">Carreras</a>
-                                </li><!--end nav-item-->
+                                </li>
+
 
                             </ul><!--end nav-->
                         </div><!--end startbarApplications-->

@@ -12,9 +12,11 @@
                             </h4>
                         </div>
                         <div class="col-auto">
-                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalSede">
-                                <i class="fas fa-plus me-1"></i> Nuevo
-                            </button>
+                            @can('sede.crear')
+                                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalSede">
+                                    <i class="fas fa-plus me-1"></i> Nuevo
+                                </button>
+                            @endcan
                         </div>
                     </div>
                 </div>
