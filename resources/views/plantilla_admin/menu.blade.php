@@ -92,27 +92,32 @@
                     </li><!--end nav-item-->
                   
                     <li class="menu-label mt-2">
-                        <small class="label-border">
-                            <div class="border_left hidden-xs"></div>
-                            <div class="border_right"></div>
-                        </small>
-                        <span>PUBLICACIONES</span>
+                        @can('convocatoria')
+                            <small class="label-border">
+                                <div class="border_left hidden-xs"></div>
+                                <div class="border_right"></div>
+                            </small>
+                            <span>PUBLICACIONES</span>
+                        @endcan
                     </li>
 
 
                     <li class="nav-item">
-                        <a class="nav-link" href="#noticiasConvocatorias" data-bs-toggle="collapse" role="button"
-                            aria-expanded="false" aria-controls="noticiasConvocatorias">
-                            <i class="fas fa-newspaper   menu-icon"></i>
-                            <span>PUBLICACIONES</span>
-                        </a>
+                        @can('convocatoria')
+                            <a class="nav-link" href="#noticiasConvocatorias" data-bs-toggle="collapse" role="button"
+                                aria-expanded="false" aria-controls="noticiasConvocatorias">
+                                <i class="fas fa-newspaper   menu-icon"></i>
+                                <span>PUBLICACIONES</span>
+                            </a>
+                        @endcan
                         <div class="collapse " id="noticiasConvocatorias">
                             <ul class="nav flex-column">
-
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('noticia.index') }}">Noticias</a>
-                                </li>
-
+                                @can('noticia.inicio')
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="{{ route('noticia.index') }}">Noticias</a>
+                                    </li>
+                                @endcan
+                                
                                  <li class="nav-item">
                                     <a class="nav-link" href="{{ route('convocatoria.index') }}">Convocatorias</a>
                                 </li>

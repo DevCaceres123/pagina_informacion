@@ -23,7 +23,9 @@ class Controlador_noticias extends Controller
      */
     public function index()
     {
-       
+        if (!auth()->user()->can('noticia.inicio')) {
+            return redirect()->route('inicio');
+        }
         return view('administrador.publicaciones.noticias');
     }
 
@@ -77,9 +79,10 @@ class Controlador_noticias extends Controller
             'recordsFiltered' => $recordsTotal, // Ajustar si hay filtros
             'data' => $sedes,
             'permisos' => [
-                'editar' => auth()->user()->can('afiliado.editar'),
-                'eliminar' => true,
-                'estado' => auth()->user()->can('afiliado.estado'),
+                'editar' => auth()->user()->can('noticia.editar'),
+                'eliminar' => auth()->user()->can('noticia.eliminar'),
+                'noticia_destacada' => auth()->user()->can('noticia.noticia_destacada'),
+                'publicar' => auth()->user()->can('noticia.publicar'),
             ],
         ]);
     }

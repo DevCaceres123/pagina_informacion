@@ -50,9 +50,41 @@ function listar_infraestructuras() {
                 data: "categoria.nombre",
                 className: "table-td text-capitalize",
                 render: function (data) {
-                    return `                            
-                       <span class="badge rounded-pill bg-danger text-light p-2 fs-6">${data}</span>
-                    `;
+                    console.log(data);
+
+                   
+                     if (data != 'noticias' && data != 'eventos' && data != 'comunicados' && data && 'convocatorias') {
+                        return `                            
+                         <span class="badge bg-success">${data}</span>
+                        `;
+                    }
+
+                    if (data == 'noticias') {
+                        return `                            
+                         <span class="badge bg-primary">${data}</span>
+                        `;
+                    }
+
+                    if (data == 'eventos') {
+                        return `                            
+                         <span class="badge bg-secondary">${data}</span>
+                        `;
+                    }
+
+                    if (data == 'comunicados') {
+                        return `                            
+                         <span class="badge bg-warning">${data}</span>
+                        `;
+                    }
+
+                    if (data == 'convocatorias') {
+                        return `                            
+                         <span class="badge bg-danger">${data}</span>
+                        `;
+                    }
+
+
+                  
                 },
             },
 
@@ -74,7 +106,7 @@ function listar_infraestructuras() {
 
                     // Aquí verificamos el permiso de desactivar
                     let desactivarContent =
-                        permisosGlobal["estado"] == false
+                        permisosGlobal["noticia_destacada"] == true
                             ? `
                             <a class="cambiar_estado_destacado" data-id="${row.id},${row.estado_destacado}">
                                 <div class="form-check form-switch ms-3">
@@ -102,7 +134,7 @@ function listar_infraestructuras() {
 
                     // Aquí verificamos el permiso de desactivar
                     let desactivarContent =
-                        permisosGlobal["estado"] == false
+                        permisosGlobal["publicar"] == true
                             ? `
                             <a class="cambiar_estado_publicacion" data-id="${row.id},${row.estado_noticia}">
                                 <div class="form-check form-switch ms-3">
@@ -127,6 +159,15 @@ function listar_infraestructuras() {
                 render: function (data, type, row) {
                     return ` <div class="d-flex justify-content-center">
 
+                      
+                        ${
+                            permisosGlobal.editar
+                                     ? ` <a  href="editarNoticia/${row.id}" class="btn btn-sm btn-outline-warning px-2 d-inline-flex align-items-center editar_sede me-1" data-id="${row.id}" title="Editar Noticia">
+                            <i class="fas fa-pencil-alt fs-16"></i>
+                        </a>`
+                                     : ``
+                        }     
+
                          ${
                              permisosGlobal.eliminar
                                  ? `
@@ -136,14 +177,7 @@ function listar_infraestructuras() {
                             `
                                  : ``
                          }
-                      
-                             ${
-                                 permisosGlobal.eliminar
-                                     ? ` <a  href="editarNoticia/${row.id}" class="btn btn-sm btn-outline-warning px-2 d-inline-flex align-items-center editar_sede me-1" data-id="${row.id}" title="Editar Noticia">
-                            <i class="fas fa-pencil-alt fs-16"></i>
-                        </a>`
-                                     : ``
-                             }`;
+                        `;
                 },
             },
         ],

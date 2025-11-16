@@ -12,15 +12,17 @@
                             </h4>
                         </div>
                         <div class="col-auto">
-                            <a href="{{ route('noticia.nuevaNoticia') }}" target="_blank" class="btn btn-primary"> 
-                                <i class="fas fa-plus me-1"></i> Nuevo
-                            </a>
+                            @can('noticia.crear')
+                                <a href="{{ route('noticia.nuevaNoticia') }}" target="_blank" class="btn btn-primary"> 
+                                    <i class="fas fa-plus me-1"></i> Nuevo
+                                </a>
+                            @endcan
                         </div>
                     </div>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table table-bordered table-md table-hover" id="tabla_listar_noticias">
+                        <table class="table table-bordered table-md table-hover table-striped" id="tabla_listar_noticias">
                             <thead class="table-light">
                                 <tr>
                                     <th>Nº</th>
