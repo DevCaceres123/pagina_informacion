@@ -95,7 +95,7 @@ class UsuarioSeeder extends Seeder
         // CARRERA y SEDE
         Permission::create(['name' => 'sede_carrea'])->syncRoles([$rol1,$rol2]);
         
-
+        //permisos para sede
         Permission::create(['name' => 'sede.inicio'])->syncRoles([$rol1,$rol2]);
         Permission::create(['name' => 'sede.crear'])->syncRoles([$rol1]);
         Permission::create(['name' => 'sede.desactivar'])->syncRoles([$rol1]);
@@ -105,6 +105,15 @@ class UsuarioSeeder extends Seeder
         Permission::create(['name' => 'sede.ver_resolucion'])->syncRoles([$rol1,$rol2]);
         Permission::create(['name' => 'sede.actualizar_imagenes'])->syncRoles([$rol1,$rol2]);
         Permission::create(['name' => 'sede.agregar_rutas'])->syncRoles([$rol1,$rol2]);      
+
+        // permisos para carrera
+        Permission::create(['name' => 'carrera.inicio'])->syncRoles([$rol1,$rol2]);
+        Permission::create(['name' => 'carrera.crear'])->syncRoles([$rol1]);
+        Permission::create(['name' => 'carrera.ver_sedes'])->syncRoles([$rol1]);
+        Permission::create(['name' => 'carrera.desactivar'])->syncRoles([$rol1]);
+        Permission::create(['name' => 'carrera.eliminar'])->syncRoles([$rol1]);
+        Permission::create(['name' => 'carrera.editar'])->syncRoles([$rol1]);
+        Permission::create(['name' => 'carrera.ver_malla'])->syncRoles([$rol1]);
 
     }
 }

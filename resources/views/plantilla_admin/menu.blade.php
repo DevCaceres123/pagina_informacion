@@ -80,9 +80,11 @@
                                         <a class="nav-link" href="{{ route('sedes.index') }}">Sedes</a>
                                     </li>
                                 @endcan
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('carrera.index') }}">Carreras</a>
-                                </li>
+                                 @can('carrera.inicio')
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="{{ route('carrera.index') }}">Carreras</a>
+                                    </li>
+                                @endcan
 
 
                             </ul><!--end nav-->

@@ -19,6 +19,10 @@ class Controlador_carrera extends Controller
      */
     public function index()
     {
+        if (!auth()->user()->can('carrera.inicio')) {
+            return redirect()->route('inicio');
+        }
+
         $sedes = Sede::select('id', 'nombre')->where('estado', 'activo')->get();
         return view('administrador.carreras.carreras', compact('sedes'));
     }
@@ -48,9 +52,11 @@ class Controlador_carrera extends Controller
             'recordsFiltered' => $recordsTotal, // Ajustar si hay filtros
             'data' => $sedes,
             'permisos' => [
-                'editar' => auth()->user()->can('afiliado.editar'),
-                'eliminar' => true,
-                'estado' => auth()->user()->can('afiliado.estado'),
+                'editar' => auth()->user()->can('carrera.editar'),
+                'eliminar' =>  auth()->user()->can('carrera.eliminar'),
+                'estado' => auth()->user()->can('carrera.desactivar'),
+                'ver_sedes' => auth()->user()->can('carrera.ver_sedes'),
+                'ver_malla' => auth()->user()->can('carrera.ver_malla'),
             ],
         ]);
     }

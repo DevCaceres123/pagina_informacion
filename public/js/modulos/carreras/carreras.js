@@ -57,9 +57,15 @@ function listar_carreras() {
                 className: "table-td text-uppercase text-center",
                 render: function (data, type, row, meta) {
                     return `
-                    <button type="button" class="btn btn-sm btn-warning rounded ver_sedes" data-sedes='${row.id}'>
-                        <i class="fas fa-university  me-1"></i> Ver Sedes
-                    </button>
+                    ${
+                        permisosGlobal.ver_sedes
+                            ? `
+                         <button type="button" class="btn btn-sm btn-warning rounded ver_sedes" data-sedes='${row.id}'>
+                            <i class="fas fa-university  me-1"></i> Ver Sedes
+                        </button>
+                            `
+                            : ``
+                    }
                 `;
                 },
             },
@@ -73,7 +79,7 @@ function listar_carreras() {
 
                     // Aquí verificamos el permiso de desactivar
                     let desactivarContent =
-                        permisosGlobal["estado"] == false
+                        permisosGlobal["estado"] == true
                             ? `
                             <a class="cambiar_estado_carrera" data-id="${row.id},${row.estado}">
                                 <div class="form-check form-switch ms-3">
@@ -96,25 +102,26 @@ function listar_carreras() {
                 className: "table-td text-end",
                 render: function (data, type, row) {
                     return ` <div class="d-flex justify-content-center">
-
-                         ${permisosGlobal.eliminar
-                            ? `
-                        <a class="btn btn-sm btn-outline-danger px-2 d-inline-flex align-items-center eliminar_carrera me-1" data-id="${row.id}" title="Eliminar carrera">
-                            <i class="fas fa-window-close fs-16"></i>
-                        </a>
-                            `
-                            : ``
-                        }                      
-                             ${permisosGlobal.eliminar
+                                              
+                        ${permisosGlobal.editar
                             ? ` <a class="btn btn-sm btn-outline-warning px-2 d-inline-flex align-items-center editar_carrera me-1" data-id="${row.id}" title="Editar carrera">
                             <i class="fas fa-pencil-alt fs-16"></i>
                         </a>`
                             : ``
                         } 
-                        ${permisosGlobal.eliminar
+                        ${permisosGlobal.ver_malla
                             ? ` <a class="btn btn-sm btn-outline-info px-2 d-inline-flex align-items-center verMallaCurricular me-1" data-id="${row.id}" data-malla='${row.malla_curricular_pdf}' title="Ver Malla curricular">
                             <i class="fas fa-file-pdf fs-16"></i>
                         </a>`
+                            : ``
+                        }
+                        
+                        ${permisosGlobal.eliminar
+                            ? `
+                        <a class="btn btn-sm btn-outline-danger px-2 d-inline-flex align-items-center eliminar_carrera me-1" data-id="${row.id}" title="Eliminar carrera">
+                            <i class="fas fa-window-close fs-16"></i>
+                        </a>
+                            `
                             : ``
                         } 
                                                                                                               
