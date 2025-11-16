@@ -36,7 +36,7 @@
                             {{-- TIPO DE NOTICIA --}}
                             <div class="mb-4">
                                 <label for="tipo" class="form-label fw-semibold fs-5">
-                                    <i class="fas fa-tags text-success me-2"></i> Tipo de Noticia <strong
+                                    <i class="fas fa-tags text-success me-2"></i> Tipo <strong
                                         class="text-danger">(*)</strong>
                                 </label>
                                 <div class="input-group shadow-sm">
@@ -45,8 +45,7 @@
                                     </span>
                                     <select name="tipo" id="tipo" class="form-select form-select-lg" required>
                                         <option value="" disabled {{ empty($noticia) ? 'selected' : '' }}>Seleccione
-                                            tipo de
-                                            noticia</option>
+                                            tipo</option>
                                         @foreach ($tipos as $tipo)
                                             <option value="{{ $tipo->id }}"
                                                 {{ old('tipo', $noticia->categoria_id ?? '') == $tipo->id ? 'selected' : '' }}>
