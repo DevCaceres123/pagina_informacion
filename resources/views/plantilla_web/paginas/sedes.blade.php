@@ -255,7 +255,7 @@
                                         <h6 class="card-title fw-bold mb-2 text-uppercase">{{ $carrera->nombre }}</h6>
                                         <div class="mt-3 btn-group-vertical w-100" role="group">
                                             @if ($carrera->malla_curricular_pdf)
-                                                <a href="{{ asset('mallas/' . $carrera->malla) }}"
+                                                <a href="{{ asset('storage/mallas_curriculares/' . $carrera->malla_curricular_pdf) }}"
                                                     class="btn btn-danger btn-sm w-100 btn-action-malla" download>
                                                     <i class="fas fa-download me-1"></i> Malla Curricular
                                                 </a>

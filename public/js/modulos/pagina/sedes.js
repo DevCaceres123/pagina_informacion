@@ -34,7 +34,7 @@ $(document).ready(function () {
                  success: function (response) {
                     
                     let html = '';
-
+                    console.log(response);
                     if (response.carreras.length > 0) {
                         response.carreras.forEach(carrera => {
                             html += `
@@ -44,7 +44,7 @@ $(document).ready(function () {
                                             <h6 class="card-title fw-bold mb-2 text-uppercase">${carrera.nombre}</h6>
                                             <div class="mt-3 btn-group-vertical w-100" role="group">
                                                 ${carrera.malla_curricular_pdf ? `
-                                                    <a href="/mallas/${carrera.malla_curricular_pdf}" class="btn btn-danger btn-sm w-100 btn-action-malla" download>
+                                                    <a href="/storage/mallas_curriculares/${carrera.malla_curricular_pdf}" class="btn btn-danger btn-sm w-100 btn-action-malla" download>
                                                         <i class="fas fa-download me-1"></i> Malla Curricular
                                                     </a>` : ''}
                                                 <a href="${carrera.vinculo_web}" target="_blank"
