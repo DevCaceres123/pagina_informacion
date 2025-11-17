@@ -250,6 +250,74 @@ class Controlador_estadisticasAdministrativo extends Controller
         }
     }
 
+
+    public function generar_reporte_administrativo(Request $request)
+    {
+
+        try {
+
+            $tipo = $request->input('tipo');
+            $seleccionados = $request->input('seleccionados', []);
+            $gestion = $request->input('gestion', date('Y'));
+
+            // Contenedor para los resultados
+            $estadisticas = collect();
+
+            // Obtener los datos filtrados
+            $query = DB::table('estadistica_administrativos')                
+                ->join('sedes', 'estadistica_administrativos.sede_id', '=', 'sedes.id')
+                ->select(                    
+                    'sedes.nombre as sede',
+                    'estadistica_administrativos.gestion',
+                    'estadistica_administrativos.servicio',
+                    DB::raw('COUNT(*) as total')
+                )                
+                ->where('sedes.estado', 'activo')                
+                ->where('estadistica_administrativos.gestion', $gestion)
+                ->groupBy('estadistica_administrativos.servicio','sedes.nombre', 'estadistica_administrativos.gestion');
+
+            // Filtrado dinámico
+            if ($tipo === 'sede') {
+                $query->whereIn('estadistica_administrativos.sede_id', $seleccionados);
+            } else {
+                $query->whereIn('estadistica_administrativos.servicio', $seleccionados);
+            }
+
+            // Ejecutar
+            $estadisticas = $query
+                ->orderBy('sedes.nombre')                
+                ->get();
+            
+            
+
+            $nombreCompletoUsuario = auth()
+              ->user()
+              ->only(['nombres', 'apellidos']);
+
+
+            // Cargar la vista PDF
+            $pdf = \PDF::loadView('administrador.academico.reporteAdministrativo', [
+                'tipo' => $tipo,
+                'estadisticas' => $estadisticas,
+                'gestion' => $gestion,
+                'usuarioGenerador' => $nombreCompletoUsuario,
+            ]);
+            // Render PDF y devolverlo en base64
+            $pdfContent = $pdf->output();
+            $pdfb64 = base64_encode($pdfContent);
+
+            $this->mensaje('exito', $pdfb64);
+            return response()->json($this->mensaje, 200);
+
+
+        } catch (Exception $e) {
+            DB::rollBack();
+
+            $this->mensaje("error", "error" . $e->getMessage());
+
+            return response()->json($this->mensaje, 200);
+        }
+    }
     public function mensaje($titulo, $mensaje)
     {
         $this->mensaje = [

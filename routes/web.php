@@ -213,6 +213,7 @@ Route::prefix('/admin')->middleware([Autenticados::class])->group(function () {
         Route::post('previsualizarAdministrativos', 'previsualizarAdministrativos')->name('administrativos.previsualizarAdministrativos');
         Route::put('actualizar_registro_administrativo/{id_administrativo}', 'actualizar_registro_administrativo')->name('administrativos.actualizar_registro_administrativo');
         Route::post('subirDatosAdministrativoscsv', 'subirDatosAdministrativoscsv')->name('administrativos.subirDatosAdministrativoscsv');
+        Route::post('generar_reporte_administrativo', 'generar_reporte_administrativo')->name('administrativos.generar_reporte_administrativo');  
     });
 
 

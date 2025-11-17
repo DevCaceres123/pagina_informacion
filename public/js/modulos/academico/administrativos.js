@@ -501,6 +501,81 @@ $("#formSubirDatosExcel").on("submit", function (e) {
 
 
 
+$("#generarReporte").on("click", function (e) {
+    e.preventDefault();
+    const tipo = $("#tipoReporte").val(); // 'sede' o 'carrera'
+    const gestion = $("#gestion_filtro").val() || $("#gestion").val(); // por si manejas año
+
+    if (!tipo) {
+        mensajeAlerta("Seleccione primero si desea filtrar por sede o servicio",'error');
+        return;
+    }
+
+    // Obtener IDs seleccionados
+    const seleccionados = [];
+    $(".check-item:checked").each(function () {
+        seleccionados.push($(this).val());
+    });
+
+    if (seleccionados.length === 0) {
+        mensajeAlerta('Seleccione al menos una opción o marque Listar todo','error');
+        return;
+    }
+
+    const datos = {
+        tipo: tipo,
+        seleccionados: seleccionados,
+        gestion: gestion,
+    };
+    console.log(datos);
+    // Deshabilitamos el botón mientras se genera el reporte
+    let originalContent = $("#generarReporte").html();
+    $("#generarReporte")
+        .prop("disabled", true)
+        .html('<i class="fas fa-spinner fa-spin me-2"></i> Generando...');
+    crud(
+        "admin/generar_reporte_administrativo",
+        "POST",
+        null,
+        datos,
+        function (error, response) {
+            if (error || !response) {
+                mensajeAlerta("Error al cargar la información", "error");
+                return;
+            }
+
+            if (response.tipo != "exito") {
+                mensajeAlerta(response.mensaje, response.tipo);
+                return;
+            }
+
+            //si todo esta correcto muestra el mensaje de correcto
+            //$("#modalReporte").modal("hide");
+
+            mensajeAlerta("Reporte generado espere porfavor....", "exito");
+     
+            setTimeout(() => {
+                let pdfUrl = generarURlBlob(response.mensaje);
+                window.open(pdfUrl, "_blank");
+            }, 1500);
+
+            // habilitar boton cunado termine
+            $("#generarReporte").prop("disabled", false).html(originalContent);
+        }
+    );
+});
+
+function generarURlBlob(pdfbase64) {
+    // Convertir Base64 a un Blob
+    const byteCharacters = atob(pdfbase64); // Decodifica el Base64
+    const byteNumbers = Array.from(byteCharacters).map((c) => c.charCodeAt(0));
+    const byteArray = new Uint8Array(byteNumbers);
+    const blob = new Blob([byteArray], { type: "application/pdf" });
+
+    // Crear una URL para el Blob
+    return URL.createObjectURL(blob);
+}
+
 function mensajeAlertaTexto(mensaje, tipo) {
     let alertClass =
         tipo === "exito" ? "alert-success d-block" : "alert-danger d-block";

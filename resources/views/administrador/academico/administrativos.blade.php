@@ -95,7 +95,7 @@
                             <select id="tipoReporte" class="form-select shadow-sm">
                                 <option value="">-- Seleccione tipo --</option>
                                 <option value="sede">Sede</option>
-                                <option value="carrera">Servicio</option>
+                                <option value="servicio">Servicio</option>
                             </select>
                         </div>
 

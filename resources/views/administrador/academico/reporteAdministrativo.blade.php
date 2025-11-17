@@ -1,8 +1,8 @@
 @extends('administrador.reporte.baseReporte')
 
-@section('titulo', 'Reporte de Docentes')
+@section('titulo', 'Reporte de Administrativo')
 @section('nombreUniversidad', 'Universidad Pública de El Alto')
-@section('titulo_header', 'Reporte de Docentes')
+@section('titulo_header', 'Reporte de Administrativo')
 
 @section('contenido')
     <style>
@@ -177,41 +177,40 @@
             </strong>
         </p>
     </div>
-    {{-- 🔹 Reporte por Carrera --}}
-    @if ($tipo === 'carrera')
+    {{-- 🔹 Reporte por Servicio --}}
+    @if ($tipo === 'servicio')
         @php
             $total_general = 0;
 
-            // Agrupar por carrera
-            $porCarrera = $estadisticas->groupBy('carrera');
+            // Agrupar por servicio
+            $porServicio = $estadisticas->groupBy('servicio');
+            $index = 1;
         @endphp
 
-        <div class="titulo-seccion">Detalle por Carrera</div>
-        <table>
+        <div class="titulo-seccion">Detalle por Servicio</div>
+        <table border="1" cellspacing="0" cellpadding="5">
             <thead>
                 <tr>
                     <th>#</th>
-                    <th>Carrera</th>
+                    <th>Servicio</th>
                     <th>Sede</th>
-                    <th class="col-numerica">Total Docentes</th>
+                    <th class="col-numerica">Total</th>
                 </tr>
             </thead>
             <tbody>
-                @php $index = 1; @endphp
-
-                @foreach ($porCarrera as $carrera => $sedes)
+                @foreach ($porServicio as $servicio => $sedes)
                     @php
-                        $totalCarrera = $sedes->sum('total');
+                        $totalServicio = $sedes->sum('total');
                     @endphp
 
-                    {{-- FILA DE SUBTOTAL POR CARRERA --}}
-                    <tr class="total-row">
+                    {{-- SUBTOTAL POR SERVICIO --}}
+                    <tr class="total-row" style="font-weight: bold; background-color: #f0f0f0;">
                         <td>{{ $index++ }}</td>
-                        <td colspan="2" style="text-align: left;">{{ $carrera }} (Subtotal)</td>
-                        <td class="col-numerica">{{ $totalCarrera }}</td>
+                        <td colspan="2" style="text-align: left;">{{ ucfirst($servicio) }} (Subtotal)</td>
+                        <td class="col-numerica">{{ $totalServicio }}</td>
                     </tr>
 
-                    {{-- LISTA DE SEDES --}}
+                    {{-- LISTADO DE SEDES --}}
                     @foreach ($sedes as $s)
                         <tr>
                             <td></td>
@@ -222,12 +221,12 @@
                     @endforeach
 
                     @php
-                        $total_general += $totalCarrera;
+                        $total_general += $totalServicio;
                     @endphp
                 @endforeach
 
                 {{-- TOTAL GENERAL --}}
-                <tr id="total-general-row">
+                <tr style="font-weight: bold; background-color: #d0d0d0;">
                     <td colspan="3" style="text-align: left;">TOTALES GENERALES</td>
                     <td class="col-numerica">{{ $total_general }}</td>
                 </tr>
@@ -236,9 +235,6 @@
     @endif
 
 
-
-
-    {{-- 🔹 Reporte por Sede --}}
     {{-- 🔹 Reporte por Sede --}}
     @if ($tipo === 'sede')
         @php
@@ -246,40 +242,39 @@
 
             // Agrupar por sede
             $porSede = $estadisticas->groupBy('sede');
+            $index = 1;
         @endphp
 
         <div class="titulo-seccion">Detalle por Sede</div>
-        <table>
+        <table border="1" cellspacing="0" cellpadding="5">
             <thead>
                 <tr>
                     <th>#</th>
                     <th>Sede</th>
-                    <th>Carrera</th>
-                    <th class="col-numerica">Total Docentes</th>
+                    <th>Servicio</th>
+                    <th class="col-numerica">Total</th>
                 </tr>
             </thead>
             <tbody>
-                @php $index = 1; @endphp
-
-                @foreach ($porSede as $sede => $carreras)
+                @foreach ($porSede as $sede => $servicios)
                     @php
-                        $totalSede = $carreras->sum('total');
+                        $totalSede = $servicios->sum('total');
                     @endphp
 
                     {{-- SUBTOTAL POR SEDE --}}
-                    <tr class="total-row">
+                    <tr class="total-row" style="font-weight: bold; background-color: #f0f0f0;">
                         <td>{{ $index++ }}</td>
                         <td colspan="2" style="text-align: left;">{{ $sede }} (Subtotal)</td>
                         <td class="col-numerica">{{ $totalSede }}</td>
                     </tr>
 
-                    {{-- LISTADO DE CARRERAS --}}
-                    @foreach ($carreras as $c)
+                    {{-- LISTADO DE SERVICIOS --}}
+                    @foreach ($servicios as $s)
                         <tr>
                             <td></td>
                             <td></td>
-                            <td>{{ $c->carrera }}</td>
-                            <td class="col-numerica">{{ $c->total }}</td>
+                            <td>{{ ucfirst($s->servicio) }}</td>
+                            <td class="col-numerica">{{ $s->total }}</td>
                         </tr>
                     @endforeach
 
@@ -289,7 +284,7 @@
                 @endforeach
 
                 {{-- TOTAL GENERAL --}}
-                <tr id="total-general-row">
+                <tr style="font-weight: bold; background-color: #d0d0d0;">
                     <td colspan="3" style="text-align: left;">TOTALES GENERALES</td>
                     <td class="col-numerica">{{ $total_general }}</td>
                 </tr>

@@ -1,6 +1,6 @@
 @extends('administrador.reporte.baseReporte')
 
-@section('titulo', 'Reporte de Estudiantes')
+@section('titulo', 'Reporte de Titulados')
 @section('nombreUniversidad', 'Universidad Pública de El Alto')
 @section('titulo_header', 'Reporte de Titulados')
 
