@@ -26,7 +26,7 @@ class EstadisticaAdministrativoFactory extends Factory
             'profesion' => $this->faker->word,
             'servicio' => $this->faker->randomElement($servicios),
             'gestion' => '2025',
-            'estado' => $this->faker->randomElement($estados),
+            'estado' =>'activo',
         ];
     }
 }
