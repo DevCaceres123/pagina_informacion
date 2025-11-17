@@ -55,7 +55,7 @@ class Controlador_estadisticasAdministrativo extends Controller
 
             $q->select(['id','nombre']);
         }])
-        ->select(['id','nombre_completo','n_documento','genero','cargo','profesion','servicio','sede_id'])
+        ->select(['id','nombre_completo','n_documento','genero','cargo','profesion','servicio','sede_id','estado'])
         ->where('gestion', $gestion)
         ->orderBy('id', 'desc');
 
