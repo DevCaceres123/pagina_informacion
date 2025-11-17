@@ -11,6 +11,8 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\AdministrativoImport;
+use Maatwebsite\Excel\Validators\ValidationException as ExcelValidationException;
 
 class Controlador_estadisticasAdministrativo extends Controller
 {
@@ -72,7 +74,7 @@ class Controlador_estadisticasAdministrativo extends Controller
                 ->orWhere('cargo', 'like', '%' . $request->search['value'] . '%')
                 ->orWhere('profesion', 'like', '%' . $request->search['value'] . '%')
                 ->orWhere('servicio', 'like', '%' . $request->search['value'] . '%');
-               
+
             });
         }
 
@@ -90,7 +92,7 @@ class Controlador_estadisticasAdministrativo extends Controller
             'data' => $sedes,
             'permisos' => [
                 'editar' => auth()->user()->can('estudiantes.editar'),
-               
+
             ],
         ]);
     }
@@ -116,7 +118,7 @@ class Controlador_estadisticasAdministrativo extends Controller
             // 🔹 2. Definir cabeceras esperadas
             $expectedHeaders = [
                 'nombre_completo',
-                'documento',                
+                'documento',
                 'sede',
                 'genero',
                 'gestion',
@@ -149,6 +151,104 @@ class Controlador_estadisticasAdministrativo extends Controller
         }
     }
 
+
+    public function actualizar_registro_administrativo(Request $request, String $id)
+    {
+
+        try {
+
+            // 1️⃣ Validar que se suba un archivo válido
+            $request->validate([
+                'nombreCompleto' => 'required|max:100|min:5',
+                'documentoIdentidad' => [
+                    'required',
+                    'max:50',
+                    'min:3',
+                    // Rule::unique('estadistica_titulados', 'documentoIdentidad')->ignore($id),
+                ],
+                'genero' => 'required|in:masculino,femenino',
+                'servicio' => 'required|in:planta,contrato,linea',
+            ]);
+
+            $administrativo = EstadisticaAdministrativo::find($id);
+            $administrativo->nombre_completo = $request->nombreCompleto;
+            $administrativo->n_documento = $request->documentoIdentidad;
+            $administrativo->genero = $request->genero;
+            $administrativo->servicio = $request->servicio;
+
+            $administrativo->save();
+
+            $this->mensaje("exito", "Editado Correctamente");
+            return response()->json($this->mensaje, 200);
+
+        } catch (Exception $e) {
+
+
+            $this->mensaje("error", "Error " . $e->getMessage());
+            return response()->json($this->mensaje, 200);
+        }
+    }
+
+
+
+    public function subirDatosAdministrativoscsv(Request $request)
+    {
+        // 1️⃣ Validar que se suba un archivo válido
+        $request->validate([
+            'archivo' => 'required|mimes:csv,xlsx,xls',
+        ]);
+
+        DB::beginTransaction();
+
+        try {
+            // 2️⃣ Cargar el importador
+            $import = new AdministrativoImport();
+
+            // 3️⃣ Ejecutar la importación
+            Excel::import($import, $request->file('archivo'));
+
+            // 4️⃣ Capturar errores
+
+            $erroresPersonalizados = $import->erroresPersonalizados;
+
+            // 5️⃣ Si hay cualquier tipo de error -> rollback y no guardar nada
+            if (count($erroresPersonalizados) > 0) {
+                DB::rollBack();
+
+                return response()->json([
+                    'estado' => 'error_validacion',
+                    'mensaje' => 'La importación fue cancelada. Se detectaron errores en los datos.',
+                    
+                    'errores_personalizados' => $erroresPersonalizados,
+                ], 200);
+            }
+
+            // 6️⃣ Si todo está correcto, confirmamos la transacción
+            $import->finalize();
+            DB::commit();
+
+            return response()->json([
+                'estado' => 'exito',
+                'mensaje' => 'Importación completada exitosamente',
+                'filas_insertadas' => $import->filasInsertadas,
+            ], 200);
+
+        } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
+            DB::rollBack();
+            return response()->json([
+                'estado' => 'error_validacion',
+                'errores_validacion' => $e->failures()
+            ]);            
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return response()->json([
+                'estado' => 'error',
+                'mensaje' => 'Ocurrió un error inesperado durante la importación',
+                'detalle' => $e->getMessage(),
+            ], 200);
+        }
+    }
 
     public function mensaje($titulo, $mensaje)
     {

@@ -35,7 +35,7 @@ class DatabaseSeeder extends Seeder
         \App\Models\Noticia::factory(500)->create();
         //\App\Models\EstadisticaTitulado::factory(5000)->create();
         //\App\Models\EstadisticaDocente::factory(500)->create();
-        \App\Models\EstadisticaAdministrativo::factory(100)->create();
+        //\App\Models\EstadisticaAdministrativo::factory(100)->create();
 
     }
 }

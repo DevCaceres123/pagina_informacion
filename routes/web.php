@@ -211,8 +211,8 @@ Route::prefix('/admin')->middleware([Autenticados::class])->group(function () {
         Route::resource('administrativos', Controlador_estadisticasAdministrativo::class);
         Route::get('listarAdministrativos', 'listarAdministrativos')->name('administrativos.listarAdministrativos');
         Route::post('previsualizarAdministrativos', 'previsualizarAdministrativos')->name('administrativos.previsualizarAdministrativos');
-    
-      
+        Route::put('actualizar_registro_administrativo/{id_administrativo}', 'actualizar_registro_administrativo')->name('administrativos.actualizar_registro_administrativo');
+        Route::post('subirDatosAdministrativoscsv', 'subirDatosAdministrativoscsv')->name('administrativos.subirDatosAdministrativoscsv');
     });
 
 

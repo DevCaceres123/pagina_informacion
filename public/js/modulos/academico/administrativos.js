@@ -159,6 +159,275 @@ function actualizarTabla() {
     tabla.ajax.reload(null, false); // Recarga los datos sin resetear el paginado
 }
 
+$("#tabla_administrativos").on("change", ".editar-fila", function () {
+    const $row = $(this).closest("tr");
+    const checked = $(this).is(":checked");
+
+    if (checked) {
+        // 🟢 Activar modo edición
+        $row.addClass("table-warning");
+
+        // Habilitamos el botón de actualizar
+        $row.find(".actualizar_informacion")
+            .prop("disabled", false)
+            .removeClass("btn-outline-primary")
+            .addClass("btn-primary");
+
+        // === Campos ===
+        const nombreCelda = $row.find("td:eq(1)");
+        const docCelda = $row.find("td:eq(2)");
+        const generoCelda = $row.find("td:eq(4)");
+        const servicio = $row.find("td:eq(7)");
+
+        // Guardar valores actuales
+        const nombreActual = nombreCelda.text().trim();
+        const docActual = docCelda.text().trim();
+        const generoActual = generoCelda.text().trim();
+        const servicioActual = servicio.text().trim();
+
+        // Reemplazar con inputs
+        nombreCelda.html(
+            `<input type="text" class="form-control form-control-sm" name="nombreCompleto" value="${nombreActual}" />`
+        );
+        docCelda.html(
+            `<input type="text" class="form-control form-control-sm" name="documentoIdentidad" value="${docActual}" />`
+        );
+
+        generoCelda.html(`
+            <select class="form-select form-select-sm" name="genero">
+                <option value="masculino" ${
+                    generoActual === "masculino" ? "selected" : ""
+                }>Masculino</option>
+                <option value="femenino" ${
+                    generoActual === "femenino" ? "selected" : ""
+                }>Femenino</option>
+            </select>
+        `);
+
+        servicio.html(`
+            <select class="form-select form-select-sm" name="servicio">
+                <option value="planta" ${
+                    servicioActual === "planta" ? "selected" : ""
+                }>Planta</option>
+                <option value="contrato" ${
+                    servicioActual === "contrato" ? "selected" : ""
+                }>Contrato</option>
+                <option value="linea" ${
+                    servicioActual === "linea" ? "selected" : ""
+                }>Linea</option>                
+            </select>
+        `);
+    } else {
+        // 🔴 Desactivar modo edición
+        $row.removeClass("table-warning");
+
+        // Deshabilitamos el botón de actualizar
+        $row.find(".actualizar_informacion")
+            .prop("disabled", true)
+            .removeClass("btn-primary")
+            .addClass("btn-outline-primary");
+
+        // Tomar valores actualizados
+        const nombreNuevo = $row.find("input[name='nombreCompleto']").val();
+        const docNuevo = $row.find("input[name='documentoIdentidad']").val();
+        const generoNuevo = $row.find("select[name='genero']").val();
+        const servicioNuevo = $row.find("select[name='servicio']").val();
+
+        // Volver a texto normal
+        $row.find("td:eq(1)").text(nombreNuevo);
+        $row.find("td:eq(2)").text(docNuevo);
+        $row.find("td:eq(4)").html(
+            `<span class="badge  ${
+                generoNuevo === "masculino" ? "bg-success" : "bg-danger"
+            } ">${generoNuevo}</span>`
+        );
+        $row.find("td:eq(7)").text(servicioNuevo);
+        
+    }
+});
+
+
+// Cuando se hace clic en el botón de actualizar
+$("#tabla_administrativos").on("click", ".actualizar_informacion", function (e) {
+    e.preventDefault();
+    const $row = $(this).closest("tr");
+
+    // Obtenemos el ID (viene del atributo data-id del botón)
+    const id = $(this).data("id");
+
+    // Obtenemos los valores actuales (si hay inputs, tomamos su valor; si no, el texto)
+    const nombre =
+        $row.find("input[name='nombreCompleto']").val() ||
+        $row.find("td:eq(1)").text().trim();
+    const documento =
+        $row.find("input[name='documentoIdentidad']").val() ||
+        $row.find("td:eq(2)").text().trim();
+    const genero =
+        $row.find("select[name='genero']").val() ||
+        $row.find("td:eq(4)").text().trim();
+    const servicio =
+        $row.find("select[name='servicio']").val() ||
+        $row.find("td:eq(7)").text().trim();
+
+    // 🔹 Puedes armar un objeto con toda la data
+    const datos = {
+        nombreCompleto: nombre,
+        documentoIdentidad: documento,
+        genero: genero,
+        servicio: servicio,
+    };
+
+    console.log(datos);
+
+    crud(
+        "admin/actualizar_registro_administrativo",
+        "PUT",
+        id,
+        datos,
+        function (error, response) {
+            if (response.tipo === "errores") {
+                mensajeAlerta(response.mensaje, "errores");
+                return;
+            }
+            if (response.tipo != "exito") {
+                mensajeAlerta(response.mensaje, response.tipo);
+                return;
+            }
+
+            mensajeAlerta(response.mensaje, response.tipo);
+
+            actualizarTabla();
+        }
+    );
+});
+
+// funcion pra subir los datos del archivo
+$("#btnConfirmar").on("click", function (e) {
+    e.preventDefault();
+
+    // Obtenemos el formulario completo
+    let form = $("#formSubirDatosExcel")[0];
+
+    // Creamos el FormData (necesario para enviar archivos)
+    let formData = new FormData(form);
+
+    // Verificamos que se haya seleccionado un archivo
+    if (!$("#archivo").val()) {
+        alert(
+            "Por favor selecciona un archivo CSV o Excel antes de continuar."
+        );
+        return;
+    }
+
+    // Deshabilitamos el botón mientras se sube
+    $("#btnConfirmar").prop("disabled", true).text("Importando...");
+
+    crud(
+        "admin/subirDatosAdministrativoscsv",
+        "POST",
+        null,
+        formData,
+        function (error, response) {
+            $("#btnConfirmar")
+                .prop("disabled", false)
+                .text("Subir Definitivamente");
+
+            // Verificamos que no haya un error o que todos los campos sean llenados
+            if (response.tipo === "errores") {
+                mensajeAlerta(response.mensaje, "errores");
+                return;
+            }
+
+            if (response.tipo == "error_validacion") {
+                // Mostrar los mensajes de validación (cabeceras faltantes o columnas extra)
+                mostrarErroresImportacion(
+                    response.errores_validacion,
+                    response.errores_personalizados,
+                    null
+                );
+
+                $("#previewContainer").addClass("d-none");
+                $("#previewTable tbody").empty();
+                $("#previewTable thead tr").empty();
+                return;
+            }
+
+            mostrarErroresImportacion(
+                response.errores_validacion,
+                response.errores_personalizados,
+                response.filas_insertadas
+            );
+            $("#archivo").val("");
+
+            $("#previewContainer").addClass("d-none");
+            $("#previewTable tbody").empty();
+            $("#previewTable thead tr").empty();
+            // actualizarTabla();
+
+            setTimeout(() => {
+                window.location.reload();
+            }, 1500);
+        }
+    );
+});
+
+
+//funcion prara mostrar los errores de importacion
+function mostrarErroresImportacion(
+    erroresValidacion = [],
+    erroresPersonalizados = [],
+    filas_insertadas
+) {
+    const alertContainer = $("#alertContainer");
+
+    // Limpiamos el contenido anterior
+    alertContainer.removeClass("d-none alert-success alert-danger").empty();
+
+    // Si no hay errores, mostramos un mensaje verde de éxito
+    if (erroresValidacion.length === 0 && erroresPersonalizados.length === 0) {
+        alertContainer
+            .addClass("alert-success")
+            .html(
+                `<strong>✅ Importación completada con éxito.</strong> Filas insertadas:${filas_insertadas}`
+            );
+        return;
+    }
+
+    // Si hay errores, mostramos en rojo
+    alertContainer.addClass("alert-danger");
+
+    let html =
+        "<strong>Se encontraron errores en la importación:</strong><ul class='mt-2'>";
+
+    // 🔸 Errores de validación (columnas, formatos, etc.)
+    erroresValidacion.forEach((err) => {
+        html += `
+            <li>
+                <b>Fila ${err.row ?? "?"}</b>: ${
+            err.errors ? err.errors.join(", ") : "Error de validación"
+        }
+            </li>
+        `;
+    });
+
+    // 🔸 Errores personalizados (carrera, sede o relación inexistente)
+    erroresPersonalizados.forEach((err) => {
+        html += `
+            <li>
+                <b>Fila ${err.fila ?? "?"}</b> – Campo: <b>${err.campo}</b><br>
+                Valor: <i>${err.valor}</i><br>
+                Mensaje: ${err.mensaje}
+            </li>
+        `;
+    });
+
+    html += "</ul>";
+
+    alertContainer.html(html);
+}
+
+
+
 
 
 
