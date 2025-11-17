@@ -208,7 +208,9 @@ Route::prefix('/admin')->middleware([Autenticados::class])->group(function () {
 
     // CONTROLADOR PARA LA ESTADISTICA DE LOS ADMINISTRATIVOS
     Route::controller(Controlador_estadisticasAdministrativo::class)->group(function () {
-      Route::resource('administrativos', Controlador_estadisticasAdministrativo::class);
+        Route::resource('administrativos', Controlador_estadisticasAdministrativo::class);
+        Route::get('listarAdministrativos', 'listarAdministrativos')->name('administrativos.listarAdministrativos');
+        Route::post('previsualizarAdministrativos', 'previsualizarAdministrativos')->name('administrativos.previsualizarAdministrativos');
     
       
     });

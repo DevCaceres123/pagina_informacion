@@ -3,14 +3,24 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class EstadisticaAdministrativo extends Model
 {
+    use HasFactory;
     protected $table = 'estadistica_administrativos';
 
+
     protected $fillable = [
-        'carrera_id','sede_id', 'gestion',
-        'hombres', 'mujeres', 'total'
+        'sede_id',
+        'nombre_completo',
+        'n_documento',
+        'genero',
+        'cargo',
+        'profesion',
+        'servicio',
+        'gestion',
+        'estado'
     ];
 
     public function carrera()

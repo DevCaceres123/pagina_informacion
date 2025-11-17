@@ -24,7 +24,7 @@
                                     // Agregamos la gestión actual como primera opción
                                     $todasGestiones = collect([$gestionActual])->merge($gestiones);
                                 @endphp
-    
+
                                 @foreach ($todasGestiones as $g)
                                     <option value="{{ $g }}" {{ $g == $gestionActual ? 'selected' : '' }}>
                                         {{ $g }}
@@ -33,19 +33,20 @@
                             </select>
                         </div>
                     </div>
-
-
                     <div class="table-responsive">
                         <table class="table table-bordered align-middle text-center shadow-sm table-striped"
-                            id="tabla_estudiantes">
+                            id="tabla_administrativos">
                             <thead class="table-light">
                                 <tr>
                                     <th>#</th>
-                                    <th>Carrera</th>
-                                    <th>Sedes</th>
-                                    <th>Hombres</th>
-                                    <th>Mujeres</th>
-                                    <th>Total</th>
+                                    <th>Nombre y apellidos</th>
+                                    <th>Nro. Documento</th>
+                                    <th>sede</th>
+                                    <th>genero</th>
+                                    <th>cargo</th>
+                                    <th>profesion</th>
+                                    <th>servicio</th>
+                                    <th>estado</th>
                                     <th class="text-uppercase">Acciones</th>
                                 </tr>
                             </thead>
@@ -94,7 +95,7 @@
                             <select id="tipoReporte" class="form-select shadow-sm">
                                 <option value="">-- Seleccione tipo --</option>
                                 <option value="sede">Sede</option>
-                                <option value="carrera">Carrera</option>
+                                <option value="carrera">Servicio</option>
                             </select>
                         </div>
 
@@ -136,9 +137,20 @@
                                     accept=".csv, text/csv" required>
                             </div>
                             <div class="alert alert-info mt-2 py-2 px-3">
-                                <strong> El archivo debe contener las columnas:</strong>
-                                <code> carrera </code>|<code> sede </code>|<code> gestion </code>|
-                                <code> femenino </code>|<code> masculino </code>|<code> total </code>.
+                                <strong>El archivo CSV debe contener las siguientes columnas:</strong>
+                                <ul class="mb-0 mt-2">
+                                    <li><code>nombre_completo</code></li>
+                                    <li><code>documento</code></li>                                    
+                                    <li><code>sede</code></li>
+                                    <li><code>genero</code> → <span class="text-success">masculino</span> / <span
+                                            class="text-primary">femenino</span></li>
+                                    <li><code>gestion</code></li>
+                                    <li><code>cargo</code></li>
+                                    <li><code>profesion</code></li>                                    
+                                    <li><code>servicio</code> → <span class="text-dark">planta</span>, <span
+                                            class="text-dark">contrato</span>, <span class="text-dark">linea</span></li>
+
+                                </ul>
                             </div>
 
                             <div id="alertContainer" class="alert d-none" role="alert"></div>
@@ -204,7 +216,24 @@
 
     <script>
         const sedes = @json($sedes);
-        const carreras = @json($carreras);
+        const servicios = [
+        {
+            'id': 'planta',
+            'nombre': 'planta'
+        },
+
+        {
+            'id': 'contrato',
+            'nombre': 'contrato'
+        },
+
+        {
+            'id': 'linea',
+            'nombre': 'linea'
+        },
+
+    ]
+        
 
         $('#tipoReporte').on('change', function() {
             const tipo = $(this).val();
@@ -229,7 +258,7 @@
             // Contenedor de filas en dos columnas
             const $rowContainer = $('<div class="row"></div>');
 
-            const data = tipo === 'sede' ? sedes : carreras;
+            const data = tipo === 'sede' ? sedes : servicios;
 
             data.forEach((item, index) => {
                 const col = $(`
@@ -253,6 +282,6 @@
     </script>
 
 
-    <script src="{{ asset('js/modulos/academico/estudiantes.js') }}" type="module"></script>
+    <script src="{{ asset('js/modulos/academico/administrativos.js') }}" type="module"></script>
 
 @endsection

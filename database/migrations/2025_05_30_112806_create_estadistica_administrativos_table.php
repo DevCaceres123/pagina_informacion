@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('estadistica_administrativos', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('carrera_id');
+            // $table->unsignedBigInteger('carrera_id');
             $table->unsignedBigInteger('sede_id');
             $table->string('nombre_completo', 200);
             $table->string('n_documento', 200);
@@ -21,12 +21,13 @@ return new class extends Migration
             $table->string('cargo', 100);
             $table->string('profesion', 150);
             $table->enum('servicio', ['planta', 'contrato','linea']);     
-                    
-            $table->foreign('carrera_id')
-                ->references('id')
-                ->on('carreras')
-                ->onDelete('restrict')
-                ->onUpdate('cascade');
+            $table->year('gestion');   
+            $table->enum('estado', ['activo', 'inactivo']);     
+            // $table->foreign('carrera_id')
+            //     ->references('id')
+            //     ->on('carreras')
+            //     ->onDelete('restrict')
+            //     ->onUpdate('cascade');
 
             $table->foreign('sede_id')
                 ->references('id')
@@ -34,6 +35,8 @@ return new class extends Migration
                 ->onDelete('restrict')
                 ->onUpdate('cascade');
             
+            $table->unique(['sede_id', 'n_documento', 'cargo'], 'unique_administrativo');
+
             $table->timestamps();
         });
     }
