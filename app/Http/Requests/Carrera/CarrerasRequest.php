@@ -31,7 +31,7 @@ class CarrerasRequest extends BasePrincipalRequest
                     'sede_id' => 'required|exists:sedes,id',
                     'nombre' => 'required|max:100|min:5',
                     'modalidad' => 'required|in:semestral,anual,mixto',      
-                    'malla_curricular' => 'required|mimes:pdf|max:3072',       
+                    'malla_curricular' => 'required|mimes:pdf|max:5120', // 5MB max   
                     'vinculo_web' => 'nullable|url|max:255',
                 ];        
             default:

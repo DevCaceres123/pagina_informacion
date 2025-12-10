@@ -295,7 +295,7 @@ class Controlador_sedes extends Controller
         try {
 
             $request->validate([
-                'nuevoPdf' => 'nullable|file|mimes:pdf|max:7120', // 5MB
+                'nuevoPdf' => 'nullable|file|mimes:pdf|max:5120', // 5MB
                 'publicar_resolucion' => 'required|in:0,1',
             ]);
             $sede = Sede::findOrFail($id);
