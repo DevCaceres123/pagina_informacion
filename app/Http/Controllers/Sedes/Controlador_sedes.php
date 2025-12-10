@@ -87,6 +87,7 @@ class Controlador_sedes extends Controller
 
     public function agregarImagenes(Request $request, string $id_sede)
     {
+        
         DB::beginTransaction();
 
         try {
@@ -256,8 +257,15 @@ class Controlador_sedes extends Controller
                     // Leer la imagen
                     $img = $manager->read($imagen->getPathname());
 
-                    // Redimensionar manteniendo proporción
-                    $img->resize(height: 800);
+                    $img->resize(
+                        1200,  // ancho, null para mantener proporción
+                        800,   // alto máximo
+                        function ($constraint) {
+                            $constraint->aspectRatio(); // mantiene proporción
+                            $constraint->upsize();      // evita agrandar imágenes pequeñas
+                        }
+                    );
+
 
                     // Convertir a WEBP con calidad 80
                     $encoded = $img->toWebp(80);
@@ -284,7 +292,7 @@ class Controlador_sedes extends Controller
     {
 
         $request->validate([
-            'nuevoPdf' => 'nullable|file|mimes:pdf|max:3072', // 3MB
+            'nuevoPdf' => 'nullable|file|mimes:pdf|max:5120', // 5MB
             'publicar_resolucion' => 'required|in:0,1',
         ]);
 

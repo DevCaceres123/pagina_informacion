@@ -527,6 +527,7 @@ $("#nuevasImagenes").on("change", function () {
 
     if (validarArchivos(archivos, "imagen") == false) {
         $(this).val(""); // Limpiar input
+        return;
     }
 
     Array.from(archivos).forEach((archivo) => {
@@ -610,8 +611,8 @@ $("#formSubirImagenes").on("submit", function (e) {
 
 // funcion que nos servira para validar imagenes y pdf
 function validarArchivos(archivos, tipo) {
-    const maxSizeImagen = 3 * 1024 * 1024; // 3 MB
-    const maxSizePdf = 2 * 1024 * 1024; // 5 MB
+    const maxSizeImagen = 5 * 1024 * 1024; // 5 MB
+    const maxSizePdf = 5 * 1024 * 1024; // 5 MB
 
     if (tipo === "imagen") {
         for (let i = 0; i < archivos.length; i++) {
@@ -628,7 +629,7 @@ function validarArchivos(archivos, tipo) {
 
             if (file.size > maxSizeImagen) {
                 mensajeAlerta(
-                    `La imagen "${file.name}" excede el tamaño máximo de 3 MB.`,
+                    `La imagen "${file.name}" excede el tamaño máximo de 5 MB.`,
                     "error"
                 );
 
@@ -654,7 +655,7 @@ function validarArchivos(archivos, tipo) {
 
         if (archivos.size > maxSizePdf) {
             mensajeAlerta(
-                `El archivo "${archivos.name}" excede el tamaño máximo de 2 MB.`,
+                `El archivo "${archivos.name}" excede el tamaño máximo de 5 MB.`,
                 "error"
             );
 

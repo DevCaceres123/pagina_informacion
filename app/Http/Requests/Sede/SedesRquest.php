@@ -31,9 +31,9 @@ class SedesRquest extends BasePrincipalRequest
                     'nombre' => 'required|max:50|min:5|unique:sedes,nombre',
                     'descripcion' => 'required|max:100|min:5',
                     'resolucion_numero' => 'required|max:100|min:5',
-                    'resolucion_archivo' => 'required|mimes:pdf|max:2048',
+                    'resolucion_archivo' => 'required|mimes:pdf|max:5120', // 5MB max
                     'galeria' => 'nullable|array',
-                    'galeria.*' => 'image|mimes:jpeg,png,jpg,gif,webp|max:3072', // 3MB max por imagen
+                    'galeria.*' => 'image|mimes:jpeg,png,jpg,gif,webp|max:5120', // 5MB max por imagen
                     'mapa_url' => 'nullable|url|max:255',
                     'whatsapp' => 'nullable|regex:/^\d{8}$/',
                     'facebook' => 'nullable|url|max:255',
