@@ -290,15 +290,14 @@ class Controlador_sedes extends Controller
 
     public function actualizar_pdf(Request $request, $id)
     {
-
-        $request->validate([
-            'nuevoPdf' => 'nullable|file|mimes:pdf|max:5120', // 5MB
-            'publicar_resolucion' => 'required|in:0,1',
-        ]);
-
         DB::beginTransaction();
 
         try {
+
+            $request->validate([
+                'nuevoPdf' => 'nullable|file|mimes:pdf|max:7120', // 5MB
+                'publicar_resolucion' => 'required|in:0,1',
+            ]);
             $sede = Sede::findOrFail($id);
 
             if ($request->hasFile('nuevoPdf')) {
@@ -323,7 +322,7 @@ class Controlador_sedes extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
 
-            $this->mensaje('error', 'error' . $e->getMessage());
+            $this->mensaje('error', 'Error ' . $e->getMessage());
             return response()->json($this->mensaje, 200);
         }
     }

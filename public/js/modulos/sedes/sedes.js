@@ -253,9 +253,9 @@ $("#btnActualizarPdf").on("click", function () {
             return;
         }
 
-        if (archivo.size > 3 * 1024 * 1024) {
+        if (archivo.size > 5 * 1024 * 1024) {
             // 3MB
-            mensajeAlerta("El archivo no debe superar los 3 MB.", "error");
+            mensajeAlerta("El archivo no debe superar los 5 MB.", "error");
             return;
         }
     }
