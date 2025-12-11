@@ -32,9 +32,9 @@ class InfraestructuraRequest extends BasePrincipalRequest
                     'estado_inmueble' => 'required|in:bueno,regular,malo',
                     'observacion_estado' => 'required|min:5|max:255',
                     'sede_id' => 'required|exists:sedes,id',
-                    'solicitud' => 'required|file|mimes:pdf|max:3072', // 2MB max
+                    'solicitud' => 'required|file|mimes:pdf|max:5120', // 5MB max
                     'planos' => 'required|array',
-                    'planos.*' => 'image|mimes:jpeg,png,jpg,jpeg,webp|max:3072', // 2MB
+                    'planos.*' => 'image|mimes:jpeg,png,jpg,jpeg,webp|max:5120', // 5MB
                 ];
             case 'infraestructura.guardarDatosUbicacion':
                 return [
@@ -53,7 +53,7 @@ class InfraestructuraRequest extends BasePrincipalRequest
             case 'infraestructura.agregarImagenesPlanos':
                 return [
                     'nuevasImagenes' => 'required|array',
-                    'nuevasImagenes.*' => 'image|mimes:jpeg,png,jpg,jpeg,webp|max:3072', // 3MB   
+                    'nuevasImagenes.*' => 'image|mimes:jpeg,png,jpg,jpeg,webp|max:5120', // 5MB   
                 ];
             
             default:
