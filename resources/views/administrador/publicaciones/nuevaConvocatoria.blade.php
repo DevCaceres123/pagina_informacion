@@ -144,7 +144,7 @@
 
                                 <div class="alert alert-info d-flex align-items-center mt-4" role="alert">
                                     <i class="fas fa-info-circle me-2"></i>
-                                    La foto de portada es obligatoria. Las fotos adicionales son opcionales.
+                                    La convocatoria es obligatoria. Las fotos adicionales son opcionales.
                                 </div>
                             </div>
 

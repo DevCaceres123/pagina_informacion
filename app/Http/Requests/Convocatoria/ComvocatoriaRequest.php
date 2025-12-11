@@ -31,9 +31,9 @@ class ComvocatoriaRequest extends BasePrincipalRequest
                     'contenido' => 'required|min:10|max:5000',
                     'sede' => 'required|integer|exists:sedes,id',
                     'tipo' => 'required|integer|exists:categorias_noticias,id',
-                    'convocatoria' => 'required|mimes:pdf|max:2048', // 2MB
+                    'convocatoria' => 'required|mimes:pdf|max:5120', // 5MB
                     'fotos' => 'array',
-                    'fotos.*' => 'image|mimes:jpeg,png,jpg,jpeg,webp|max:3072', // 3MB
+                    'fotos.*' => 'image|mimes:jpeg,png,jpg,jpeg,webp|max:5120', // 5MB
                 ];
 
             default:
