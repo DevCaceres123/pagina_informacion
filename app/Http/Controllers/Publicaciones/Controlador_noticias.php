@@ -187,7 +187,14 @@ class Controlador_noticias extends Controller
                     $img = $manager->read($imagen->getPathname());
 
                     // Redimensionar manteniendo proporción
-                    $img->resize(height: 800);
+                    $img->resize(
+                        1200,  // ancho, null para mantener proporción
+                        800,   // alto máximo
+                        function ($constraint) {
+                            $constraint->aspectRatio(); // mantiene proporción
+                            $constraint->upsize();      // evita agrandar imágenes pequeñas
+                        }
+                    );
 
                     // Convertir a WEBP con calidad 80
                     $encoded = $img->toWebp(80);
