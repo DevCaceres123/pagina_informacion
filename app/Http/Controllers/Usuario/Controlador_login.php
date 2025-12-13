@@ -35,6 +35,10 @@ class Controlador_login extends Controller
             return $this->respuestaError('Todos los campos son requeridos');
         }
 
+        if ($this->validarCaptcha($request)->fails()) {
+            return $this->respuestaError('Error al ingresar el captcha');
+        }
+
         $usuario = $this->buscarUsuario($request->usuario);
 
         if (!$usuario) {
@@ -48,6 +52,12 @@ class Controlador_login extends Controller
         return $this->respuestaError($this->mensajeError);
     }
 
+    private function validarCaptcha(Request $request)
+    {
+        return Validator::make($request->all(), [
+            'captcha' => 'required|captcha',
+        ]);
+    }
     private function validarDatos(Request $request)
     {
         return Validator::make($request->all(), [

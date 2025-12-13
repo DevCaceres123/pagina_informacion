@@ -66,6 +66,11 @@ Route::controller(Controlador_pagina::class)->group(function () {
     Route::get('/sedes/{id}', 'sedes')->name('pagina.sedes');
     Route::get('/inicio', 'inicio')->name('pagina.inicio');
     Route::post('/buscarCarrera', 'buscarCarrera')->name('pagina.buscarCarrera');
+    // para actualizar el capcha
+    Route::get('/cambiar_capcha', function () {
+
+        return response()->json(['captcha' => captcha_src()]);
+    });
 });
 
 

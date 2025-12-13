@@ -32,6 +32,58 @@
             height: 70%;
             object-fit: contain;
         }
+
+        #btn_vista {
+
+            position: absolute;
+            top: 50%;
+            bottom: 50%;
+            right: 10px;
+            margin-left: -35px;
+            margin-top: 5px;
+            color: #110c09;
+        }
+
+        .captcha-box {
+            width: 100%;
+            height: 60px;
+            display: flex;
+            /* 🔑 clave */
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            overflow: hidden;
+            background: #fff;
+        }
+
+        .captcha-img {
+
+            width: 90%;
+            /* 90% imagen */
+            height: 100%;
+            object-fit: contain;
+            display: block;
+        }
+
+        .captcha-refresh {
+            width: 10%;
+            /* 10% botón */
+            height: 100%;
+            border: none;
+            border-left: 1px solid #dee2e6;
+            background: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .captcha-refresh:hover {
+            background: #e9ecef;
+        }
+
+        .captcha-refresh i {
+            font-size: 14px;
+        }
     </style>
 </head>
 
@@ -46,7 +98,7 @@
                         <div class="row">
                             <div class="col-lg-4 mx-auto">
                                 <div class="card rouneded">
-                                    <div class="card-body p-0 auth-header-box rounded-top">
+                                    <div class="card-body p-0 auth-header-box">
 
                                         <div class="bg-holder"
                                             style="background-image:url(pagina_template/assets/img/perfil3.jpeg);">
@@ -68,11 +120,37 @@
                                                     placeholder="Ingrese usuario">
                                             </div><!--end form-group-->
 
-                                            <div class="form-group">
+                                            <div class="form-group" style="position: relative">
                                                 <label class="form-label" for="password">Contraseña</label>
                                                 <input type="password" class="form-control" name="password"
                                                     id="password" placeholder="Ingrese la contraseña">
-                                            </div><!--end form-group-->
+                                                <a type="button" onclick="togglePassword()" id="btn_vista"><i
+                                                        class="fas fa-eye-slash fs-18" id="icono_password"></i></a>
+                                            </div>
+
+                                            <div class="d-flex flex-column align-items-center mt-2">
+                                                <p class="text-muted">Codigo de verificacion</p>
+                                                <div class="captcha-box row">
+
+                                                    <img src="{{ captcha_src() }}" alt="captcha" class="captcha-img">
+
+                                                    <button type="button" class="captcha-refresh"
+                                                        onclick="refreshCaptcha()" title="Recargar captcha">
+                                                        <i class="fas fa-redo"></i>
+                                                    </button>
+                                                </div>
+
+
+                                                <div class="form-floating input-placa mt-3">
+
+                                                    <input type="text" id="captcha" name="captcha"
+                                                        class="form-control form-control-lg fw-bolder text-center fs-2 border-0 border-bottom border-primary rounded-0 placa-input-estilo"
+                                                        placeholder="Ingrese el código" required>
+
+                                                    <label for="captcha" class="text-muted text-uppercase">Ingrese el codigo captcha</label>
+                                                </div>
+                                            </div> 
+
 
 
                                             <div class="form-group mb-0 row">
@@ -151,6 +229,7 @@
                 setTimeout(() => window.location.reload(), 1500);
             } else {
                 validarBoton(false, 'INGRESAR');
+                refreshCaptcha();
             }
         } catch (error) {
             console.error('Error:', error);
@@ -158,4 +237,35 @@
             validarBoton(false, 'INGRESAR');
         }
     });
+
+
+    function togglePassword() {
+        let passwordInput = document.getElementById("password");
+        let iconPassword = document.getElementById("icono_password");
+
+        // Cambiar el tipo de input primero
+        let type = passwordInput.type === "password" ? "text" : "password";
+        passwordInput.type = type;
+
+        // Ahora cambiar el icono según el nuevo tipo
+        if (type === "text") {
+            iconPassword.classList.remove("fas", "fa-eye-slash", "fs-18"); // Remover clases por separado
+            iconPassword.classList.add("fas", "fa-eye", "fs-18"); // Agregar clases por separado
+        } else {
+            iconPassword.classList.remove("fas", "fa-eye", "fs-18"); // Remover clases por separado
+            iconPassword.classList.add("fas", "fa-eye-slash", "fs-18"); // Agregar clases por separado
+        }
+    }
+
+    // actualizar capcha
+    function refreshCaptcha() {
+        fetch('/cambiar_capcha')
+            .then(response => response.json())
+            .then(data => {
+                // Actualiza la URL de la imagen CAPTCHA en el DOM
+
+                document.querySelector('img[alt="captcha"]').src = data.captcha;
+            })
+            .catch(error => console.error('Error al recargar el CAPTCHA:', error));
+    }
 </script>
