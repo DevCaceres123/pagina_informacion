@@ -21,7 +21,7 @@
                         @endforeach    
                   </ul>
               </div>
-              
+
               <!-- Columna 3: Universidad y redes -->
               <div class="col-md-4 mb-4">
                   <img src="{{ asset('assets/upea_logo.webp') }}" alt="logo upea" style="max-width: 180px;" class="mb-3">

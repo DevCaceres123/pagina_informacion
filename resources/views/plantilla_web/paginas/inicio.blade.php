@@ -437,7 +437,7 @@
                             src="{{ asset('assets/autoridades/cordinador_sedes.jpg') }}" alt="Directora">
                         <span class=" fw-bold text-light p-2 rounded mt-1" style='background-color: #880000;'>LIC.
                             PRIMITIVO HUAYHUA CAYO</span>
-                        <p class="text-light mb-0 mt-1  bg-lightp-2 rounded mt-1"><b>CORDINADOR DE SEDES</b></p>
+                        <p class="text-light mb-0 mt-1  bg-lightp-2 rounded mt-1"><b>COORDINADOR DE SEDES</b></p>
                         <p class="text-light mb-0 mt-1">UNIVERSIDAD PÚBLICA DE EL ALTO</p>
 
 
