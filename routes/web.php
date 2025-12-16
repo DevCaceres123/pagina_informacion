@@ -21,6 +21,10 @@ use Illuminate\Support\Facades\Route;
 use Intervention\Image\Facades\Image;
 use App\Models\Noticia;
 use App\Models\ImgNoticia;
+use App\Models\EstadisticaEstudiante;
+use App\Models\Sede;
+use App\Models\Carrera;
+use App\Models\EstadisticaTitulado;
 use Illuminate\Support\Facades\DB;
 
 Route::get('/', function () {
@@ -45,16 +49,27 @@ Route::get('/', function () {
            ->limit(3)
            ->get();
 
-        $poligonos = DB::table('ubicacion_sedes')
-            ->selectRaw("id, ubicacion, ST_AsGeoJSON(poligono)::json as geometry")            
-            ->whereNotNull('poligono')
-            ->whereNull('deleted_at')  // listamos todos aquellos que no se hayan eliminado
-            ->get()
-            ->map(function ($p) {
-                $p->geometry = json_decode($p->geometry);
-                return $p;
+    $poligonos = DB::table('ubicacion_sedes')
+        ->selectRaw("id, ubicacion, ST_AsGeoJSON(poligono)::json as geometry")
+        ->whereNotNull('poligono')
+        ->whereNull('deleted_at')  // listamos todos aquellos que no se hayan eliminado
+        ->get()
+        ->map(function ($p) {
+            $p->geometry = json_decode($p->geometry);
+            return $p;
         });
-    return view('plantilla_web/paginas/inicio', compact('noticias','poligonos'));
+
+    $cantidadEstudiantes = EstadisticaEstudiante::sum('total');
+    $cantidadSedes = Sede::where('estado', 'activo')->count();
+    $cantidadCarreras = Carrera::where('estado', 'activo')->count();
+    $cantidadTitulados = EstadisticaTitulado::whereYear(
+        'fecha_colacion',
+        now()->year
+    )->count();
+
+
+
+    return view('plantilla_web/paginas/inicio', compact('noticias', 'poligonos', 'cantidadEstudiantes','cantidadSedes','cantidadCarreras','cantidadTitulados'));
 })->name('login');
 
 
@@ -169,7 +184,7 @@ Route::prefix('/admin')->middleware([Autenticados::class])->group(function () {
         Route::delete('eliminarImagenConvocatoria/{id_convocatoria}', 'eliminarImagenConvocatoria')->name('convocatoria.eliminarImagenConvocatoria');
         Route::post('actualizarConvocatoria/{id_convocatoria}', 'actualizarConvocatoria')->name('convocatoria.actualizarConvocatoria');
         Route::put('cambiar_estado_convocatoria/{id_noticia}', 'cambiar_estado_convocatoria')->name('convocatoria.cambiar_estado_convocatoria');
-      
+
     });
 
 
@@ -181,8 +196,8 @@ Route::prefix('/admin')->middleware([Autenticados::class])->group(function () {
         Route::post('generar_reporte_estudiante', 'generar_reporte_estudiante')->name('estudiantes.generar_reporte_estudiante');
         Route::post('previsualizarExcel', 'previsualizarExcel')->name('estudiantes.previsualizarExcel');
         Route::post('subirDatosEstudiantecsv', 'subirDatosEstudiantecsv')->name('estudiantes.subirDatosEstudiantecsv');
-        
-      
+
+
     });
 
 
@@ -193,9 +208,9 @@ Route::prefix('/admin')->middleware([Autenticados::class])->group(function () {
         Route::get('listarTitulados', 'listarTitulados')->name('titulados.listarTitulados');
         Route::put('actualizar_registro_titulado/{id_carrera}', 'actualizar_registro_titulado')->name('titulados.actualizar_registro_titulado');
         Route::post('previsualizarTitulados', 'previsualizarTitulados')->name('titulados.previsualizarTitulados');
-        Route::post('subirDatosTituladoscsv', 'subirDatosTituladoscsv')->name('titulados.subirDatosTituladoscsv');      
+        Route::post('subirDatosTituladoscsv', 'subirDatosTituladoscsv')->name('titulados.subirDatosTituladoscsv');
         Route::get('listarFechasColacion', 'listarFechasColacion')->name('titulados.listarFechasColacion');
-        Route::post('generar_reporte_titulados', 'generar_reporte_titulados')->name('titulados.generar_reporte_titulados');     
+        Route::post('generar_reporte_titulados', 'generar_reporte_titulados')->name('titulados.generar_reporte_titulados');
     });
 
 
@@ -206,8 +221,8 @@ Route::prefix('/admin')->middleware([Autenticados::class])->group(function () {
         Route::put('actualizar_registro_docente/{id_titulado}', 'actualizar_registro_docente')->name('docentes.actualizar_registro_titulado');
         Route::post('previsualizarDocentes', 'previsualizarDocentes')->name('docentes.previsualizarDocentes');
         Route::post('subirDatosDocentescsv', 'subirDatosDocentescsv')->name('docentes.subirDatosDocentescsv');
-        Route::post('generar_reporte_docente', 'generar_reporte_docente')->name('docentes.generar_reporte_docente');  
-        
+        Route::post('generar_reporte_docente', 'generar_reporte_docente')->name('docentes.generar_reporte_docente');
+
     });
 
 
@@ -218,7 +233,7 @@ Route::prefix('/admin')->middleware([Autenticados::class])->group(function () {
         Route::post('previsualizarAdministrativos', 'previsualizarAdministrativos')->name('administrativos.previsualizarAdministrativos');
         Route::put('actualizar_registro_administrativo/{id_administrativo}', 'actualizar_registro_administrativo')->name('administrativos.actualizar_registro_administrativo');
         Route::post('subirDatosAdministrativoscsv', 'subirDatosAdministrativoscsv')->name('administrativos.subirDatosAdministrativoscsv');
-        Route::post('generar_reporte_administrativo', 'generar_reporte_administrativo')->name('administrativos.generar_reporte_administrativo');  
+        Route::post('generar_reporte_administrativo', 'generar_reporte_administrativo')->name('administrativos.generar_reporte_administrativo');
     });
 
 

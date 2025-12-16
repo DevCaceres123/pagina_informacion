@@ -4,6 +4,96 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css" />
 
+    <style>
+        /* SECCIÓN */
+        .stats-section {
+
+            padding: 90px 0;
+            margin-top: -120px;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* CARD */
+        .stat-card {
+            background: #ffffff;
+            border-radius: 18px;
+            padding: 40px 25px;
+            text-align: center;
+            height: 100%;
+            border-bottom: 4px solid #880000;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+            transition: all 0.35s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.14);
+        }
+
+        /* ICONO */
+        .stat-icon {
+            width: 95px;
+            height: 95px;
+            border-radius: 50%;
+            background: rgba(136, 0, 0, 0.12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 25px;
+        }
+
+        .icon-inner {
+            width: 65px;
+            height: 65px;
+            border-radius: 50%;
+            background: #880000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 12px 30px rgba(136, 0, 0, 0.4);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover .icon-inner {
+            transform: scale(1.60);
+        }
+
+        .icon-inner i {
+            font-size: 28px;
+            color: #ffffff;
+        }
+
+        /* TEXTO */
+        .stat-number {
+            font-size: 46px;
+            font-weight: 800;
+            color: #880000;
+            margin-bottom: 5px;
+            letter-spacing: 1px;
+        }
+
+        .stat-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #1f2a44;
+        }
+
+        .stat-divider {
+            display: block;
+            width: 42px;
+            height: 3px;
+            background: #880000;
+            margin: 12px auto 18px;
+            border-radius: 3px;
+        }
+
+        .stat-text {
+            font-size: 15px;
+            color: #666;
+            line-height: 1.6;
+        }
+    </style>
     <section class="py-0">
         <div class="swiper theme-slider min-vh-100"
             data-swiper='{"loop":true,"allowTouchMove":false,"autoplay":{"delay":5000},"effect":"fade","speed":800}'>
@@ -25,13 +115,11 @@
                                 </div>
                                 <div class="overflow-hidden mt-3">
                                     <p class="text-white fs-1 fs-md-2 lh-xs text-justify" data-zanim-xs='{"delay":0.1}'>
-                                        La DISBEDC tiene como misión “promover el bienestar de la comunidad
-                                        universitaria y sociedad civil, mediante la aplicación de programas y
-                                        políticas institucionales, que generen un proceso de desarrollo humano
-                                        sostenible, generando espacios que propicien la comunicación a través de
-                                        actividades académicas y atendiendo sus necesidades socioeconómicas, de
-                                        salud, cultura y deporte, con calidad humana, contribuyendo al mejoramiento
-                                        de las condiciones de vida.
+                                        Promover el bienestar de la comunidad estudiantil, mediante la aplicación de
+                                        políticas y programas institucionales que generen un proceso de desarrollo humano
+                                        sostenible, generando espacios que propicien la comunicación através de actividades
+                                        académicas, culturales y deportivas, atendiendo sus necesidades, con calidad humana;
+                                        contribuyendo al mejoramiento de las condiciones de la sociedad
                                     </p>
                                 </div>
 
@@ -55,11 +143,10 @@
                                 </div>
                                 <div class="overflow-hidden mt-3">
                                     <p class="text-white fs-1 fs-md-2 lh-xs text-justify" data-zanim-xs='{"delay":0.1}'>
-                                        Generar la interacción de los miembros de la comunidad universitaria con el
-                                        entorno socio-cultural, propiciando una estructura organizativa,
-                                        administrativa, que permita operativizar las políticas de Bienestar
-                                        Estudiantil y Extensión Universitaria en concordancia con las políticas
-                                        institucionales de la Universidad Pública de El Alto.
+                                        Generar la interacción y extensión universitaria con su entorno socio – cultural,
+                                        propiciando una estructura organizativa administrativa que permita la
+                                        operativización de las políticas institucionales de bienestar estudiantil de la
+                                        Universidad Pública de El Alto
                                     </p>
                                 </div>
 
@@ -69,7 +156,7 @@
                 </div>
 
                 <!-- Slide 3: OBJETIVO -->
-                <div class="swiper-slide position-relative" data-zanim-timeline="{}">
+                {{-- <div class="swiper-slide position-relative" data-zanim-timeline="{}">
                     <div class="bg-holder" style="background-image:url(pagina_template/assets/img/perfil3.jpeg);">
                     </div>
                     <div class="position-absolute top-0 start-0 w-100 h-100 bg-dark opacity-50" style="z-index: 1;">
@@ -95,7 +182,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> --}}
 
             </div>
 
@@ -110,57 +197,88 @@
 
 
     <!-- <section> info sedes ============================-->
-    <section class="bg-wheat text-center" style="margin-top: -150px; position: relative; z-index: 100;">
+    <section class="stats-section">
         <div class="container">
-            <div class="row">
-                <div class="col-sm-6 col-lg-3" data-zanim-timeline="{}" data-zanim-trigger="scroll">
-                    <div class="ring-icon mx-auto" data-zanim-xs='{"delay":0}' style="background-color: #880000;">
-                        <p class="fs-1 text-light">45</p>
-                        <span class="fas fa-users text-light" style="margin-top:-28px"></span>
+            <div class="row g-4">
+
+                <div class="col-sm-6 col-lg-3">
+                    <div class="stat-card counter">
+                        <div class="stat-icon">
+                            <div class="icon-inner">
+                                <i class="fas fa-users text-light"></i>
+                            </div>
+                        </div>
+
+                        <h2 class="stat-number" data-target="{{$cantidadEstudiantes > 0 ? $cantidadEstudiantes : 5000}}">0</h2>
+                        <h5 class="stat-title">Estudiantes</h5>
+                        <span class="stat-divider"></span>
+
+                        <p class="stat-text">
+                            Jóvenes comprometidos con su formación y el desarrollo académico.
+                        </p>
                     </div>
-                    <h5 data-zanim-xs='{"delay":0.1}' class="mt-1">Estudiantes</h5>
-                    <p class="mb-0 mt-3 px-3 mb-2" data-zanim-xs='{"delay":0.2}'>
-                        Jóvenes comprometidos con su formación y el desarrollo académico, listos para transformar el futuro.
-                    </p>
                 </div>
 
-                <div class="col-sm-6 col-lg-3" data-zanim-timeline="{}" data-zanim-trigger="scroll">
-                    <div class="ring-icon mx-auto" data-zanim-xs='{"delay":0}' style="background-color: #880000;">
-                        <p class="fs-1 text-light">45</p>
-                        <span class="fas fa-building text-light" style="margin-top:-28px"></span>
+                <div class="col-sm-6 col-lg-3">
+                    <div class="stat-card counter">
+                        <div class="stat-icon">
+                            <div class="icon-inner">
+                                <i class="fas fa-building text-light"></i>
+                            </div>
+                        </div>
+
+                        <h2 class="stat-number" data-target="{{$cantidadSedes > 0 ? $cantidadSedes : 13}}">0</h2>
+                        <h5 class="stat-title">Sedes</h5>
+                        <span class="stat-divider"></span>
+
+                        <p class="stat-text">
+                            Infraestructura moderna y accesible para un aprendizaje óptimo.
+                        </p>
                     </div>
-                    <h5 data-zanim-xs='{"delay":0.1}' class="mt-1">Sedes</h5>
-                    <p class="mb-0 mt-3 px-3 mb-2" data-zanim-xs='{"delay":0.2}'>
-                        Infraestructura moderna y accesible, diseñada para ofrecer un entorno de aprendizaje óptimo.
-                    </p>
                 </div>
 
-                <div class="col-sm-6 col-lg-3" data-zanim-timeline="{}" data-zanim-trigger="scroll">
-                    <div class="ring-icon mx-auto" data-zanim-xs='{"delay":0}' style="background-color: #880000;">
-                        <p class="fs-1 text-light">45</p>
-                        <span class="fas fa-house-user text-light" style="margin-top:-28px"></span>
+                <div class="col-sm-6 col-lg-3">
+                    <div class="stat-card counter">
+                        <div class="stat-icon">
+                            <div class="icon-inner">
+                                <i class="fas fa-book-open text-light"></i>
+                            </div>
+                        </div>
+
+                        <h2 class="stat-number" data-target="{{$cantidadCarreras > 0 ? $cantidadCarreras : 20}}">0</h2>
+                        <h5 class="stat-title">Carreras</h5>
+                        <span class="stat-divider"></span>
+
+                        <p class="stat-text">
+                            Programas académicos actualizados y orientados al mercado laboral.
+                        </p>
                     </div>
-                    <h5 data-zanim-xs='{"delay":0.1}' class="mt-1">Carreras</h5>
-                    <p class="mb-0 mt-3 px-3 mb-2" data-zanim-xs='{"delay":0.2}'>
-                        Programas académicos variados y actualizados que preparan a profesionales competentes y
-                        responsables.
-                    </p>
                 </div>
 
-                <div class="col-sm-6 col-lg-3" data-zanim-timeline="{}" data-zanim-trigger="scroll">
-                    <div class="ring-icon mx-auto" data-zanim-xs='{"delay":0}' style="background-color: #880000;">
-                        <p class="fs-1 text-light">45</p>
-                        <span class="fas fa-user-graduate text-light" style="margin-top:-28px"></span>
+                <div class="col-sm-6 col-lg-3">
+                    <div class="stat-card counter">
+                        <div class="stat-icon">
+                            <div class="icon-inner">
+                                <i class="fas fa-user-graduate text-light"></i>
+                            </div>
+                        </div>
+
+                        <h2 class="stat-number" data-target="{{$cantidadTitulados > 0 ? $cantidadTitulados : 4000}}">0</h2>
+                        <h5 class="stat-title">Titulados</h5>
+                        <span class="stat-divider"></span>
+
+                        <p class="stat-text">
+                            Profesionales que aportan con ética y conocimiento a la sociedad.
+                        </p>
                     </div>
-                    <h5 data-zanim-xs='{"delay":0.1}' class="mt-1">Titulados</h5>
-                    <p class="mb-0 mt-3 px-3 mb-2" data-zanim-xs='{"delay":0.2}'>
-                        Profesionales exitosos que contribuyen al desarrollo de la sociedad con ética y conocimiento.
-                    </p>
                 </div>
+
             </div>
-
         </div>
     </section>
+
+
+
     <!-- Final info sedes ============================-->
 
     <!-- seccion de noticias -->
@@ -180,7 +298,7 @@
     <section class="bg-100">
         <div class="container">
             <div class="text-center mb-6">
-                <h3 class="fs-2 fs-md-3">Ultimas Publicaciones de Sedes Academicas</h3>
+                <h3 class="fs-2 fs-md-3">Últimas publicaciones de sedes académicas desconcentradas</h3>
                 <hr class="short"
                     data-zanim-xs='{"from":{"opacity":0,"width":0},"to":{"opacity":1,"width":"4.20873rem"},"duration":0.8}'
                     data-zanim-trigger="scroll" />
@@ -282,10 +400,10 @@
                     <div class="col-12 col-md-3 d-flex flex-column align-items-center text-center">
                         <img class="rounded-3 img-fluid mb-2" src="{{ asset('assets/autoridades/rector_upea.webp') }}"
                             alt="Rector">
-                        <span class=" fw-bold text-light p-2 rounded mt-1" style='background-color: #880000;'> DR. CARLOS
-                            CONDORI
-                            TITIRICO</span>
-                        <p class="text-light mb-0 mt-1  bg-lightp-2 rounded mt-1">RECTOR UNIVERSIDAD PÚBLICA DE EL ALTO</p>
+                        <span class=" fw-bold text-light p-2 rounded mt-1" style='background-color: #880000;'>DR. CARLOS
+                            CONDORI TITIRICO </span>
+                        <p class="text-light mb-0 mt-1  bg-lightp-2 rounded mt-1"><b>RECTOR</b></p>
+                        <p class="text-light mb-0 mt-1  bg-lightp-2 rounded mt-1">UNIVERSIDAD PÚBLICA DE EL ALTO</p>
                     </div>
 
                     <!-- AUTORIDAD 2 -->
@@ -295,7 +413,8 @@
                         <span class=" fw-bold text-light p-2 rounded mt-1" style='background-color: #880000;'>DR. EFRAIN
                             CHAMBI VARGAS
                         </span>
-                        <p class="text-light mb-0 mt-1">VICERRECTOR UNIVERSIDAD PÚBLICA DE EL ALTO</p>
+                        <p class="text-light mb-0 mt-1  bg-lightp-2 rounded mt-1"><b>VICERRECTOR</b></p>
+                        <p class="text-light mb-0 mt-1"> UNIVERSIDAD PÚBLICA DE EL ALTO</p>
                     </div>
 
                     <!-- AUTORIDAD 3 -->
@@ -303,9 +422,10 @@
                         <img class="rounded-3 img-fluid mb-2"
                             src="{{ asset('assets/autoridades/directora_disbet.jpg') }}" alt="Directora">
                         <span class=" fw-bold text-light p-2 rounded mt-1" style='background-color: #880000;'>LIC.
-                            HERMINIA SILLO
+                            HERMINIA SILLO CORINA
                             CORINA</span>
-                        <p class="text-light mb-0 mt-1">DIRECTORA DISBEDC UNIVERSIDAD PÚBLICA DE EL ALTO</p>
+                        <p class="text-light mb-0 mt-1  bg-lightp-2 rounded mt-1"><b>DIRECTORA - DISBEDC</b></p>
+                        <p class="text-light mb-0 mt-1">UNIVERSIDAD PÚBLICA DE EL ALTO</p>
 
 
 
@@ -315,10 +435,10 @@
                     <div class="col-12 col-md-3 d-flex flex-column align-items-center text-center">
                         <img class="rounded-3 img-fluid mb-2"
                             src="{{ asset('assets/autoridades/cordinador_sedes.jpg') }}" alt="Directora">
-                        <span class=" fw-bold text-light p-2 rounded mt-1" style='background-color: #880000;'> LIC.
-                            PRIMITIVO HUAYHUA CAYO
-                            CORINA</span>
-                        <p class="text-light mb-0 mt-1">CORDINADOR DE SEDES UNIVERSIDAD PÚBLICA DE EL ALTO</p>
+                        <span class=" fw-bold text-light p-2 rounded mt-1" style='background-color: #880000;'>LIC.
+                            PRIMITIVO HUAYHUA CAYO</span>
+                        <p class="text-light mb-0 mt-1  bg-lightp-2 rounded mt-1"><b>CORDINADOR DE SEDES</b></p>
+                        <p class="text-light mb-0 mt-1">UNIVERSIDAD PÚBLICA DE EL ALTO</p>
 
 
 
@@ -338,7 +458,7 @@
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-md">
-                    <h4 class="text-white mb-0">UBICACIÓN DE SEDES ACADEMICAS DESCONCENTRADAS DE LA UPEA<br
+                    <h4 class="text-white mb-0">UBICACIÓN DE SEDES ACADÉMICAS DESCONCENTRADAS (UPEA)<br
                             class="d-md-none" /></h4>
                 </div>
             </div>
@@ -366,7 +486,7 @@
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-md">
-                    <h4 class="text-white mb-0">CONTACTANOS <br class="d-md-none" /></h4>
+                    <h4 class="text-white mb-0">REDES SOCIALES<br class="d-md-none" /></h4>
                 </div>
                 <!--       <div class="col-md-auto mt-md-0 mt-4"><a class="btn btn-light rounded-pill" href="contact.html">Contact Us</a></div> -->
             </div>
@@ -377,7 +497,7 @@
     <section class="text-center">
         <div class="container">
             <div class="text-center">
-                <h3 class="fs-2 fs-md-3">REDES SOCIALES</h3>
+
                 <p class="px-lg-4 mt-3">"Las redes sociales son herramientas poderosas; utilízalas para aprender,
                     conectar y crecer, pero nunca olvides que el verdadero conocimiento se construye más allá de la
                     pantalla."</p>
@@ -454,24 +574,27 @@
                 attribution: '&copy; OpenStreetMap contributors'
             }).addTo(map);
 
-           const colors = ["#880000", "#007bff", "#28a745", "#ffc107"];
-poligonos.forEach((pol, index) => {
-    const color = colors[index % colors.length]; // alterna colores
-    const layer = L.geoJSON(pol.geometry, {
-        style: {
-            color: color,
-            weight: 2,
-            fillColor: color,
-            fillOpacity: 0.4
-        }
-    }).addTo(map);
+            const colors = ["#880000", "#007bff", "#28a745", "#ffc107"];
+            poligonos.forEach((pol, index) => {
+                const color = colors[index % colors.length]; // alterna colores
+                const layer = L.geoJSON(pol.geometry, {
+                    style: {
+                        color: color,
+                        weight: 2,
+                        fillColor: color,
+                        fillOpacity: 0.4
+                    }
+                }).addTo(map);
 
-    // Tooltip permanente
-    layer.bindTooltip(pol.ubicacion, { permanent: true, direction: "top" });
+                // Tooltip permanente
+                layer.bindTooltip(pol.ubicacion, {
+                    permanent: true,
+                    direction: "top"
+                });
 
-    // Popup con link a Google Maps
-    const center = layer.getBounds().getCenter();
-    layer.bindPopup(`
+                // Popup con link a Google Maps
+                const center = layer.getBounds().getCenter();
+                layer.bindPopup(`
         <b>${pol.ubicacion}</b><br>
         <a class="btn btn-sm btn-success mt-2" 
            href="https://www.google.com/maps/dir/?api=1&destination=${center.lat},${center.lng}" 
@@ -479,7 +602,7 @@ poligonos.forEach((pol, index) => {
            🚗 Cómo llegar
         </a>
     `);
-});
+            });
 
 
             // 👉 Mensaje inicial para guiar al usuario
@@ -492,4 +615,43 @@ poligonos.forEach((pol, index) => {
         });
     </script>
 
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const counters = document.querySelectorAll(".stat-number");
+            const speed = 120; // menor = más rápido
+
+            const animateCounter = (counter) => {
+                const target = +counter.getAttribute("data-target");
+                let count = 0;
+
+                const updateCount = () => {
+                    const increment = Math.ceil(target / speed);
+                    count += increment;
+
+                    if (count < target) {
+                        counter.innerText = count;
+                        requestAnimationFrame(updateCount);
+                    } else {
+                        counter.innerText = target;
+                    }
+                };
+
+                updateCount();
+            };
+
+            const observer = new IntersectionObserver(entries => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        animateCounter(entry.target);
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, {
+                threshold: 0.6
+            });
+
+            counters.forEach(counter => observer.observe(counter));
+        });
+    </script>
 @endsection
