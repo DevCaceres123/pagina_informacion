@@ -36,7 +36,7 @@
                                 aria-expanded="false">Sedes</a>
                             <ul class="dropdown-menu">
                                 @foreach ($sedes as $sede)
-                                    <li><a class="dropdown-item" href="/sedes/{{encrypt($sede->id)}}">{{ ucfirst(strtolower($sede->nombre)) }}</a></li>
+                                    <li><a class="dropdown-item" href="/sedes/{{encrypt($sede->id)}}">{{ ucwords(strtolower($sede->nombre)) }}</a></li>
                                 @endforeach                                                            
                             </ul>
                         </li>   

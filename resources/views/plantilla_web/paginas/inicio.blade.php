@@ -423,7 +423,7 @@
                             src="{{ asset('assets/autoridades/directora_disbet.jpg') }}" alt="Directora">
                         <span class=" fw-bold text-light p-2 rounded mt-1" style='background-color: #880000;'>LIC.
                             HERMINIA SILLO CORINA
-                            CORINA</span>
+                            </span>
                         <p class="text-light mb-0 mt-1  bg-lightp-2 rounded mt-1"><b>DIRECTORA - DISBEDC</b></p>
                         <p class="text-light mb-0 mt-1">UNIVERSIDAD PÚBLICA DE EL ALTO</p>
 

@@ -17,11 +17,11 @@
                   <ul class="list-unstyled">
                      
                         @foreach ($sedes as $sede)
-                            <li><a class="text-light text-decoration-none" href="/sedes/{{encrypt($sede->id)}}">{{ ucfirst(strtolower($sede->nombre)) }}</a></li>
+                            <li><a class="text-light text-decoration-none" href="/sedes/{{encrypt($sede->id)}}">{{ ucwords(strtolower($sede->nombre)) }}</a></li>
                         @endforeach    
                   </ul>
               </div>
-
+              
               <!-- Columna 3: Universidad y redes -->
               <div class="col-md-4 mb-4">
                   <img src="{{ asset('assets/upea_logo.webp') }}" alt="logo upea" style="max-width: 180px;" class="mb-3">
