@@ -1,9 +1,7 @@
 @extends('index')
 @section('titulo', 'NOTICIA')
 @section('contenido')
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Merriweather:wght@700&display=swap"
-        rel="stylesheet">
-
+  
     <div class="container mb-5 font-sans mt-7 bg-light p-5">
 
         <!-- Slider de imágenes -->

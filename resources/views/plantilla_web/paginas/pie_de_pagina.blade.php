@@ -26,9 +26,8 @@
               <div class="col-md-4 mb-4">
                   <img src="{{ asset('assets/upea_logo.webp') }}" alt="logo upea" style="max-width: 180px;" class="mb-3">
                   <h5 class="fw-bold text-warning mb-3">Institución</h5>
-                  <p class="mb-2">
-                      Universidad <a href="https://themewagon.com/" target="_blank"
-                          class="text-warning text-decoration-underline">Pública de El Alto</a>
+                  <p class="mb-2 text-decoration-underline">
+                      Universidad Pública de El Alto (UPEA)
                   </p>
                   <h6 class="fw-bold mt-4 mb-2 text-warning">Síguenos</h6>
                   <a href="#" class="text-light me-3"><i class="fab fa-facebook"></i></a>
