@@ -32,23 +32,27 @@
                                 @endforeach
                             </select>
                         </div>
-                          <div class="col-md-4">
-                            <label class="form-label fw-bold">
-                                URL del sistema externo
-                            </label>
+                        @can('docentes.editar_url')
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold">
+                                    URL del sistema externo
+                                </label>
 
-                            <input type="url" id="urlSistema" class="form-control shadow-sm" value="{{ $boton->url }}"
-                                data-id="{{ $boton->id }}">
-                        </div>
+                                <input type="url" id="urlSistema" class="form-control shadow-sm" value="{{ $boton->url }}"
+                                    data-id="{{ $boton->id }}">
+                            </div>
+                        @endcan
 
-                        {{-- BOTÓN MEJORADO --}}
-                        <div class="col d-flex justify-content-end">
-                            <a href="" id="btnSistema" target="_blank" data-clave="{{ $boton->clave }}"
-                                class="btn btn-info shadow-sm fw-bold  ">
-                                <i class="fas fa-sign-in-alt   me-2"></i>
-                                <span>Ir al sistema</span>
-                            </a>
-                        </div>
+                        @can('docentes.ingresar')
+                            {{-- BOTÓN MEJORADO --}}
+                            <div class="col d-flex justify-content-end">
+                                <a href="" id="btnSistema" target="_blank" data-clave="{{ $boton->clave }}"
+                                    class="btn btn-info shadow-sm fw-bold  ">
+                                    <i class="fas fa-sign-in-alt   me-2"></i>
+                                    <span>Ir al sistema</span>
+                                </a>
+                            </div>
+                        @endcan
                     </div>
 
 
@@ -280,7 +284,7 @@
         });
     </script>
 
-       <script>
+    <script>
         const inputUrl = document.getElementById('urlSistema');
         const btn = document.getElementById('btnSistema');
 
@@ -317,7 +321,7 @@
                             timer: 1800,
                         });
                     } else {
-                         Swal.fire({
+                        Swal.fire({
                             title: "Error!",
                             text: "error al modificar la URl!",
                             icon: "error",

@@ -35,6 +35,7 @@
                             </select>
                         </div>
 
+                        @can('estudiantes.editar_url')
                         <div class="col-md-4">
                             <label class="form-label fw-bold">
                                 URL del sistema externo
@@ -43,7 +44,9 @@
                             <input type="url" id="urlSistema" class="form-control shadow-sm" value="{{ $boton->url }}"
                                 data-id="{{ $boton->id }}">
                         </div>
+                        @endcan
 
+                        @can('estudiantes.ingresar')
                         {{-- BOTÓN MEJORADO --}}
                         <div class="col d-flex justify-content-end">
                             <a href="" id="btnSistema" target="_blank" data-clave="{{ $boton->clave }}"
@@ -52,7 +55,7 @@
                                 <span>Ir al sistema</span>
                             </a>
                         </div>
-
+                        @endcan
                     </div>
 
 
