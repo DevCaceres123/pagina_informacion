@@ -54,13 +54,14 @@
                                 URL del sistema externo
                             </label>
 
-                            <input type="url" id="urlSistema" class="form-control shadow-sm"
-                                placeholder="https://otro-sistema.com" value="https://otro-sistema.com">
+                            <input type="url" id="urlSistema" class="form-control shadow-sm" value="{{ $boton->url }}"
+                                data-id="{{ $boton->id }}">
                         </div>
 
                         {{-- BOTÓN MEJORADO --}}
                         <div class="col d-flex justify-content-end">
-                            <a href="#" id="btnSistema" target="_blank" class="btn btn-info shadow-sm fw-bold  ">
+                            <a href="" id="btnSistema" target="_blank" data-clave="{{ $boton->clave }}"
+                                class="btn btn-info shadow-sm fw-bold  ">
                                 <i class="fas fa-sign-in-alt   me-2"></i>
                                 <span>Ir al sistema</span>
                             </a>
@@ -368,12 +369,49 @@
         const inputUrl = document.getElementById('urlSistema');
         const btn = document.getElementById('btnSistema');
 
+        const botonId = inputUrl.dataset.id;
+
         // Valor inicial
         btn.href = inputUrl.value;
 
-        // Actualizar href cuando cambia el input
-        inputUrl.addEventListener('input', function() {
-            btn.href = this.value || '#';
+        // Actualizar href y guardar en DB al cambiar
+        inputUrl.addEventListener('change', function() {
+            const nuevaUrl = this.value.trim();
+            btn.href = nuevaUrl || '#';
+
+            // Enviar a Laravel vía AJAX (fetch)
+            fetch("{{ route('admin.actualizar-boton') }}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({
+                        id: botonId,
+                        url: nuevaUrl
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire({
+                            title: "Correcto!",
+                            text: "Url modificado correctamente!",
+                            icon: "success",
+                            showConfirmButton: false,
+                            timer: 1800,
+                        });
+                    } else {
+                        Swal.fire({
+                            title: "Error!",
+                            text: "error al modificar la URl!",
+                            icon: "error",
+                            showConfirmButton: false,
+                            timer: 1800,
+                        });
+                    }
+                })
+                .catch(error => console.error('Error AJAX:', error));
         });
     </script>
 
