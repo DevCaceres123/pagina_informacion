@@ -45,7 +45,11 @@ class Controlador_estadisticasAdministrativo extends Controller
 
         $sedes = Sede::where('estado', 'activo')->orderBy('nombre', 'asc')->get();
 
-        return view('administrador.academico.administrativos', compact('sedes', 'carreras', 'gestionActual', 'gestiones'));
+        $boton = DB::table('config_botones')
+                 ->where('clave', 'btn_sistema_administrativo')
+                 ->first();
+
+        return view('administrador.academico.administrativos', compact('sedes', 'carreras', 'gestionActual', 'gestiones', 'boton'));
     }
 
 
