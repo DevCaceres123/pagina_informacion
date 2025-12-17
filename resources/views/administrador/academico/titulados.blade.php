@@ -18,7 +18,7 @@
 
                     <div class="row g-3 align-items-end">
                         <!-- Filtro por año -->
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <label class="form-label fw-bold">Año:</label>
                             <!-- Filtro por año -->
                             <select id="anio" name="anio" class="form-select shadow-sm">
@@ -32,7 +32,7 @@
                         </div>
 
                         <!-- Filtro por colación -->
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <label class="form-label fw-bold">Colación:</label>
                             <!-- Filtro por colación -->
                             <select id="fecha_filtro" name="fecha_filtro" class="form-select shadow-sm">
@@ -47,6 +47,23 @@
 
                         <div class="col-md-2">
                             <button class="btn btn-primary w-100" type="button" id="btnFiltrar">Filtrar</button>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label fw-bold">
+                                URL del sistema externo
+                            </label>
+
+                            <input type="url" id="urlSistema" class="form-control shadow-sm"
+                                placeholder="https://otro-sistema.com" value="https://otro-sistema.com">
+                        </div>
+
+                        {{-- BOTÓN MEJORADO --}}
+                        <div class="col d-flex justify-content-end">
+                            <a href="#" id="btnSistema" target="_blank" class="btn btn-info shadow-sm fw-bold  ">
+                                <i class="fas fa-sign-in-alt   me-2"></i>
+                                <span>Ir al sistema</span>
+                            </a>
                         </div>
                     </div>
 
@@ -347,5 +364,17 @@
         });
     </script>
 
+    <script>
+        const inputUrl = document.getElementById('urlSistema');
+        const btn = document.getElementById('btnSistema');
+
+        // Valor inicial
+        btn.href = inputUrl.value;
+
+        // Actualizar href cuando cambia el input
+        inputUrl.addEventListener('input', function() {
+            btn.href = this.value || '#';
+        });
+    </script>
 
 @endsection

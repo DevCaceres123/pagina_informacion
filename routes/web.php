@@ -26,6 +26,7 @@ use App\Models\Sede;
 use App\Models\Carrera;
 use App\Models\EstadisticaTitulado;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
 
 Route::get('/', function () {
 
@@ -248,6 +249,27 @@ Route::prefix('/admin')->middleware([Autenticados::class])->group(function () {
     //para la administracion de usuarios
     Route::resource('user', Controlador_user::class);
     Route::post('/user/listar', [Controlador_user::class, 'listar'])->name('user.listar');
+
+
+    /// para actualizar el boton
+
+    Route::post('/admin/actualizar-boton', function(Request $request) {
+        // Validación mínima
+        $request->validate([
+            'id' => 'required|integer|exists:config_botones,id',
+            'url' => 'required|url'
+        ]);
+
+        // Actualizar directamente en la BD
+        DB::table('config_botones')
+        ->where('id', $request->id)
+        ->update(['url' => $request->url]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'URL actualizada correctamente'
+        ]);
+    })->name('admin.actualizar-boton');
 });
 
 

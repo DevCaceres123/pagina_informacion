@@ -15,13 +15,15 @@
             <div class="card-body">
                 <form action="" method="POST">
 
-                    <div class="row mb-4">
+                    <div class="row mb-4 align-items-end">
 
                         <div class="col-md-3">
-                            <label for="gestion_filtro" class="form-label fw-bold">Ver estadísticas de:</label>
+                            <label for="gestion_filtro" class="form-label fw-bold">
+                                Ver estadísticas de:
+                            </label>
+
                             <select name="gestion_filtro" id="gestion_filtro" class="form-select shadow-sm">
                                 @php
-                                    // Agregamos la gestión actual como primera opción
                                     $todasGestiones = collect([$gestionActual])->merge($gestiones);
                                 @endphp
 
@@ -32,7 +34,27 @@
                                 @endforeach
                             </select>
                         </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold">
+                                URL del sistema externo
+                            </label>
+
+                            <input type="url" id="urlSistema" class="form-control shadow-sm" value="{{ $boton->url }}"
+                                data-id="{{ $boton->id }}">
+                        </div>
+
+                        {{-- BOTÓN MEJORADO --}}
+                        <div class="col d-flex justify-content-end">
+                            <a href="" id="btnSistema" target="_blank" data-clave="{{ $boton->clave }}"
+                                class="btn btn-info shadow-sm fw-bold  ">
+                                <i class="fas fa-sign-in-alt   me-2"></i>
+                                <span>Ir al sistema</span>
+                            </a>
+                        </div>
+
                     </div>
+
 
 
                     <div class="table-responsive">
@@ -249,6 +271,55 @@
             $('#checkTodo').on('change', function() {
                 $('.check-item').prop('checked', $(this).is(':checked'));
             });
+        });
+    </script>
+    <script>
+        const inputUrl = document.getElementById('urlSistema');
+        const btn = document.getElementById('btnSistema');
+
+        const botonId = inputUrl.dataset.id;
+
+        // Valor inicial
+        btn.href = inputUrl.value;
+
+        // Actualizar href y guardar en DB al cambiar
+        inputUrl.addEventListener('change', function() {
+            const nuevaUrl = this.value.trim();
+            btn.href = nuevaUrl || '#';
+
+            // Enviar a Laravel vía AJAX (fetch)
+            fetch("{{ route('admin.actualizar-boton') }}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({
+                        id: botonId,
+                        url: nuevaUrl
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire({
+                            title: "Correcto!",
+                            text: "Url modificado correctamente!",
+                            icon: "success",
+                            showConfirmButton: false,
+                            timer: 1800,
+                        });
+                    } else {
+                         Swal.fire({
+                            title: "Error!",
+                            text: "error al modificar la URl!",
+                            icon: "error",
+                            showConfirmButton: false,
+                            timer: 1800,
+                        });
+                    }
+                })
+                .catch(error => console.error('Error AJAX:', error));
         });
     </script>
 
