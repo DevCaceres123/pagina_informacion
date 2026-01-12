@@ -135,45 +135,56 @@ class Controlador_estadisticasEstudiantes extends Controller
 
             if ($tipo === 'carrera') {
                 // Obtener los datos filtrados
-                $estadisticas = DB::table('estadisticas_estudiantes')
-                    ->join('carreras', 'estadisticas_estudiantes.carrera_id', '=', 'carreras.id')
-                    ->join('sedes', 'estadisticas_estudiantes.sede_id', '=', 'sedes.id')
+               $estadisticas = DB::table('carrera_sede')
+                    ->join('carreras', 'carrera_sede.carrera_id', '=', 'carreras.id')
+                    ->join('sedes', 'carrera_sede.sede_id', '=', 'sedes.id')
+                    ->leftJoin('estadisticas_estudiantes', function ($join) use ($gestion) {
+                        $join->on('estadisticas_estudiantes.carrera_id', '=', 'carreras.id')
+                            ->on('estadisticas_estudiantes.sede_id', '=', 'sedes.id')
+                            ->where('estadisticas_estudiantes.gestion', $gestion);
+                    })
                     ->select(
                         'carreras.nombre as carrera',
                         'sedes.nombre as sede',
-                        'estadisticas_estudiantes.gestion',
-                        DB::raw('SUM(estadisticas_estudiantes.hombres) as total_masculino'),
-                        DB::raw('SUM(estadisticas_estudiantes.mujeres) as total_femenino'),
-                        DB::raw('SUM(estadisticas_estudiantes.total) as total')
-                    )                    
+                        DB::raw('COALESCE(SUM(estadisticas_estudiantes.hombres), 0) as total_masculino'),
+                        DB::raw('COALESCE(SUM(estadisticas_estudiantes.mujeres), 0) as total_femenino'),
+                        DB::raw('COALESCE(SUM(estadisticas_estudiantes.total), 0) as total')
+                    )
+                    ->whereIn('carreras.id', $seleccionados)
+                    ->where('carreras.estado', 'activo')
                     ->where('sedes.estado', 'activo')
-                    ->whereIn('estadisticas_estudiantes.carrera_id', $seleccionados)
-                    ->where('estadisticas_estudiantes.gestion', $gestion)
-                    ->groupBy('carreras.nombre', 'sedes.nombre', 'estadisticas_estudiantes.gestion')
+                    ->groupBy('carreras.nombre', 'sedes.nombre')
+                    ->orderBy('carreras.nombre')
+                    ->orderBy('sedes.nombre')
                     ->get();
-
 
             }
 
 
             if ($request->tipo === 'sede') {
 
-               $estadisticas = DB::table('estadisticas_estudiantes')
-                    ->join('carreras', 'estadisticas_estudiantes.carrera_id', '=', 'carreras.id')
-                    ->join('sedes', 'estadisticas_estudiantes.sede_id', '=', 'sedes.id')
-                    ->select(
-                        'sedes.nombre as sede',
-                        'carreras.nombre as carrera',
-                        'estadisticas_estudiantes.gestion',
-                        DB::raw('SUM(estadisticas_estudiantes.hombres) as total_masculino'),
-                        DB::raw('SUM(estadisticas_estudiantes.mujeres) as total_femenino'),
-                        DB::raw('SUM(estadisticas_estudiantes.total) as total')
-                    )
-                    ->where('carreras.estado', 'activo')
-                    ->whereIn('estadisticas_estudiantes.sede_id', $seleccionados)
-                    ->where('estadisticas_estudiantes.gestion', $gestion)
-                    ->groupBy('sedes.nombre', 'carreras.nombre', 'estadisticas_estudiantes.gestion')
-                    ->get();
+            $estadisticas = DB::table('carrera_sede')
+                ->join('sedes', 'carrera_sede.sede_id', '=', 'sedes.id')
+                ->join('carreras', 'carrera_sede.carrera_id', '=', 'carreras.id')
+                ->leftJoin('estadisticas_estudiantes', function ($join) use ($gestion) {
+                    $join->on('estadisticas_estudiantes.carrera_id', '=', 'carreras.id')
+                        ->on('estadisticas_estudiantes.sede_id', '=', 'sedes.id')
+                        ->where('estadisticas_estudiantes.gestion', $gestion);
+                })
+                ->select(
+                    'sedes.nombre as sede',
+                    'carreras.nombre as carrera',
+                    DB::raw('COALESCE(SUM(estadisticas_estudiantes.hombres), 0) as total_masculino'),
+                    DB::raw('COALESCE(SUM(estadisticas_estudiantes.mujeres), 0) as total_femenino'),
+                    DB::raw('COALESCE(SUM(estadisticas_estudiantes.total), 0) as total')
+                )
+                ->whereIn('sedes.id', $seleccionados)
+                ->where('sedes.estado', 'activo')
+                ->where('carreras.estado', 'activo')
+                ->groupBy('sedes.nombre', 'carreras.nombre')
+                ->orderBy('sedes.nombre')
+                ->orderBy('carreras.nombre')
+                ->get();
 
             }
               $nombreCompletoUsuario = auth()

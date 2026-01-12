@@ -380,7 +380,7 @@ $("#btnConfirmar").on("click", function (e) {
                 return;
             }
 
-            if (response.tipo == "error_validacion") {
+            if (response.estado == "error_validacion") {
                 // Mostrar los mensajes de validación (cabeceras faltantes o columnas extra)
                 mostrarErroresImportacion(
                     response.errores_validacion,
