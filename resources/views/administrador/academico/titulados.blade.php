@@ -212,7 +212,7 @@
 
                                         {{-- Indicador de Fila --}}
                                         <div class="alert alert-info py-2 mb-3 text-center fw-semibold" role="alert">
-                                            <i class="fas fa-info-circle me-2"></i> Mostrando los primeros 10 registros
+                                            <i class="fas fa-info-circle me-2"></i> Mostrando los primeros 3 registros
                                             para
                                             validación.
                                         </div>

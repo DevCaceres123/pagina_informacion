@@ -306,48 +306,83 @@ class Controlador_estadisticasTitulados extends Controller
                 return response()->json(['error' => 'Tipo inválido'], 400);
             }
 
-            // Construcción base
-            $query = DB::table('estadistica_titulados')
-                ->join('carreras', 'estadistica_titulados.carrera_id', '=', 'carreras.id')
-                ->join('sedes', 'estadistica_titulados.sede_id', '=', 'sedes.id')
-                ->select(
-                    'carreras.nombre as carrera',
-                    'sedes.nombre as sede',
-                    'estadistica_titulados.grado_academico',
-                    DB::raw('COUNT(*) as total')
-                )
-                ->where('carreras.estado', 'activo')
-                ->where('sedes.estado', 'activo')
-                ->whereIn('estadistica_titulados.grado_academico', $grados)
-                ->whereDate('estadistica_titulados.fecha_colacion', $gestion)
-                ->groupBy('carreras.nombre', 'sedes.nombre', 'estadistica_titulados.grado_academico');
+            if ($tipo === 'carrera') {
 
-            // Filtrado dinámico
-            if ($tipo === 'carrera') {                                                
-                $query->whereIn('estadistica_titulados.carrera_id', $seleccionados);                
-            } else {                
-                $query->whereIn('estadistica_titulados.sede_id', $seleccionados);                
+                    $estadisticas = DB::table('carrera_sede')
+                        ->join('carreras', 'carrera_sede.carrera_id', '=', 'carreras.id')
+                        ->join('sedes', 'carrera_sede.sede_id', '=', 'sedes.id')
+
+                        ->leftJoin('estadistica_titulados', function ($join) use ($gestion, $grados) {
+                            $join->on('estadistica_titulados.carrera_id', '=', 'carreras.id')
+                                ->on('estadistica_titulados.sede_id', '=', 'sedes.id')
+                                ->where('estadistica_titulados.fecha_colacion', $gestion)
+                                ->whereIn('estadistica_titulados.grado_academico', $grados);
+                        })
+
+                        ->select(
+                            'carreras.nombre as carrera',
+                            'sedes.nombre as sede',
+                            'estadistica_titulados.grado_academico',
+                            DB::raw('COUNT(estadistica_titulados.id) as total')
+                        )
+
+                        ->whereIn('carreras.id', $seleccionados)
+                        ->where('carreras.estado', 'activo')
+                        ->where('sedes.estado', 'activo')
+
+                        ->groupBy(
+                            'carreras.nombre',
+                            'sedes.nombre',
+                            'estadistica_titulados.grado_academico'
+                        )
+
+                        ->orderBy('carreras.nombre')
+                        ->orderBy('sedes.nombre')
+                        ->orderBy('estadistica_titulados.grado_academico')
+                        ->get();
             }
 
-            
-            // Ejecutar
-            $estadisticas = $query
-                ->orderBy('carreras.nombre')
-                ->orderBy('sedes.nombre')
-                ->orderBy('estadistica_titulados.grado_academico')
-                ->get();
 
+             if ($tipo === 'sede') {
+
+                  $estadisticas = DB::table('carrera_sede')
+                        ->join('carreras', 'carrera_sede.carrera_id', '=', 'carreras.id')
+                        ->join('sedes', 'carrera_sede.sede_id', '=', 'sedes.id')
+
+                        ->leftJoin('estadistica_titulados', function ($join) use ($gestion, $grados) {
+                            $join->on('estadistica_titulados.carrera_id', '=', 'carreras.id')
+                                ->on('estadistica_titulados.sede_id', '=', 'sedes.id')
+                                ->where('estadistica_titulados.fecha_colacion', $gestion)
+                                ->whereIn('estadistica_titulados.grado_academico', $grados);
+                        })
+
+                        ->select(                            
+                            'sedes.nombre as sede',
+                            'carreras.nombre as carrera',
+                            'estadistica_titulados.grado_academico',
+                            DB::raw('COUNT(estadistica_titulados.id) as total')
+                        )
+
+                        ->whereIn('sedes.id', $seleccionados)
+                        ->where('carreras.estado', 'activo')
+                        ->where('sedes.estado', 'activo')
+
+                        ->groupBy(
+                            'carreras.nombre',
+                            'sedes.nombre',
+                            'estadistica_titulados.grado_academico'
+                        )
+
+                        ->orderBy('carreras.nombre')
+                        ->orderBy('sedes.nombre')
+                        ->orderBy('estadistica_titulados.grado_academico')
+                        ->get();
+             }
             
 
             // Obtener datos del usuario
             $usuario = auth()->user()->only(['nombres', 'apellidos']);
 
-            // Obtener nombres de filtros seleccionados
-            if ($tipo === 'carrera') {
-                $seleccionadosNombres = \App\Models\Carrera::whereIn('id', $seleccionados)->pluck('nombre')->toArray();
-            } else {
-                $seleccionadosNombres = \App\Models\Sede::whereIn('id', $seleccionados)->pluck('nombre')->toArray();
-            }
 
             $gradosSeleccionadosNombres = $grados;
 
@@ -356,8 +391,7 @@ class Controlador_estadisticasTitulados extends Controller
                 'tipo' => $tipo,
                 'estadisticas' => $estadisticas,
                 'gestion' => $gestion,
-                'usuarioGenerador' => $usuario,
-                'seleccionadosNombres' => $seleccionadosNombres,
+                'usuarioGenerador' => $usuario,                
                 'gradosSeleccionadosNombres' => $gradosSeleccionadosNombres,
             ]);
 
