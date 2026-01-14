@@ -18,10 +18,10 @@ use Maatwebsite\Excel\Concerns\{
     WithValidation
 };
 
-class DocenteImport implements ToModel, WithHeadingRow, WithValidation, SkipsOnFailure
+class DocenteImport implements ToModel, WithHeadingRow, WithValidation
 {
     use Importable;
-    use SkipsFailures;
+    
 
     public $erroresPersonalizados = [];
     public $filasInsertadas = 0;
@@ -134,7 +134,7 @@ class DocenteImport implements ToModel, WithHeadingRow, WithValidation, SkipsOnF
     /**
      *  Al finalizar toda la importación, aseguramos guardar lo que falte
      */
-    public function __destruct()
+    public function finalize(): void
     {
         if (!empty($this->dataToInsert)) {
             $this->flushData();

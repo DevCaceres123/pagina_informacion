@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Validation\Rule;
 use App\Imports\DocenteImport;
+use Maatwebsite\Excel\Validators\ValidationException as ExcelValidationException;
 
 class Controlador_estadisticasDocente extends Controller
 {
@@ -213,22 +214,23 @@ class Controlador_estadisticasDocente extends Controller
             Excel::import($import, $request->file('archivo'));
 
             // 4️⃣ Capturar errores
-            $erroresValidacion = $import->failures();
+            
             $erroresPersonalizados = $import->erroresPersonalizados;
 
             // 5️⃣ Si hay cualquier tipo de error -> rollback y no guardar nada
-            if (count($erroresValidacion) > 0 || count($erroresPersonalizados) > 0) {
+            if (count($erroresPersonalizados) > 0) {
                 DB::rollBack();
 
                 return response()->json([
                     'estado' => 'error_validacion',
                     'mensaje' => 'La importación fue cancelada. Se detectaron errores en los datos.',
-                    'errores_validacion' => $erroresValidacion,
+                    
                     'errores_personalizados' => $erroresPersonalizados,
                 ], 200);
             }
 
             // 6️⃣ Si todo está correcto, confirmamos la transacción
+            $import->finalize();
             DB::commit();
 
             return response()->json([
@@ -237,6 +239,12 @@ class Controlador_estadisticasDocente extends Controller
                 'filas_insertadas' => $import->filasInsertadas,
             ], 200);
 
+        } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
+            DB::rollBack();
+            return response()->json([
+                'estado' => 'error_validacion',
+                'errores_validacion' => $e->failures()
+            ]);            
         } catch (\Exception $e) {
             DB::rollBack();
 
@@ -244,7 +252,7 @@ class Controlador_estadisticasDocente extends Controller
                 'estado' => 'error',
                 'mensaje' => 'Ocurrió un error inesperado durante la importación',
                 'detalle' => $e->getMessage(),
-            ], 500);
+            ], 200);
         }
     }
 
