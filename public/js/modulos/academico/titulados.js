@@ -382,12 +382,12 @@ $("#btnConfirmar").on("click", function (e) {
                 .text("Subir Definitivamente");
 
             // Verificamos que no haya un error o que todos los campos sean llenados
-            if (response.tipo === "errores") {
-                mensajeAlerta(response.mensaje, "errores");
-                return;
-            }
+            // if (response.tipo === "errores") {
+            //     mensajeAlerta(response.mensaje, "errores");
+            //     return;
+            // }
 
-            if (response.tipo == "error_validacion") {
+            if (response.estado == "error_validacion") {
                 // Mostrar los mensajes de validación (cabeceras faltantes o columnas extra)
                 mostrarErroresImportacion(
                     response.errores_validacion,

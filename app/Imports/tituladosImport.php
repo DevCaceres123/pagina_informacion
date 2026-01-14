@@ -16,7 +16,7 @@ use Maatwebsite\Excel\Concerns\{
     WithValidation
 };
 
-class TituladosImport implements ToModel, WithHeadingRow, WithValidation, SkipsOnFailure
+class TituladosImport implements ToModel, WithHeadingRow, WithValidation
 {
     use Importable, SkipsFailures;
 
@@ -118,7 +118,7 @@ class TituladosImport implements ToModel, WithHeadingRow, WithValidation, SkipsO
     /**
      * 🔹 Al finalizar toda la importación, aseguramos guardar lo que falte
      */
-    public function __destruct()
+    public function finalize()
     {
         if (!empty($this->dataToInsert)) {
             $this->flushData();

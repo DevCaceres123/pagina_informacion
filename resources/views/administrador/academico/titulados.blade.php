@@ -22,8 +22,12 @@
                             <label class="form-label fw-bold">Año:</label>
                             <!-- Filtro por año -->
                             <select id="anio" name="anio" class="form-select shadow-sm">
+                                @php
+                                    // Agregamos la gestión actual como primera opción
+                                    $anios = collect([$gestionActual])->merge($anios);
+                                @endphp
                                 @foreach ($anios as $anio)
-                                    <option value="{{ $anio }}" {{ $anio == $anioSeleccionado ? 'selected' : '' }}>
+                                    <option value="{{ $anio }}" {{ $anio == $gestionActual ? 'selected' : '' }}>
                                         {{ $anio }}
                                     </option>
                                 @endforeach
