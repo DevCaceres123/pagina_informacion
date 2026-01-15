@@ -264,31 +264,65 @@ class Controlador_estadisticasAdministrativo extends Controller
             $estadisticas = collect();
 
             // Obtener los datos filtrados
-            $query = DB::table('estadistica_administrativos')                
-                ->join('sedes', 'estadistica_administrativos.sede_id', '=', 'sedes.id')
-                ->select(                    
-                    'sedes.nombre as sede',
-                    'estadistica_administrativos.gestion',
-                    'estadistica_administrativos.servicio',
-                    DB::raw('COUNT(*) as total')
-                )                
-                ->where('sedes.estado', 'activo')                
-                ->where('estadistica_administrativos.gestion', $gestion)
-                ->groupBy('estadistica_administrativos.servicio','sedes.nombre', 'estadistica_administrativos.gestion');
 
-            // Filtrado dinámico
+
             if ($tipo === 'sede') {
-                $query->whereIn('estadistica_administrativos.sede_id', $seleccionados);
-            } else {
-                $query->whereIn('estadistica_administrativos.servicio', $seleccionados);
+
+                $servicios = ['contrato', 'planta', 'linea'];
+
+                $estadisticas = DB::table('sedes')
+                    ->crossJoin(DB::raw(
+                        "(SELECT '" . implode("' AS servicio UNION ALL SELECT '", $servicios) . "') servicios"
+                    ))
+                    ->leftJoin('estadistica_administrativos', function ($join) use ($gestion) {
+                        $join->on('estadistica_administrativos.sede_id', '=', 'sedes.id')
+                            ->on('estadistica_administrativos.servicio', '=', 'servicios.servicio')
+                            ->where('estadistica_administrativos.gestion', $gestion);
+                    })
+                    ->select(
+                        'sedes.nombre as sede',
+                        DB::raw("$gestion as gestion"),
+                        'servicios.servicio',
+                        DB::raw('COUNT(estadistica_administrativos.id) as total')
+                    )
+                    ->whereIn('sedes.id', $seleccionados)
+                    ->where('sedes.estado', 'activo')
+                    ->where('estadistica_administrativos.estado', 'activo')
+                    ->groupBy('sedes.nombre', 'servicios.servicio')
+                    ->orderBy('sedes.nombre')
+                    ->orderBy('servicios.servicio')
+                    ->get();
             }
 
-            // Ejecutar
-            $estadisticas = $query
-                ->orderBy('sedes.nombre')                
-                ->get();
             
+
             
+           if ($tipo === 'servicio') {
+
+                $servicios = $seleccionados;
+
+                $estadisticas = DB::table('sedes')
+                    ->crossJoin(DB::raw(
+                        "(SELECT '" . implode("' AS servicio UNION ALL SELECT '", $servicios) . "') servicios"
+                    ))
+                    ->leftJoin('estadistica_administrativos', function ($join) use ($gestion) {
+                        $join->on('estadistica_administrativos.sede_id', '=', 'sedes.id')
+                            ->on('estadistica_administrativos.servicio', '=', 'servicios.servicio')
+                            ->where('estadistica_administrativos.gestion', $gestion);
+                    })
+                    ->select(
+                        'sedes.nombre as sede',
+                        DB::raw("$gestion as gestion"),
+                        'servicios.servicio',
+                        DB::raw('COUNT(estadistica_administrativos.id) as total')
+                    )
+                    ->where('sedes.estado', 'activo')
+                    ->where('estadistica_administrativos.estado', 'activo')
+                    ->groupBy('sedes.nombre', 'servicios.servicio')
+                    ->orderBy('sedes.nombre')
+                    ->orderBy('servicios.servicio')
+                    ->get();
+            }   
 
             $nombreCompletoUsuario = auth()
               ->user()
