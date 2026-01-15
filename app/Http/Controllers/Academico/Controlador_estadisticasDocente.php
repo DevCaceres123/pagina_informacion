@@ -291,6 +291,7 @@ class Controlador_estadisticasDocente extends Controller
 
                     ->whereIn('carreras.id', $seleccionados)
                     ->where('carreras.estado', 'activo')
+                    ->where('estadistica_docentes.estado', 'activo')
                     ->where('sedes.estado', 'activo')
 
                     ->groupBy(
@@ -325,6 +326,7 @@ class Controlador_estadisticasDocente extends Controller
 
                     ->whereIn('sedes.id', $seleccionados)
                     ->where('carreras.estado', 'activo')
+                    ->where('estadistica_docentes.estado', 'activo')
                     ->where('sedes.estado', 'activo')
 
                     ->groupBy(
