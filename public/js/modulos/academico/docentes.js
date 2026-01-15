@@ -553,6 +553,9 @@ $("#generarReporte").on("click", function (e) {
         null,
         datos,
         function (error, response) {
+
+            // habilitar boton cunado termine
+            $("#generarReporte").prop("disabled", false).html(originalContent);
             if (error || !response) {
                 mensajeAlerta("Error al cargar la información", "error");
                 return;
@@ -573,8 +576,6 @@ $("#generarReporte").on("click", function (e) {
                 window.open(pdfUrl, "_blank");
             }, 1500);
 
-            // habilitar boton cunado termine
-            $("#generarReporte").prop("disabled", false).html(originalContent);
         }
     );
 });

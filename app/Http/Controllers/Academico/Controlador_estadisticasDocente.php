@@ -270,36 +270,72 @@ class Controlador_estadisticasDocente extends Controller
             // Contenedor para los resultados
             $estadisticas = collect();
 
-
-
-            // Obtener los datos filtrados
-            $query = DB::table('estadistica_docentes')
-                ->join('carreras', 'estadistica_docentes.carrera_id', '=', 'carreras.id')
-                ->join('sedes', 'estadistica_docentes.sede_id', '=', 'sedes.id')
-                ->select(
-                    'carreras.nombre as carrera',
-                    'sedes.nombre as sede',
-                    'estadistica_docentes.gestion',
-                    DB::raw('COUNT(*) as total')
-                )
-                ->where('carreras.estado', 'activo')
-                ->where('sedes.estado', 'activo')                
-                ->where('estadistica_docentes.gestion', $gestion)
-                ->groupBy('carreras.nombre', 'sedes.nombre', 'estadistica_docentes.gestion');
-
-            // Filtrado dinámico
             if ($tipo === 'carrera') {
-                $query->whereIn('estadistica_docentes.carrera_id', $seleccionados);
-            } else {
-                $query->whereIn('estadistica_docentes.sede_id', $seleccionados);
+
+                $estadisticas = DB::table('carrera_sede')
+                    ->join('carreras', 'carrera_sede.carrera_id', '=', 'carreras.id')
+                    ->join('sedes', 'carrera_sede.sede_id', '=', 'sedes.id')
+
+                    ->leftJoin('estadistica_docentes', function ($join) use ($gestion) {
+                            $join->on('estadistica_docentes.carrera_id', '=', 'carreras.id')
+                                ->on('estadistica_docentes.sede_id', '=', 'sedes.id')
+                                ->where('estadistica_docentes.gestion', $gestion);                          
+                    })
+                   ->select(
+                        'carreras.nombre as carrera',
+                        'sedes.nombre as sede',
+                        'estadistica_docentes.gestion',
+                        DB::raw('COALESCE(COUNT(estadistica_docentes.id), 0) as total')
+                    )
+
+
+                    ->whereIn('carreras.id', $seleccionados)
+                    ->where('carreras.estado', 'activo')
+                    ->where('sedes.estado', 'activo')
+
+                    ->groupBy(
+                        'carreras.nombre',
+                        'sedes.nombre', 
+                        'estadistica_docentes.gestion'                      
+                    )
+                    ->orderBy('carreras.nombre')
+                    ->orderBy('sedes.nombre')                    
+                    ->get();
             }
 
-            // Ejecutar
-            $estadisticas = $query
-                ->orderBy('carreras.nombre')
-                ->orderBy('sedes.nombre')                
-                ->get();
-            
+
+            if ($tipo === 'sede') {
+
+                $estadisticas = DB::table('carrera_sede')
+                    ->join('carreras', 'carrera_sede.carrera_id', '=', 'carreras.id')
+                    ->join('sedes', 'carrera_sede.sede_id', '=', 'sedes.id')
+
+                    ->leftJoin('estadistica_docentes', function ($join) use ($gestion) {
+                            $join->on('estadistica_docentes.carrera_id', '=', 'carreras.id')
+                                ->on('estadistica_docentes.sede_id', '=', 'sedes.id')
+                                ->where('estadistica_docentes.gestion', $gestion);                          
+                    })
+                   ->select(
+                        'carreras.nombre as carrera',
+                        'sedes.nombre as sede',
+                        'estadistica_docentes.gestion',
+                        DB::raw('COALESCE(COUNT(estadistica_docentes.id), 0) as total')
+                    )
+
+
+                    ->whereIn('sedes.id', $seleccionados)
+                    ->where('carreras.estado', 'activo')
+                    ->where('sedes.estado', 'activo')
+
+                    ->groupBy(
+                        'carreras.nombre',
+                        'sedes.nombre', 
+                        'estadistica_docentes.gestion'                      
+                    )
+                    ->orderBy('carreras.nombre')
+                    ->orderBy('sedes.nombre')                    
+                    ->get();
+            }
 
             $nombreCompletoUsuario = auth()
               ->user()
