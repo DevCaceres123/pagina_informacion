@@ -42,7 +42,11 @@ class Controlador_estadisticasDocente extends Controller
 
         $sedes = Sede::where('estado', 'activo')->orderBy('nombre', 'asc')->get();
 
-        return view('administrador.academico.docentes', compact('sedes', 'carreras', 'gestionActual', 'gestiones'));
+        $boton = DB::table('config_botones')
+                 ->where('clave', 'btn_sistema_docentes')
+                 ->first();
+        
+        return view('administrador.academico.docentes', compact('sedes', 'carreras', 'gestionActual', 'gestiones', 'boton'));
     }
 
 

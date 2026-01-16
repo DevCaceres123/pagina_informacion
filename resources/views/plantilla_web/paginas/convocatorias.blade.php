@@ -72,6 +72,16 @@
                 {{ $convocatorias->links('pagination::simple-bootstrap-5') }}
             </div>
 
+          <div class="text-center mb-3">
+                <a href="https://admisionestudiantil.upea.bo/sie/WxXY8Eo2K4n6rIJ5ZJmwj1LRA" target="_black"
+                class="btn btn-primary btn-md shadow-sm">
+                    
+                    Ver convocatorias de admisión
+                </a>        
+         </div>
+
+
+
         </div>
     </div>
 @endsection

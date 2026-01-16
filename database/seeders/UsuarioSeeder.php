@@ -156,24 +156,32 @@ class UsuarioSeeder extends Seeder
         Permission::create(['name' => 'estudiantes.subir_datos'])->syncRoles([$rol1]);
         Permission::create(['name' => 'estudiantes.generar_reporte'])->syncRoles([$rol1]);
         Permission::create(['name' => 'estudiantes.editar'])->syncRoles([$rol1]);
+        Permission::create(['name' => 'estudiantes.editar_url'])->syncRoles([$rol1]);
+        Permission::create(['name' => 'estudiantes.ingresar'])->syncRoles([$rol1]);
 
         // permiso para los titulados
         Permission::create(['name' => 'titulados.inicio'])->syncRoles([$rol1,$rol2]);
         Permission::create(['name' => 'titulados.subir_datos'])->syncRoles([$rol1]);
         Permission::create(['name' => 'titulados.generar_reporte'])->syncRoles([$rol1]);
         Permission::create(['name' => 'titulados.editar'])->syncRoles([$rol1]);
+        Permission::create(['name' => 'titulados.editar_url'])->syncRoles([$rol1]);
+        Permission::create(['name' => 'titulados.ingresar'])->syncRoles([$rol1]);
 
           // permiso para los docentes
         Permission::create(['name' => 'docentes.inicio'])->syncRoles([$rol1,$rol2]);
         Permission::create(['name' => 'docentes.subir_datos'])->syncRoles([$rol1]);
         Permission::create(['name' => 'docentes.generar_reporte'])->syncRoles([$rol1]);
         Permission::create(['name' => 'docentes.editar'])->syncRoles([$rol1]);
+        Permission::create(['name' => 'docentes.editar_url'])->syncRoles([$rol1]);
+        Permission::create(['name' => 'docentes.ingresar'])->syncRoles([$rol1]);
 
           // permiso para administrativos
         Permission::create(['name' => 'administrativos.inicio'])->syncRoles([$rol1,$rol2]);
         Permission::create(['name' => 'administrativos.subir_datos'])->syncRoles([$rol1]);
         Permission::create(['name' => 'administrativos.generar_reporte'])->syncRoles([$rol1]);
         Permission::create(['name' => 'administrativos.editar'])->syncRoles([$rol1]);
+        Permission::create(['name' => 'administrativos.editar_url'])->syncRoles([$rol1]);
+        Permission::create(['name' => 'administrativos.ingresar'])->syncRoles([$rol1]);
 
 
     }

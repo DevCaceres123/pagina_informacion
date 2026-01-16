@@ -52,7 +52,11 @@ class Controlador_estadisticasTitulados extends Controller
 
         $sedes = Sede::where('estado', 'activo')->orderBy('nombre', 'asc')->get();
 
-        return view('administrador.academico.titulados', compact('sedes', 'carreras', 'anios', 'colaciones', 'gestionActual', 'anioSeleccionado', 'colacionSeleccionada'));
+        $boton = DB::table('config_botones')
+                 ->where('clave', 'btn_sistema_titulado')
+                 ->first();
+        
+        return view('administrador.academico.titulados', compact('sedes', 'carreras', 'anios', 'colaciones', 'gestionActual', 'anioSeleccionado', 'colacionSeleccionada','boton'));
     }
 
 
