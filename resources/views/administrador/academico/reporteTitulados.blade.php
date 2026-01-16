@@ -47,9 +47,7 @@
             width: 100%;
             height: 16px;
             font-size: 10px;
-            color: #777;
-            margin-top: 25px;
-            margin-bottom: 15px;
+            color: #777;         
             /* Espaciado antes del inicio del reporte */
             padding-top: 5px;
             padding-bottom: 5px;
@@ -81,7 +79,7 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 15px;
+            
         }
 
         /* Eliminamos bordes de celda, usamos solo bordes horizontales */

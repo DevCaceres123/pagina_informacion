@@ -8,20 +8,35 @@
         /* Fuente principal */
         body {
             font-family: DejaVu Sans, sans-serif;
-            margin: 50px 25px 50px 25px;
+            margin: 0;
+            padding: 0;
             color: #333;
         }
 
         /* Header con tabla (compatible Dompdf) */
+        /* Reservar espacio para el header en TODAS las páginas */
+        @page {
+            margin-top: 140px;
+            /* Altura del header */
+            margin-left: 30px;
+            margin-right: 30px;
+            margin-bottom: 40px;
+        }
+
+        /* Header fijo */
         header {
+            
             position: fixed;
-            top: -10px;
+            top: -140px;
+            /* MISMO valor que margin-top */
             left: 0;
             right: 0;
-            height: 100px;
+            height: 130px;
+            margin-top: 10px;
             border-bottom: 3px solid #851a1a;
-            padding-bottom: 5px;
+            
         }
+
 
         .subtitulo-marca {
             color: #777;
@@ -37,7 +52,7 @@
             font-size: 10px;
             display: block;
             margin-top: 2px;
-            margin-bottom: 1px;
+            
         }
 
         header .tabla_header {
@@ -85,7 +100,7 @@
 
         /* Contenido */
         .contenido {
-            margin-top: 120px;
+            margin-top: 20px;
             /* espacio para header */
             margin-bottom: 60px;
             /* espacio para footer */
