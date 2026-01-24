@@ -7,7 +7,43 @@ import {
 
 const map = L.map("map").setView([-16.5, -68.15], 13);
 
-L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map);
+// Capas base
+var normal = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
+
+var satelite = L.tileLayer(
+  'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+  {
+    maxZoom: 18 // ← límite real de Esri
+  }
+);
+
+var etiquetas = L.tileLayer(
+  'https://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',
+  {
+    maxZoom: 18
+  }
+);
+
+var sateliteConCalles = L.layerGroup([satelite, etiquetas]);
+
+// Mostrar por defecto
+normal.addTo(map);
+
+// Selector de capas
+L.control.layers({
+  "Mapa 🗺️": normal,
+  "Satélite 🛰️": sateliteConCalles
+}).addTo(map);
+
+
+L.Control.geocoder({
+  position: 'topleft',
+  placeholder: 'Buscar lugar...',
+  suggestMinLength: 3, // empieza a sugerir desde 3 letras
+  suggestTimeout: 250  // tiempo entre peticiones
+}).addTo(map);
+
+
 
 const drawnItems = new L.FeatureGroup();
 map.addLayer(drawnItems);
