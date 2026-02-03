@@ -9,8 +9,7 @@
                         class="fas fa-clock text-warning me-2" data-fa-transform="grow-3"></span>Lunes a Viernes, de
                     8:30 a 12:30 y 14:00 a 18:00 </div>
                 <div class="col-auto"><span class="fas fa-phone-alt text-warning" data-fa-transform="shrink-3"></span><a
-                        class="ms-2 fs--1 d-inline text-white fw-bold" href="tel:2123865575">212 386 5575, 212 386
-                        5576</a></div>
+                        class="ms-2 fs--1 d-inline text-white fw-bold" href="">+591 71932307</a></div>
             </div>
         </div>
     </div>
