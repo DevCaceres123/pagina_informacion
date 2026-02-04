@@ -76,7 +76,7 @@
                             </div>
 
                             <div class="text-end">
-                                <button type="button" id="activarDibujo" class="btn btn-primary btn-sm">Agregar Ubuicación
+                                <button type="button" id="activarDibujo" class="btn btn-primary btn-sm">Agregar ubicación
                                 </button>
                             </div>
                         </div>
