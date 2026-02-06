@@ -15,7 +15,7 @@
                 @empty
                     {{-- Imagen por defecto si no hay galería --}}
                     <div class="carousel-item active">
-                        <img src="{{ asset('assets/img/default.webp') }}" class="d-block w-100 object-fit-cover"
+                        <img src="{{ asset('storage/imagenes_convocatorias/default.webp') }}" class="d-block w-100 object-fit-cover"
                             style="height: 550px;" alt="Sin imagen">
                     </div>
                 @endforelse
