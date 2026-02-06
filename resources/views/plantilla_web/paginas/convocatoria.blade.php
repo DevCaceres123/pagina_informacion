@@ -84,7 +84,7 @@
         <div class="row g-4">
             @forelse ($ultimasConvocatorias as $otra)
                 @php
-                    $imagenRelacionada = $otra->imgConvocatorias->first()->imagen ?? 'storage/imagenes_convocatorias/default.webp';
+                    $imagenRelacionada = $otra->imgConvocatorias->first()->imagen ?? 'imagenes_convocatorias/default.webp';
                 @endphp
                 <div class="col-md-4">
                     <div class="card h-100 shadow-sm border-0 news-card overflow-hidden">
