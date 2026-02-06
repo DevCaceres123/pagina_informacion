@@ -47,7 +47,7 @@ $(document).ready(function () {
                                                     <a href="/storage/mallas_curriculares/${carrera.malla_curricular_pdf}" class="btn btn-danger btn-sm w-100 btn-action-malla" download>
                                                         <i class="fas fa-download me-1"></i> Malla Curricular
                                                     </a>` : ''}
-                                                <a href="${carrera.vinculo_web}" target="_blank"
+                                                <a href="${carrera.vinculo_web ?? '#'}" target="_blank"
                                                     class="btn btn-outline-dark btn-sm w-100 btn-action-web">
                                                     <i class="fas fa-external-link-alt me-1"></i> Ver Página
                                                 </a>

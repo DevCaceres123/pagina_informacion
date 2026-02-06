@@ -205,20 +205,19 @@
                     </div>
                 </div>
                 {{-- SECCIÓN RESOLUCIÓN (CORREGIDA: Ahora es su propia tarjeta fuera de Carreras) --}}
-                @if ($sedeUnica->publicar_resolucion=='activo')
-                        
+                @if ($sedeUnica->publicar_resolucion == 'activo')
                     <div class="card card-resolution-final shadow-sm p-4 rounded-4 border-start border-warning border-5">
                         <h4 class="fw-bold mb-3 section-title-icon"><i class="fas fa-file-contract me-2 text-warning"></i>
                             Documento Legal</h4>
                         <p class="">Resolución:</p>
                         <p class="fw-bolder text-primary fs-3">{{ $sedeUnica->resolucion ?? 'Ninguno::' }}</p>
-                        <a href="{{ asset('storage/resoluciones/' . $sedeUnica->resolucion_pdf) }}" id="btnDescargarResolucion"
-                            class="btn btn-warning fw-bold w-100 btn-lg shadow-sm" download>
+                        <a href="{{ asset('storage/resoluciones/' . $sedeUnica->resolucion_pdf) }}"
+                            id="btnDescargarResolucion" class="btn btn-warning fw-bold w-100 btn-lg shadow-sm" download>
                             <i class="fas fa-download me-2"></i> Descargar Resolución (PDF)
                         </a>
                     </div>
                 @endif
-              
+
 
             </div>
 
@@ -233,7 +232,7 @@
                     {{-- Buscador y total --}}
                     <div class="d-flex flex-column gap-2 mb-4">
                         <div class="d-flex gap-2 align-items-center">
-                            
+
                             <input type="text" id="buscadorCarreras" class="form-control form-sm input-search-custom"
                                 placeholder="🔍 Buscar carrera...">
                             <input type="hidden" name="sede_id" id="sede_id" value="{{ encrypt($sedeUnica->id) }}">
@@ -259,11 +258,12 @@
                                                     class="btn btn-danger btn-sm w-100 btn-action-malla" download>
                                                     <i class="fas fa-download me-1"></i> Malla Curricular
                                                 </a>
-                                            @endif                                            
-                                            <a href="{{ $carrera->vinculo_web }}" target="_blank"
-                                                class="btn btn-outline-dark btn-sm w-100 btn-action-web">
+                                            @endif
+                                            <a href="{{ $carrera->vinculo_web ?? '#' }}"
+                                                class="btn btn-outline-dark btn-sm w-100 btn-action-web"
+                                                @empty($carrera->vinculo_web) onclick="return false;" @endempty>
                                                 <i class="fas fa-external-link-alt me-1"></i> Ver Página
-                                            </a>                                            
+                                            </a>
                                         </div>
                                     </div>
                                 </div>
@@ -315,9 +315,9 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.11.1/baguetteBox.min.js"></script>
     <script>
-      baguetteBox.run('.gallery-sede-modal');
+        baguetteBox.run('.gallery-sede-modal');
     </script>
-    
+
     <script src="{{ asset('js/modulos/pagina/sedes.js') }}" type="module"></script>
 
 
