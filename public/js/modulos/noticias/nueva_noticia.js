@@ -14,7 +14,7 @@ $("#formNuevaNoticia").on("submit", function (e) {
 
     const btn = $("#btnGuardarNoticia");
     const tipo = btn.data("tipo");  // 👈 obtenemos tipo (nuevo o editar)
-    const id = btn.data("id") ?? 'null';      // 👈 obtenemos id si existe
+    const id = btn.data("id") ?? null;      // 👈 obtenemos id si existe
     btn.prop("disabled", true).html('<i class="me-1"></i> Subiendo...');
 
     vaciar_errores("formNuevaNoticia");

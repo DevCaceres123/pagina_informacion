@@ -199,7 +199,10 @@
                         </button>
                         <button type="submit" class="btn btn-primary btn-lg fw-bold shadow-sm" id="btnGuardarNoticia"
                             data-tipo="{{ isset($noticia->id) ? 'editar' : 'nuevo' }}"
-                            data-id="{{ $noticia->id ?? '' }}">
+                            @isset($noticia->id)
+                                data-id="{{ $noticia->id }}"
+                            @endisset                            
+                            >
                             <i class="fas fa-save me-2"></i> Guardar Noticia
                         </button>
                     </div>
