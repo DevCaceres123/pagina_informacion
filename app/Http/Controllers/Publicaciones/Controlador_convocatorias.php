@@ -128,7 +128,7 @@ class Controlador_convocatorias extends Controller
 
             DB::commit();
 
-            $this->mensaje('exito', 'Noticia registrada correctamente');
+            $this->mensaje('exito', 'Convocatoria registrada correctamente');
             return response()->json($this->mensaje, 200);
         } catch (\Exception $e) {
             DB::rollBack();
