@@ -34,7 +34,7 @@ $(document).ready(function () {
                  success: function (response) {
                     
                     let html = '';
-                    console.log(response);
+                    // console.log(response);
                     if (response.carreras.length > 0) {
                         response.carreras.forEach(carrera => {
                             html += `
