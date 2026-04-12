@@ -1,0 +1,36 @@
+services:
+
+  app:
+    build:
+      context: .
+      dockerfile: docker/php-apache/Dockerfile
+    container_name: php-apache2
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/var/www/html
+    depends_on:
+      - db
+    networks:
+      - red2
+
+  db:
+    image: postgis/postgis:15-3.3
+    container_name: postgres
+    restart: always
+    environment:
+      POSTGRES_DB: ${DB_DATABASE}
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - red2
+
+networks:
+  red2:
+
+volumes:
+  db_data:
