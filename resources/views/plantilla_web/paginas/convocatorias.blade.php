@@ -2,7 +2,7 @@
 @section('titulo', 'CONVOCATORIAS')
 @section('contenido')
     <div class="container my-5">
-        <h2 class="mb-4 text-center fw-bold">Convocatorias</h2>
+        <h2 class="mt-6 text-center fw-bold">Convocatorias</h2>
 
         <div class="list-group">
 

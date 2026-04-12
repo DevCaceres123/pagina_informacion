@@ -117,7 +117,7 @@
                                     <p class="text-white fs-1 fs-md-2 lh-xs text-justify" data-zanim-xs='{"delay":0.1}'>
                                         Promover el bienestar de la comunidad estudiantil, mediante la aplicación de
                                         políticas y programas institucionales que generen un proceso de desarrollo humano
-                                        sostenible, generando espacios que propicien la comunicación através de actividades
+                                        sostenible, generando espacios que propicien la comunicación a través de actividades
                                         académicas, culturales y deportivas, atendiendo sus necesidades, con calidad humana;
                                         contribuyendo al mejoramiento de las condiciones de la sociedad
                                     </p>
@@ -298,7 +298,7 @@
     <section class="bg-100">
         <div class="container">
             <div class="text-center mb-6">
-                <h3 class="fs-2 fs-md-3">Últimas publicaciones de sedes académicas desconcentradas</h3>
+                <h3 class="fs-2 fs-md-2 text-capitalize">Últimas publicaciones de sedes académicas desconcentradas</h3>
                 <hr class="short"
                     data-zanim-xs='{"from":{"opacity":0,"width":0},"to":{"opacity":1,"width":"4.20873rem"},"duration":0.8}'
                     data-zanim-trigger="scroll" />

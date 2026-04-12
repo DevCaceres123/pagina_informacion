@@ -196,11 +196,10 @@
                     <h3 class="fw-bold mb-3 section-title-icon"><i class="fas fa-camera-retro me-2 text-primary"></i>
                         Instalaciones</h3>
                     <div class="card p-4 rounded-4 shadow-sm gallery-preview-card">
-                        <p class="text-muted mb-3">Haz clic para ver nuestra galería completa de imágenes en alta
-                            resolución.</p>
+                        <p class="text-muted mb-3">Haz clic en <b>Ver Galería</b> y podrás visualizar imágenes de la sede</p>
                         <button class="btn btn-primary btn-lg fw-bold w-100" data-bs-toggle="modal"
                             data-bs-target="#galeriaModal">
-                            <i class="fas fa-images me-2"></i> Ver Galería de Imágenes
+                            <i class="fas fa-images me-2"></i> Ver Galería
                         </button>
                     </div>
                 </div>
