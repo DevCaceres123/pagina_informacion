@@ -153,7 +153,7 @@
                             <div class="border_left hidden-xs"></div>
                             <div class="border_right"></div>
                         </small>
-                        <span>ACADEMICO</span>
+                        <span>ACADÉMICO</span>
                     </li>
                     @endcan
 
@@ -163,7 +163,7 @@
                             <a class="nav-link" href="#academico" data-bs-toggle="collapse" role="button"
                                 aria-expanded="false" aria-controls="academico">
                                 <i class="fas fa-university   menu-icon"></i>
-                                <span>ACADEMICO</span>
+                                <span>ACADÉMICO</span>
                             </a>
                         @endcan
                         <div class="collapse " id="academico">
