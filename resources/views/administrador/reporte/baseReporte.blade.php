@@ -3,120 +3,196 @@
 
 <head>
     <meta charset="utf-8">
-    <title>@yield('titulo', 'Reporte Universidad')</title>
+    <title>@yield('titulo', 'Reporte UPEA')</title>
+
     <style>
-        /* Fuente principal */
+        /* ===== RESET Y FUENTES ===== */
         body {
-            font-family: DejaVu Sans, sans-serif;
+            font-family: 'DejaVu Sans', Helvetica, Arial, sans-serif;
             margin: 0;
-            padding: 0;
+            color: #2c3e50;
+            /* Un gris oscuro es más elegante y legible que el negro puro */
+            font-size: 12px;
+        }
+
+        /* ===== CONFIGURACIÓN PDF ===== */
+        @page {
+            margin: 150px 40px 70px 40px;
+            /* Márgenes ligeramente más amplios para respirar */
+        }
+
+        /* ===== HEADER ===== */
+        header {
+            position: fixed;
+            top: -150px;
+            left: 0;
+            right: 0;
+            height: 140px;
+            /* Evita que el contenido del body se superponga */
+            background-color: white;
+        }
+
+        /* Líneas decorativas institucionales */
+        .linea-superior {
+            height: 5px;
+            background-color: #851a1a;
+        }
+
+        .linea-inferior {
+            height: 1px;
+            background-color: #851a1a;
+            margin-top: 10px;
+        }
+
+        /* Tabla del Header */
+        .header-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        .header-left {
+            width: 20%;
+            text-align: left;
+            /* Asegura que el logo pegue a la izquierda */
+            vertical-align: middle;
+        }
+
+        .header-center {
+            width: 60%;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .header-right {
+            width: 20%;
+            text-align: right;
+            /* Asegura que el logo pegue a la derecha */
+            vertical-align: middle;
+        }
+
+        /* Logos */
+        .logo {
+            max-height: 70px;
+        }
+
+        .logo-right {
+            max-height: 80px;
+        }
+
+        /* Textos del Header */
+        .nombre-institucion {
+            font-size: 18px;
+            font-weight: bold;
+            color: #851a1a;
+            font-family: Georgia, 'Times New Roman', serif;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .unidad {
+            font-size: 11px;
+            margin-top: 6px;
+            color: #34495e;
+            font-weight: bold;
+        }
+
+        .ubicacion {
+            font-size: 10px;
+            margin-top: 4px;
+            color: #7f8c8d;
+        }
+
+        /* ===== CONTENIDO PRINCIPAL ===== */
+        .contenido {
+            margin-top: 10px;
+        }
+
+        /* Título del Documento */
+        .titulo-documento {
+            text-align: center;
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            color: #2c3e50;
+            border-bottom: 2px solid #ecf0f1;
+            padding-bottom: 10px;
+        }
+
+        /* ===== TABLAS DE DATOS (REPORTES) ===== */
+        .tabla-datos {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        .tabla-datos thead th {
+            background-color: #851a1a;
+            color: #ffffff;
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+            padding: 8px;
+            text-align: left;
+            border: 1px solid #851a1a;
+        }
+
+        .tabla-datos tbody td {
+            font-size: 11px;
+            padding: 8px;
+            border: 1px solid #bdc3c7;
             color: #333;
         }
 
-        /* Header con tabla (compatible Dompdf) */
-        /* Reservar espacio para el header en TODAS las páginas */
-        @page {
-            margin-top: 140px;
-            /* Altura del header */
-            margin-left: 30px;
-            margin-right: 30px;
-            margin-bottom: 40px;
+        /* Filas alternas estilo "zebra" */
+        .tabla-datos tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
         }
 
-        /* Header fijo */
-        header {
-            
+        /* Evita que una fila se corte entre dos páginas */
+        .tabla-datos tr {
+            page-break-inside: avoid;
+        }
+
+        /* ===== FOOTER ===== */
+        footer {
             position: fixed;
-            top: -140px;
-            /* MISMO valor que margin-top */
+            bottom: -50px;
             left: 0;
             right: 0;
-            height: 130px;
-            margin-top: 10px;
-            border-bottom: 3px solid #851a1a;
-            
-        }
-
-
-        .subtitulo-marca {
-            color: #777;
-            font-size: 12px;
-            /* Reducimos ligeramente el tamaño para el nuevo texto largo */
-            font-weight: bold;
-            display: block;
-            margin-top: 5px;
-        }
-
-        .metadato-direccion {
-            color: #776969;
+            height: 40px;
+            border-top: 1px solid #851a1a;
             font-size: 10px;
-            display: block;
-            margin-top: 2px;
-            
+            color: #7f8c8d;
+            padding-top: 5px;
         }
 
-        header .tabla_header {
+        .footer-table {
             width: 100%;
             border-collapse: collapse;
         }
 
-        header .tabla_header td {
-            vertical-align: middle;
+        .footer-table td {
+            vertical-align: top;
         }
 
-        header .tabla_header img {
-            max-height: 60px;
+        .footer-left {
+            text-align: left;
+            width: 50%;
         }
 
-        header .tabla_header .titulo {
-            text-align: center;
+        .footer-right {
+            text-align: right;
+            width: 50%;
         }
 
-        header .tabla_header h1 {
-            font-size: 20px;
-            margin: 0;
-            color: #851a1a;
-        }
-
-        header .tabla_header h2 {
-            font-size: 14px;
-            margin: 0;
-            font-weight: normal;
-            color: #333;
-        }
-
-        /* Footer */
-        footer {
-            position: fixed;
-            bottom: -20px;
-            left: 0;
-            right: 0;
-            height: 50px;
-            text-align: center;
-            border-top: 2px solid #851a1a;
-            font-size: 12px;
-            color: #555;
-        }
-
-        /* Contenido */
-        .contenido {
-            margin-top: 20px;
-            /* espacio para header */
-            margin-bottom: 60px;
-            /* espacio para footer */
-        }
-
-        /* Número de página */
         .pagenum:before {
             content: counter(page);
         }
 
-        table {
-            width: 80%;
-            margin: 0 auto;
-            border-collapse: collapse;
-            background: white;
-            box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+        .pagecount:before {
+            content: counter(pages);
         }
     </style>
 </head>
@@ -124,43 +200,56 @@
 <body>
 
     <header>
-        <table class="tabla_header">
+        <div class="linea-superior"></div>
+
+        <table class="header-table">
             <tr>
-                <!-- Logo izquierdo -->
-                <td style="width: 20%; text-align: left;">
-                    <img src="{{ public_path('assets/upea_logo.webp') }}" alt="Logo UPEA" style="max-height: 90px">
+                <td class="header-left">
+                    <img class="logo" src="{{ public_path('assets/upea_logo.webp') }}">
                 </td>
-
-                <!-- Nombre Universidad centrado -->
-                <td style="width: 60%; text-align: center;">
-                    <h1 style="color: #851a1a; font-family: Georgia, 'Times New Roman', Times, serif; font-size:30px">
-                        @yield('nombreUniversidad', 'Universidad Publica de El Alto')</h1>
-                    <span class="subtitulo-marca">DIRECCIÓN DE INTERACCIÓN SOCIAL, BIENESTAR ESTUDIANTIL DEPORTES Y
-                        CULTURA</span>
-                    <span class="metadato-direccion">El Alto, La Paz - Bolivia</span>
-
+                <td class="header-center">
+                    <div class="nombre-institucion">
+                        @yield('nombreUniversidad', 'UNIVERSIDAD PÚBLICA DE EL ALTO')
+                    </div>
+                    <div class="unidad">
+                        DIRECCIÓN DE INTERACCIÓN SOCIAL, BIENESTAR ESTUDIANTIL,<br>
+                        DEPORTES Y CULTURA
+                    </div>
+                    <div class="ubicacion">
+                        El Alto - La Paz - Bolivia
+                    </div>
                 </td>
-
-                <!-- Logo derecho -->
-                <td style="width: 20%; text-align: right;">
-                    <img src="{{ public_path('assets/disbedc_logo.webp') }}" alt="Logo DISBEDC"
-                        style="max-height: 100px">
+                <td class="header-right">
+                    <img class="logo logo-right" src="{{ public_path('assets/disbedc_logo.webp') }}">
                 </td>
             </tr>
         </table>
 
+        <div class="linea-inferior"></div>
     </header>
 
-
+    <footer>
+        <table class="footer-table">
+            <tr>
+                <td class="footer-left">
+                    Generado el: {{ date('d/m/Y H:i') }}<br>
+                    Sistema de Reportes DISBEDC
+                </td>
+                <td class="footer-right">
+                    Página <span class="pagenum"></span>
+                </td>
+            </tr>
+        </table>
+    </footer>
 
     <main class="contenido">
-        @yield('contenido')
+        @hasSection('contenido')
+            @yield('contenido')
+        @else
+            <p>No hay datos para mostrar en este reporte.</p>
+        @endif
     </main>
 
-
-    {{-- <footer>
-    Página <span class="pagenum"></span>
-</footer> --}}
 </body>
 
 </html>

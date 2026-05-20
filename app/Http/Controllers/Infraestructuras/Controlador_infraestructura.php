@@ -318,7 +318,7 @@ class Controlador_infraestructura extends Controller
             return $ruta;
         }
 
-        return null;
+        return throw new Exception('necesita seleccionar un archivo');
     }
 
     // guardarmos las imagenes
@@ -487,7 +487,7 @@ class Controlador_infraestructura extends Controller
                 }
             }
 
-            $this->mensaje('error', 'error ' . $e->getMessage());
+            $this->mensaje('error', 'Error ' . $e->getMessage());
             return response()->json($this->mensaje, 200);
         }
     }

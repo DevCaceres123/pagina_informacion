@@ -27,12 +27,12 @@
                                 <tr>
                                     <th>Nº</th>
                                     <th>SEDE</th>
-                                    <th>CREACION</th>
+                                    <th>CREACIÓN</th>
                                     <th>TIEMPO TRANSCURRIDO</th>
                                     <th>ESTADO INMUEBLE</th>
-                                    <th>ESTADO TRAMITE</th>
+                                    <th>ESTADO TRÁMITE</th>
                                     <th>PLANOS</th>
-                                    <th>ACCION</th>
+                                    <th>ACCIÓN</th>
 
                                 </tr>
                             </thead>
@@ -76,9 +76,9 @@
                                             class="text-danger">(*)</strong>
                                     </label>
                                     <select name="sede_id" class="form-select text-capitalize" required>
-                                        <option value="" disabled selected>Seleccione una sede</option>
+                                        <option value="" disabled selected>SELECCIONAR...</option>
                                         @foreach ($sedes as $sede)
-                                            <option value="{{ $sede->id }}">{{ $sede->nombre }}</option>
+                                            <option value="{{ $sede->id }}">{{ strtoupper($sede->nombre) }}</option>
                                         @endforeach
                                     </select>
                                     <div id="_sede_id">
@@ -103,7 +103,7 @@
                                             class="text-danger">(*)</strong>
                                     </label>
 
-                                    <input type="text" class="form-control" id="propiedad" name="propiedad"
+                                    <input type="text" class="form-control text-uppercase" id="propiedad" name="propiedad"
                                         placeholder="Propiedad" required>
                                     <div id="_propiedad">
 
@@ -116,7 +116,7 @@
                                             class="text-danger">(*)</strong>
                                     </label>
 
-                                    <input type="text" class="form-control" id="uso_asignado" name="uso_asignado"
+                                    <input type="text" class="form-control text-uppercase" id="uso_asignado" name="uso_asignado"
                                         placeholder="uso asignado" required>
 
                                     <div id="_uso_asignado">
@@ -126,7 +126,7 @@
 
                                 <div class="col-md-12 mt-2">
                                     <label class="form-label">
-                                        <i class="fas fa-upload me-1"></i> PLANOS E UBICACION (IMAGEN) <strong
+                                        <i class="fas fa-upload me-1"></i> PLANOS E UBICACIÓN (IMAGEN) <strong
                                             class="text-danger">(*)</strong>
                                     </label>
                                     <input type="file" class="form-control" name="planos[]" id="planos"
@@ -155,8 +155,8 @@
                                         <i class="fas fa-warehouse me-1"></i> ESTADO DEL INMUEBLE <strong
                                             class="text-danger">(*)</strong>
                                     </label>
-                                    <select name="estado_inmueble" class="form-select" required>
-                                        <option value="" disabled selected>Seleccione...</option>
+                                    <select name="estado_inmueble" class="form-select text-uppercase" required>
+                                        <option value="" disabled selected>Seleccionar...</option>
                                         <option value="bueno">Bueno</option>
                                         <option value="regular">Regular</option>
                                         <option value="malo">Malo</option>
@@ -185,7 +185,7 @@
                             <div class="row border border-3 rounded m-auto position-relative mt-3 p-2">
                                 <div class="position-absolute" style="top:0px; left:33%; margin-top: -15px;">
                                     <div class="d-inline p-1 border rounded border-danger bg-danger text-light">
-                                        <i class="fas fa-file-contract me-1"></i> ESTADO TRAMITE <b> (INICIAL)</b>
+                                        <i class="fas fa-file-contract me-1"></i> ESTADO TRÁMITE <b> (INICIAL)</b>
                                     </div>
                                 </div>
                                 <div class="col-md-12 mt-2">
@@ -317,7 +317,7 @@
                                 </div>
 
                                 <div class="col-md-8 mt-2">
-                                    <label class="form-label">Direccion</label>
+                                    <label class="form-label">Dirección</label>
                                     <input type="text" class="form-control" id="ubicacion" name="ubicacion"
                                         placeholder="Zona Juan pablo II, Av. Los Alamos, etc.">
                                     <div id="_ubicacion">
@@ -499,9 +499,9 @@
                                     </label>
                                     <input type="hidden" id="id_infraestructuraEdit" name="id">
                                     <select name="sede_idEdit" id="sede_idEdit" class="form-select text-capitalize" required>
-                                        <option value="" disabled selected>Seleccione una sede</option>
+                                        <option value="" disabled selected>SELECCIONAR...</option>
                                         @foreach ($sedes as $sede)
-                                            <option value="{{ $sede->id }}">{{ $sede->nombre }}</option>
+                                            <option value="{{ $sede->id }}">{{ strtoupper($sede->nombre) }}</option>
                                         @endforeach
                                     </select>
                                     <div id="_sede_idEdit">
@@ -526,7 +526,7 @@
                                             class="text-danger">(*)</strong>
                                     </label>
 
-                                    <input type="text" class="form-control" id="propiedadEdit" name="propiedadEdit"
+                                    <input type="text" class="form-control text-uppercase" id="propiedadEdit" name="propiedadEdit"
                                         placeholder="Propiedad" required>
                                     <div id="_propiedadEdit">
 
@@ -539,7 +539,7 @@
                                             class="text-danger">(*)</strong>
                                     </label>
 
-                                    <input type="text" class="form-control" id="uso_asignadoEdit" name="uso_asignadoEdit"
+                                    <input type="text" class="form-control text-uppercase" id="uso_asignadoEdit" name="uso_asignadoEdit"
                                         placeholder="Uso asignado" required>
 
                                     <div id="_uso_asignadoEdit">
@@ -563,7 +563,7 @@
                                         <i class="fas fa-warehouse me-1"></i> ESTADO DEL INMUEBLE <strong
                                             class="text-danger">(*)</strong>
                                     </label>
-                                    <select name="estado_inmuebleEdit"  id="estado_inmuebleEdit" class="form-select" required>
+                                    <select name="estado_inmuebleEdit"  id="estado_inmuebleEdit" class="form-select text-uppercase" required>
                                         <option value="" disabled selected>Seleccione...</option>
                                         <option value="bueno">Bueno</option>
                                         <option value="regular">Regular</option>

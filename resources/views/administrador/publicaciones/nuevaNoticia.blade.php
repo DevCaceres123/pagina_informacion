@@ -5,7 +5,7 @@
         <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
             {{-- Encabezado --}}
             <div class="card-header  bg-dark  text-white text-center p-4">
-                <h4 class="card-title mb-0 fw-bold fs-3">
+                <h4 class="card-title mb-0 fw-bold fs-3 text-uppercase">
                     <i class="fas fa-newspaper me-2"></i> Publicar Nueva Noticia <span class="ms-3 fs-16">Campos obligatorios
                         <strong class="text-danger">(*)</strong>
                 </h4>
@@ -26,7 +26,7 @@
                                     <span class="input-group-text bg-light">
                                         <i class="fas fa-pen"></i>
                                     </span>
-                                    <input type="text" name="titulo" id="titulo" class="form-control form-control-lg"
+                                    <input type="text" name="titulo" id="titulo" class="form-control form-control-lg text-uppercase"
                                         placeholder="Título de la noticia..." required value="{{ $noticia->titulo ?? '' }}">
                                 </div>
                                 <div id="_titulo"></div>

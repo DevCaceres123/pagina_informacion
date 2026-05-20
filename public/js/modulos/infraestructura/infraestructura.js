@@ -36,7 +36,7 @@ function listar_infraestructuras() {
             },
             {
                 data: "sede.nombre",
-                className: "table-td text-capitalize",
+                className: "table-td text-uppercase",
                 render: function (data) {
                     return `                            
                         ${data}
@@ -112,7 +112,7 @@ function listar_infraestructuras() {
 
             {
                 data: null,
-                className: "table-td text-uppercase text-center",
+                className: "table-td  text-center",
                 render: function (data, type, row, meta) {
                     return `
                     
@@ -120,7 +120,7 @@ function listar_infraestructuras() {
                      ${
                         permisosGlobal.planos
                             ? `
-                            <button type="button" class="btn btn-sm btn-success rounded ver-planos" data-id='${row.id}'>
+                            <button type="button" class="text-uppercase btn btn-sm btn-success rounded ver-planos" data-id='${row.id}'>
                                 <i class="fas fa-university me-1" title='ver planos'></i> Planos
                              </button>
                             `

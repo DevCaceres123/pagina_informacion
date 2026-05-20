@@ -30,8 +30,11 @@ function listar_carreras() {
             {
                 data: null,
                 className: "table-td",
-                render: function (data, type, row, meta) {
-                    return meta.row + 1; // Usar meta.row para obtener el índice de la fila
+                render: function (data, type, row, meta) {                 
+                     let start = $("#tabla_listar_carreras")
+                        .DataTable()
+                        .page.info().start;
+                    return start + meta.row + 1;
                 },
             },
             {
@@ -54,14 +57,14 @@ function listar_carreras() {
             },
             {
                 data: "sedes",
-                className: "table-td text-uppercase text-center",
+                className: "table-td text-center",
                 render: function (data, type, row, meta) {
                     return `
                     ${
                         permisosGlobal.ver_sedes
                             ? `
-                         <button type="button" class="btn btn-sm btn-warning rounded ver_sedes" data-sedes='${row.id}'>
-                            <i class="fas fa-university  me-1"></i> Ver Sedes
+                         <button type="button" class="text-uppercase btn btn-sm btn-warning rounded ver_sedes" data-sedes='${row.id}'>
+                            <i class="fas fa-university  me-1"></i>Sedes
                         </button>
                             `
                             : ``
@@ -143,7 +146,7 @@ $("#formCarrera").on("submit", function (e) {
     e.preventDefault();
     $("#btnGuardarCarrera").prop("disabled", true);
     let formData = new FormData(this);
-    // console.log(formData);
+    console.log(formData);
     vaciar_errores("formCarrera");
     crud("admin/carrera", "POST", null, formData, function (error, response) {
         $("#btnGuardarCarrera").prop("disabled", false);

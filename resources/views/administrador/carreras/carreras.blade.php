@@ -8,7 +8,7 @@
                     <div class="row align-items-center">
                         <div class="col">
                             <h4 class="card-title mb-0 text-light fw-bold">
-                                <i class="fas fa-home  me-2"></i> Modulo de carreras
+                                <i class="fas fa-home  me-2"></i> Módulo de carreras
                             </h4>
                         </div>
                         <div class="col-auto">
@@ -30,7 +30,7 @@
                                     <th>MODALIDAD</th>
                                     <th>SEDES</th>
                                     <th>ESTADO</th>
-                                    <th>ACCION</th>
+                                    <th>ACCIÓN</th>
                                 </tr>
                             </thead>
                         </table>
@@ -61,10 +61,10 @@
                                 <i class="fas fa-school me-1"></i> SELECCIONAR SEDES <strong
                                     class="text-danger">(*)</strong>
                             </label>
-                            <select name="sede_id[]" id="sede_id" class=" text-capitalize" multiple required>
+                            <select name="sede_id[]" id="sede_id" multiple>
 
                                 @foreach ($sedes as $sede)
-                                    <option class="text-capitalize" value="{{ $sede->id }}">{{ $sede->nombre }}</option>
+                                    <option value="{{ $sede->id }}">{{ strtoupper($sede->nombre) }}</option>
                                 @endforeach
                             </select>
                             <div id="_sede_id" class="text-danger small"></div>
@@ -218,7 +218,7 @@
             <div class="modal-content shadow rounded-3">
                 <div class="modal-header bg-dark text-white">
                     <h5 class="modal-title">
-                        <i class="fas fa-file-pdf me-2"></i> Visualización de Malla Curricular
+                        <i class="fas fa-file-pdf me-2"></i>MALLA CURRICULAR
                     </h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
@@ -264,7 +264,7 @@
                 </div>
                 <div class="modal-body">
                     <input type="hidden" name="id_carreraEdit" id="id_carreraEdit">
-                    <ul id="listarSedes" class="list-group list-group-flush text-capitalize p-2">
+                    <ul id="listarSedes" class="list-group list-group-flush text-uppercase p-2">
                         <!-- Carreras se llenan dinámicamente -->
                     </ul>
                 </div>

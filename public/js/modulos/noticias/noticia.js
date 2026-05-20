@@ -39,7 +39,7 @@ function listar_infraestructuras() {
             },
             {
                 data: "titulo",
-                className: "table-td text-capitalize",
+                className: "table-td text-uppercase",
                 render: function (data) {
                     return `                            
                         ${data}
@@ -48,7 +48,7 @@ function listar_infraestructuras() {
             },
             {
                 data: "categoria.nombre",
-                className: "table-td text-capitalize",
+                className: "table-td text-uppercase",
                 render: function (data) {
                     console.log(data);
 

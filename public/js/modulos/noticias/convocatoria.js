@@ -39,7 +39,7 @@ function listar_infraestructuras() {
             },
             {
                 data: "titulo",
-                className: "table-td text-capitalize",
+                className: "table-td text-uppercase",
                 render: function (data) {
                     return `                            
                         ${data}
@@ -48,7 +48,7 @@ function listar_infraestructuras() {
             },
             {
                 data: "categoria.nombre",
-                className: "table-td text-capitalize",
+                className: "table-td text-uppercase",
                 render: function (data) {
                          
                      if (data != 'noticias' && data != 'eventos' && data != 'comunicados' && data && 'convocatorias') {
@@ -85,7 +85,7 @@ function listar_infraestructuras() {
 
             {
                 data: "sede.nombre",
-                className: "table-td text-capitalize",
+                className: "table-td text-uppercase",
                 render: function (data) {
                     return `                            
                        <span class="badge bg-secondary">${data}</span>

@@ -25,7 +25,7 @@
                         <table class="table" id="tabla_listar_usuarios">
                             <thead class="table-light">
                                 <tr>
-                                    <th>ACCION</th>
+                                    <th>ACCIÓN</th>
                                     <th>Nº</th>
                                     <th>CI</th>
                                     <th>NOMBRES</th>
@@ -96,10 +96,10 @@
                             <label for="role" class="col-sm-2 col-form-label">Selec. Rol <strong
                                     class="text-danger">(*)</strong></label>
                             <div class="col-sm-10">
-                                <select id="roles" name="roles" class="form-control">
+                                <select id="roles" name="roles" class="form-control text-uppercase">
                                     <option selected disabled>[ ROLES ]</option>
                                     @foreach ($roles as $lis)
-                                        <option value="{{ $lis->id }}">{{ $lis->name }}
+                                        <option class="text-uppercase" value="{{ $lis->id }}">{{ $lis->name }}
                                         </option>
                                     @endforeach
                                 </select>
@@ -116,7 +116,7 @@
                             </div>
                         </div>
                         <div class="mb-3 row">
-                            <label for="password" class="col-sm-2 col-form-label">Password <strong
+                            <label for="password" class="col-sm-2 col-form-label">Contraseña <strong
                                     class="text-danger">(*)</strong></label>
                             <div class="col-sm-10">
                                 <input type="text" class="form-control" id="password" name="password"
@@ -278,7 +278,7 @@
                     },
                     {
                         data: null,
-                        className: 'table-td',
+                        className: 'table-td text-uppercase',
                         render: function(data, type, row, meta) {
                             return data.nombres + ' ' + data.apellidos;
                         }
@@ -289,7 +289,7 @@
                         render: function(data, type, row, meta) {
                             return `
                                  ${dato.permissions['desactivar'] ?
-                                `<div class="form-check form-switch form-switch-dark">
+                                `<div class="form-check form-switch form-switch-primary">
                                                 <input class="form-check-input" onclick="estado_usuario('${row.id}')" type="checkbox" id="customSwitchDark" ${row.estado === 'activo' ? 'checked' : ''} >
                                             </div>`
                                 : ``}
@@ -299,7 +299,7 @@
 
                     {
                         data: 'roles', // Asumiendo que 'roles' es el nombre de la columna en tu conjunto de datos
-                        className: 'table-td',
+                        className: 'table-td text-uppercase',
                         render: function(data, type, row, meta) {
                             // Verifica si data es un array y tiene elementos
                             if (Array.isArray(data) && data.length > 0) {

@@ -30,8 +30,11 @@ function listar_afiliado() {
             {
                 data: null,
                 className: "table-td",
-                render: function (data, type, row, meta) {
-                    return meta.row + 1; // Usar meta.row para obtener el índice de la fila
+                render: function (data, type, row, meta) {                 
+                     let start = $("#tabla_listar_sedes")
+                        .DataTable()
+                        .page.info().start;
+                    return start + meta.row + 1;
                 },
             },
             {
@@ -70,7 +73,7 @@ function listar_afiliado() {
                          <button type="button" class="btn btn-sm btn-success rounded ver-carreras" data-carreras='${JSON.stringify(
                              data
                          )}'>
-                            <i class="fas fa-graduation-cap me-1"></i> Ver Carreras
+                            <i class="fas fa-graduation-cap me-1"></i>CARRERAS
                          </button>
                             `
                             : ``

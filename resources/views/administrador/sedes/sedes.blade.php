@@ -8,7 +8,7 @@
                     <div class="row align-items-center">
                         <div class="col">
                             <h4 class="card-title mb-0 text-light fw-bold">
-                                <i class="fas fa-home  me-2"></i> Modulo de sedes
+                                <i class="fas fa-home  me-2"></i> Módulo de sedes
                             </h4>
                         </div>
                         <div class="col-auto">
@@ -27,11 +27,11 @@
                                 <tr>
                                     <th>Nº</th>
                                     <th>SEDE</th>
-                                    <th>DESCRIPCION</th>
-                                    <th>RESOLUCION</th>
+                                    <th>DESCRIPCIÓN</th>
+                                    <th>RESOLUCIÓN</th>
                                     <th>CARREAS</th>
                                     <th>ESTADO</th>
-                                    <th>ACCION</th>
+                                    <th>ACCIÓN</th>
 
                                 </tr>
                             </thead>
@@ -248,7 +248,7 @@
         <div class="modal-dialog modal-xl modal-dialog-centered">
             <div class="modal-content shadow rounded-3">
                 <div class="modal-header bg-dark text-white">
-                    <h5 class="modal-title">
+                    <h5 class="modal-title text-uppercase">
                         <i class="fas fa-file-pdf me-2"></i> Visualización de Resolución
                     </h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
@@ -315,9 +315,9 @@
     <div class="modal fade" id="modalGaleria" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-xl modal-dialog-centered">
             <div class="modal-content shadow">
-                <div class="modal-header bg-primary text-white">
-                    <h5 class="modal-title">
-                        <i class="fas fa-images me-2"></i> Galería de Imágenes de la Sede
+                <div class="modal-header bg-dark text-white">
+                    <h5 class="modal-title text-uppercase">
+                        <i class="fas fa-images me-2"></i> Galería de Imágenes
                     </h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
@@ -513,7 +513,7 @@
                         aria-label="Cerrar"></button>
                 </div>
                 <div class="modal-body">
-                    <ul id="listaCarreras" class="list-group list-group-flush text-capitalize p-2">
+                    <ul id="listaCarreras" class="list-group list-group-flush text-uppercase p-2">
                         <!-- Carreras se llenan dinámicamente -->
                     </ul>
                 </div>

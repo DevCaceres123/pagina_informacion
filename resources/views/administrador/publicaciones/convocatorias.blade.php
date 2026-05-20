@@ -8,7 +8,7 @@
                     <div class="row align-items-center">
                         <div class="col">
                             <h4 class="card-title mb-0 text-light fw-bold">
-                               <i class="fas fa-newspaper  me-2"></i> LISTA DE CONVOCATORIAS
+                               <i class="fas fa-newspaper  me-2"></i> Lista de Convocatorias
                             </h4>
                         </div>
                         <div class="col-auto">
@@ -27,12 +27,12 @@
                             <thead class="table-light">
                                 <tr>
                                     <th>Nº</th>
-                                    <th>TITULO</th>
+                                    <th>TÍTULO</th>
                                     <th>TIPO</th>
                                     <th>SEDE</th>
-                                    <th>CREACION</th>                                                            
+                                    <th>CREACIÓN</th>                                                            
                                     <th>PUBLICAR</th>                                                                   
-                                    <th>ACCION</th>
+                                    <th>ACCIÓN</th>
                                 </tr>
                             </thead>
                         </table>

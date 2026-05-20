@@ -84,7 +84,7 @@
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center border-bottom pb-3">
                             <div>
-                                <p class="text-dark mb-0 fw-semibold fs-14">Usuarios</p>
+                                <p class="text-dark mb-0 fw-semibold fs-14">USUARIOS</p>
                                 <h3 class="mt-2 mb-0 fw-bold">{{ $catntidad_usuarios ?? '15' }}</h3>
                             </div>
                             <div class="icon-bg icon-bg-blue">
@@ -107,7 +107,7 @@
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center border-bottom pb-3">
                             <div>
-                                <p class="text-dark mb-0 fw-semibold fs-14">Carreras</p>
+                                <p class="text-dark mb-0 fw-semibold fs-14">CARRERAS</p>
                                 <h3 class="mt-2 mb-0 fw-bold">{{ $cantidad_carreras ?? '37' }}</h3>
                             </div>
                             <div class="icon-bg icon-bg-green">
@@ -129,7 +129,7 @@
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center border-bottom pb-3">
                             <div>
-                                <p class="text-dark mb-0 fw-semibold fs-14">Sedes</p>
+                                <p class="text-dark mb-0 fw-semibold fs-14">SEDES</p>
                                 <h3 class="mt-2 mb-0 fw-bold">{{ $cantidad_sedes ?? '13' }}</h3>
                             </div>
                             <div class="icon-bg icon-bg-yellow">
@@ -152,7 +152,7 @@
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center border-bottom pb-3">
                             <div>
-                                <p class="text-dark mb-0 fw-semibold fs-14">Última Noticia</p>
+                                <p class="text-dark mb-0 fw-semibold fs-14">ÚLTIMA NOTICIA</p>
                                 <h6 class="mt-2 mb-0 fw-bold text-truncate" style="max-width: 160px;">
                                     {{ $ultima_noticia->titulo ?? 'Sin noticias' }}
                                 </h6>
@@ -181,7 +181,7 @@
                     <div class="card-body">
                         <h5 class="fw-bold mb-4 text-center">
                             <i class="fas fa-users me-2 text-primary"></i>
-                            Estudiantes por Carrera y Sede
+                            ESTUDIANTES POR CARRERA Y SEDE
                         </h5>
                         <canvas id="estudiantesStackedChart" class="" height="110"></canvas>
                     </div>
@@ -195,7 +195,7 @@
                     <div class="card-body">
                         <h5 class="fw-bold mb-4 text-center">
                             <i class="fas fa-award me-2 text-warning"></i>
-                            Tabla comparativa de titulados por mes
+                            TABLA COMPARATIVA DE TITULADOS POR MES
                         </h5>
                         <canvas id="titulacionesChart" height="200"></canvas>
                     </div>
@@ -209,7 +209,7 @@
                     <div class="card-body">
                         <h5 class="fw-bold mb-4 text-center">
                             <i class="fas fa-chart-line me-2 text-success"></i>
-                            Crecimiento de Estudiantes por Año
+                            CRECIMIENTO DE ESTUDIANTES POR AÑO
                         </h5>
                         <canvas id="crecimientoEstudiantesChart" height="120"></canvas>
                     </div>
@@ -352,7 +352,7 @@
         <script>
             // Datos desde Laravel
             const sedeCarrera = @json($sede_carrera);
-            console.log(sedeCarrera);
+            //console.log(sedeCarrera);
 
             const ctx = document.getElementById('estudiantesStackedChart').getContext('2d');
 

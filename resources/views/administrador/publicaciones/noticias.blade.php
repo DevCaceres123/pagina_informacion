@@ -26,12 +26,12 @@
                             <thead class="table-light">
                                 <tr>
                                     <th>Nº</th>
-                                    <th>TITULO</th>
+                                    <th>TÍTULO</th>
                                     <th>TIPO</th>
-                                    <th>CREACION</th>
+                                    <th>CREACIÓN</th>
                                     <th>NOT.DESTACADO</th>                                    
                                     <th>PUBLICAR</th>                                                                   
-                                    <th>ACCION</th>
+                                    <th>ACCIÓN</th>
                                 </tr>
                             </thead>
                         </table>

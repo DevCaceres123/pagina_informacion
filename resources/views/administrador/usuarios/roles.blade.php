@@ -9,7 +9,7 @@
                     <div class="row align-items-center">
                         <div class="col">
                             <h4 class="card-title mb-0 text-light fw-bold">
-                                <i class="fas fa-user-shield  me-2"></i> LISTA DE ROLES
+                                <i class="fas fa-user-shield  me-2"></i> Roles
                             </h4>
                         </div>
                         <div class="col-auto">
@@ -29,7 +29,7 @@
         @foreach ($listar_roles as $lis)
             <div class="col-md-6 col-lg-4">
                 <div class="card">
-                    <div class="card-body p-4 color-bg rounded text-center">
+                    <div class="card-body p-4 color-bg rounded text-center text-uppercase">
                         <h4 class="text-white opacity-75 fs-16 mb-0">{{ $lis->name }}</h4>
                     </div>
                     <div class="position-relative">
@@ -90,7 +90,7 @@
                         <div class="mb-3 row">
                             <label for="rol" class="col-sm-2 col-form-label">Rol</label>
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" id="rol" name="rol"
+                                <input type="text" class="form-control text-uppercase" id="rol" name="rol"
                                     placeholder="Ingrese el rol">
                                 <div id="_rol"></div>
                             </div>
@@ -127,7 +127,7 @@
                                                             <div class="form-check me-3 me-lg-5">
                                                                 <input class="form-check-input" type="checkbox"
                                                                     name="permisos[]" id="{{ $value->id }}"
-                                                                    value="{{ $value->name }}" />
+                                                                    value="{{  $value->name }}" />
                                                             </div>
                                                         </div>
                                                     </td>

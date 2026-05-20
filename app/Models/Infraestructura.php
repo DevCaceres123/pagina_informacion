@@ -47,7 +47,7 @@ class Infraestructura extends Model
 
         static::saving(function ($model) {
             // Campos que quieres en mayúsculas
-            $campos = ['propiedad','uso_asignado','observacion_estado','numero_nota'];
+            $campos = ['propiedad','uso_asignado','numero_nota'];
 
             foreach ($campos as $campo) {
                 if (!empty($model->$campo)) {

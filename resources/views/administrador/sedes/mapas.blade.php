@@ -8,8 +8,7 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
 
     <div class="container mt-4 ">
-        <h3 class="mb-3 bg-dark border-start border-5 border-primary py-3  text-light fw-bold text-center">Registrar
-            ubicación geoespacial</h3>
+        <h3 class="mb-3 bg-dark border-start border-5 border-primary py-3  text-light fw-bold text-center">REGISTRAR UBICACIÓN</h3>
 
         @if (session('success'))
             <div class="alert alert-success">{{ session('success') }}</div>
@@ -58,7 +57,7 @@
                 <!-- PANEL DERECHO -->
                 <div class="col-md-4 mb-3">
                     <div class="card mb-3">
-                        <div class="card-header">Agregar ubicación</div>
+                        <div class="card-header bg-danger text-light text-uppercase">Agregar ubicación</div>
                         <div class="card-body">
                             <div class="mb-2">
                                 <label class="form-label">Nombre de la ubicación</label>
@@ -93,8 +92,8 @@
                             <hr>
                             <ul id="info-poligonos" class="list-group small text-capitalize text-muted"></ul>
                         </div>
-                        <div class="text-center mb-2">
-                            <button type="submit" class="btn btn-success">Guardar ubicación</button>
+                        <div class="text-end mb-2 me-3">
+                            <button type="submit" class="btn btn-primary btn-sm">Guardar ubicación</button>
                         </div>
                     </div>
                 </div>
