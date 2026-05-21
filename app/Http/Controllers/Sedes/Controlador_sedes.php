@@ -624,6 +624,96 @@ class Controlador_sedes extends Controller
         }
     }
 
+    // Vista con todas las ubicaciones (polígonos y puntos) de todas las sedes
+    public function todasUbicaciones()
+    {
+        if (!auth()->user()->can('sede.agregar_rutas')) {
+            return redirect()->route('inicio');
+        }
+
+        $sedes = Sede::select('id', 'nombre')->orderBy('nombre')->get();
+
+        $poligonos = DB::table('ubicacion_sedes')
+            ->join('sedes', 'ubicacion_sedes.sede_id', '=', 'sedes.id')
+            ->selectRaw("
+                ubicacion_sedes.id,
+                ubicacion_sedes.ubicacion as nombre,
+                sedes.id as sede_id,
+                sedes.nombre as sede_nombre,
+                'Poligono' as tipo,
+                ST_AsGeoJSON(ubicacion_sedes.poligono)::json as geometry
+            ")
+            ->whereNull('ubicacion_sedes.deleted_at')
+            ->whereNull('sedes.deleted_at')
+            ->whereNotNull('ubicacion_sedes.poligono')
+            ->get()
+            ->map(function ($p) {
+                $p->geometry = json_decode($p->geometry);
+                return $p;
+            });
+
+        $puntos = DB::table('puntos_salidas')
+            ->join('sedes', 'puntos_salidas.sede_id', '=', 'sedes.id')
+            ->selectRaw("
+                puntos_salidas.id,
+                puntos_salidas.ubicacion as nombre,
+                sedes.id as sede_id,
+                sedes.nombre as sede_nombre,
+                'Punto' as tipo,
+                ST_AsGeoJSON(puntos_salidas.punto)::json as geometry
+            ")
+            ->whereNull('puntos_salidas.deleted_at')
+            ->whereNull('sedes.deleted_at')
+            ->whereNotNull('puntos_salidas.punto')
+            ->get()
+            ->map(function ($p) {
+                $p->geometry = json_decode($p->geometry);
+                return $p;
+            });
+
+        $ubicaciones = collect($poligonos)->merge($puntos)->values();
+
+        return view('administrador.sedes.ubicaciones', compact('sedes', 'ubicaciones'));
+    }
+
+    // JSON: lista de ubicaciones con filtro opcional por sede (para AJAX)
+    public function listarTodasUbicaciones(Request $request)
+    {
+        $poligonos = DB::table('ubicacion_sedes')
+            ->join('sedes', 'ubicacion_sedes.sede_id', '=', 'sedes.id')
+            ->select(
+                'ubicacion_sedes.id',
+                'ubicacion_sedes.ubicacion as nombre',
+                'sedes.id as sede_id',
+                'sedes.nombre as sede_nombre',
+                DB::raw("'Poligono' as tipo")
+            )
+            ->whereNull('ubicacion_sedes.deleted_at')
+            ->whereNull('sedes.deleted_at');
+
+        $puntos = DB::table('puntos_salidas')
+            ->join('sedes', 'puntos_salidas.sede_id', '=', 'sedes.id')
+            ->select(
+                'puntos_salidas.id',
+                'puntos_salidas.ubicacion as nombre',
+                'sedes.id as sede_id',
+                'sedes.nombre as sede_nombre',
+                DB::raw("'Punto' as tipo")
+            )
+            ->whereNull('puntos_salidas.deleted_at')
+            ->whereNull('sedes.deleted_at');
+
+        if ($request->filled('sede_id')) {
+            $poligonos->where('ubicacion_sedes.sede_id', $request->sede_id);
+            $puntos->where('puntos_salidas.sede_id', $request->sede_id);
+        }
+
+        $ubicaciones = collect($poligonos->get())->merge($puntos->get())->values();
+
+        $this->mensaje('exito', $ubicaciones);
+        return response()->json($this->mensaje, 200);
+    }
+
     // Mensaje para mostrar al usuario
     public function mensaje($titulo, $mensaje)
     {

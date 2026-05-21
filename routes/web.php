@@ -129,6 +129,8 @@ Route::prefix('/admin')->middleware([Autenticados::class])->group(function () {
         Route::post('guardarUbicaciones', 'guardarUbicaciones')->name('sede.guardarUbicaciones');
         Route::put('eliminarUbicacion/{id_ubicacion}', 'eliminarUbicacion')->name('sede.eliminarUbicacion');
         Route::put('actualizarUbicacion/{id_ubicacion}', 'actualizarUbicacion')->name('sede.eliminarUbicacion');
+        Route::get('listarTodasUbicaciones', 'listarTodasUbicaciones')->name('sede.listarTodasUbicaciones');
+        Route::get('todasUbicaciones', 'todasUbicaciones')->name('sede.todasUbicaciones');
     });
 
 

@@ -11,7 +11,12 @@
                                 <i class="fas fa-home  me-2"></i> Módulo de sedes
                             </h4>
                         </div>
-                        <div class="col-auto">
+                        <div class="col-auto d-flex gap-2">
+                            @can('sede.agregar_rutas')
+                                <a href="{{ route('sede.todasUbicaciones') }}" class="btn btn-info">
+                                    <i class="fas fa-map-marked-alt me-1"></i> Ver Ubicaciones
+                                </a>
+                            @endcan
                             @can('sede.crear')
                                 <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalSede">
                                     <i class="fas fa-plus me-1"></i> Nuevo
