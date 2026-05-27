@@ -30,6 +30,7 @@ class DatabaseSeeder extends Seeder
             CategoriaNoticiaSeeder::class,
             CarreraSeeder::class,
             CarreraSedeSeeder::class,
+            //SeguimientoEstudianteSeeder::class,
         ]);
 
         //\App\Models\Noticia::factory(500)->create();

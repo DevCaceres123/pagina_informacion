@@ -15,6 +15,7 @@ use App\Http\Controllers\Academico\Controlador_estadisticasEstudiantes;
 use App\Http\Controllers\Academico\Controlador_estadisticasTitulados;
 use App\Http\Controllers\Academico\Controlador_estadisticasDocente;
 use App\Http\Controllers\Academico\Controlador_estadisticasAdministrativo;
+use App\Http\Controllers\Academico\Controlador_seguimientoEstudiantes;
 use App\Http\Middleware\Autenticados;
 use App\Http\Middleware\No_autenticados;
 use Illuminate\Support\Facades\Route;
@@ -226,6 +227,38 @@ Route::prefix('/admin')->middleware([Autenticados::class])->group(function () {
         Route::post('subirDatosDocentescsv', 'subirDatosDocentescsv')->name('docentes.subirDatosDocentescsv');
         Route::post('generar_reporte_docente', 'generar_reporte_docente')->name('docentes.generar_reporte_docente');
 
+    });
+
+
+    // CONTROLADOR PARA SEGUIMIENTO INDIVIDUAL DE ESTUDIANTES
+    Route::controller(Controlador_seguimientoEstudiantes::class)->group(function () {
+        // Rutas estáticas primero (antes de los wildcards {id})
+        Route::get('seguimiento', 'index')->name('seguimiento.index');
+        Route::get('seguimiento/listar', 'listar')->name('seguimiento.listar');
+        Route::post('seguimiento', 'store')->name('seguimiento.store');
+        Route::post('seguimiento/previsualizarCSV', 'previsualizarCSV')->name('seguimiento.previsualizarCSV');
+        Route::post('seguimiento/importarCSV', 'importarCSV')->name('seguimiento.importarCSV');
+        // Reportes
+        Route::post('seguimiento/reporte-general', 'reporteGeneral')->name('seguimiento.reporteGeneral');
+        Route::post('seguimiento/reporte-pendientes', 'reportePendientes')->name('seguimiento.reportePendientes');
+        Route::get('seguimiento/{id}/reporte', 'reporteIndividual')->name('seguimiento.reporteIndividual');
+        Route::get('seguimiento/estadisticas', 'estadisticas')->name('seguimiento.estadisticas');
+        // Servir documentos privados
+        Route::get('seguimiento/ver-documento/{tipo}/{id}', 'verDocumento')->name('seguimiento.verDocumento');
+        Route::get('seguimiento/ver-formulario/{id}', 'verFormulario')->name('seguimiento.verFormulario');
+        Route::get('seguimiento/ver-requisito/{id}', 'verRequisito')->name('seguimiento.verRequisito');
+        // Rutas con wildcard {id}
+        Route::get('seguimiento/{id}', 'edit')->name('seguimiento.edit');
+        Route::put('seguimiento/{id}', 'update')->name('seguimiento.update');
+        Route::post('seguimiento/{id}/eliminar', 'destroy')->name('seguimiento.destroy');
+        // Documentos
+        Route::get('seguimiento/{id}/documentos', 'listarDocumentos')->name('seguimiento.listarDocumentos');
+        Route::post('seguimiento/{id}/documento', 'subirDocumento')->name('seguimiento.subirDocumento');
+        Route::post('seguimiento/{id}/formulario', 'agregarFormulario')->name('seguimiento.agregarFormulario');
+        Route::post('seguimiento/formulario/{id}/eliminar', 'eliminarFormulario')->name('seguimiento.eliminarFormulario');
+        Route::post('seguimiento/{id}/requisito', 'agregarRequisitoDefensa')->name('seguimiento.agregarRequisitoDefensa');
+        Route::post('seguimiento/requisito/{id}/eliminar', 'eliminarRequisitoDefensa')->name('seguimiento.eliminarRequisitoDefensa');
+        Route::post('seguimiento/{id}/aprobar-expediente', 'aprobarExpediente')->name('seguimiento.aprobarExpediente');
     });
 
 

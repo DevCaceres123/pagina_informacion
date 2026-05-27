@@ -25,6 +25,13 @@ mkdir -p storage/app/public/resoluciones
 mkdir -p storage/app/private/contratos
 mkdir -p storage/app/private/documentos_infraestructura
 mkdir -p storage/app/private/planos
+mkdir -p storage/app/private/documentos_estudiantes
+mkdir -p storage/app/private/documentos_estudiantes/certificado_habilitacion
+mkdir -p storage/app/private/documentos_estudiantes/fotocopia_titulo
+mkdir -p storage/app/private/documentos_estudiantes/requisitos
+mkdir -p storage/app/private/documentos_estudiantes/copia_titulo
+mkdir -p storage/app/private/documentos_estudiantes/formularios
+
 
 echo "Configurando permisos..."
 chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
