@@ -19,7 +19,7 @@
                                     <i class="fas fa-file-csv me-1"></i> Subir CSV
                                 </button>
                             @endcan
-                            @can('seguimiento_estudiantes.inicio')
+                            @can('seguimiento_estudiantes.generar_reporte')
                                 <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#modalReporteGeneral">
                                     <i class="fas fa-file-pdf me-1"></i> Reporte General
                                 </button>

@@ -67,6 +67,7 @@ class Controlador_seguimientoEstudiantes extends Controller
                 'editar'     => auth()->user()->can('seguimiento_estudiantes.editar'),
                 'eliminar'   => auth()->user()->can('seguimiento_estudiantes.eliminar'),
                 'documentos' => auth()->user()->can('seguimiento_estudiantes.documentos'),
+                'ficha'      => auth()->user()->can('seguimiento_estudiantes.ficha'),
             ],
         ]);
     }
@@ -337,7 +338,7 @@ class Controlador_seguimientoEstudiantes extends Controller
 
     public function reporteGeneral(Request $request)
     {
-        if (!auth()->user()->can('seguimiento_estudiantes.inicio')) {
+        if (!auth()->user()->can('seguimiento_estudiantes.generar_reporte')) {
             return redirect()->route('inicio');
         }
 
@@ -430,7 +431,7 @@ class Controlador_seguimientoEstudiantes extends Controller
 
     public function reportePendientes(Request $request)
     {
-        if (!auth()->user()->can('seguimiento_estudiantes.inicio')) {
+        if (!auth()->user()->can('seguimiento_estudiantes.generar_reporte')) {
             return redirect()->route('inicio');
         }
 
@@ -568,7 +569,7 @@ class Controlador_seguimientoEstudiantes extends Controller
 
     public function reporteIndividual(string $id)
     {
-        if (!auth()->user()->can('seguimiento_estudiantes.inicio')) {
+        if (!auth()->user()->can('seguimiento_estudiantes.ficha')) {
             return redirect()->route('inicio');
         }
 

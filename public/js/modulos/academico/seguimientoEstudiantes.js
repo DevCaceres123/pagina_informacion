@@ -69,11 +69,13 @@ function listar() {
                 render: function (data, type, row) {
                     let btns = `<div class="d-flex justify-content-center gap-1">`;
 
-                    btns += `
+                    if (permisosGlobal?.ficha) {
+                        btns += `
                         <a href="${SEGUIMIENTO_URL}/${row.id}/reporte" target="_blank"
-                            class="btn btn-sm btn-outline-danger" title="Reporte PDF">
+                            class="btn btn-sm btn-outline-danger" title="Ficha de Seguimiento PDF">
                             <i class="fas fa-file-pdf fs-16"></i>
                         </a>`;
+                    }
 
                     if (permisosGlobal?.documentos) {
                         btns += `

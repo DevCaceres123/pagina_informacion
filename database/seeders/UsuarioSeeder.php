@@ -184,12 +184,14 @@ class UsuarioSeeder extends Seeder
         Permission::create(['name' => 'administrativos.ingresar'])->syncRoles([$rol1]);
 
         // permisos para seguimiento individual de estudiantes
-        Permission::create(['name' => 'seguimiento_estudiantes.inicio'])->syncRoles([$rol1]);
+        Permission::create(['name' => 'seguimiento_estudiantes.inicio'])->syncRoles([$rol1, $rol2]);
         Permission::create(['name' => 'seguimiento_estudiantes.crear'])->syncRoles([$rol1]);
         Permission::create(['name' => 'seguimiento_estudiantes.editar'])->syncRoles([$rol1]);
         Permission::create(['name' => 'seguimiento_estudiantes.eliminar'])->syncRoles([$rol1]);
         Permission::create(['name' => 'seguimiento_estudiantes.documentos'])->syncRoles([$rol1]);
         Permission::create(['name' => 'seguimiento_estudiantes.subir_datos'])->syncRoles([$rol1]);
+        Permission::create(['name' => 'seguimiento_estudiantes.generar_reporte'])->syncRoles([$rol1]);
+        Permission::create(['name' => 'seguimiento_estudiantes.ficha'])->syncRoles([$rol1, $rol2]);
 
 
     }
