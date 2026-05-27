@@ -34,6 +34,9 @@
                             @endcan
                         </div>
                     </div>
+                    <style>
+                        #mainTabs .nav-link.active { color: #2b2d3b !important; }
+                    </style>
                     <ul class="nav nav-tabs" id="mainTabs" role="tablist" style="border-bottom:none">
                         <li class="nav-item" role="presentation">
                             <button class="nav-link active text-light fw-semibold small"
