@@ -103,6 +103,22 @@ UBICACIONES.forEach(function (u) {
             puntosPorSede[u.sede_id] = L.layerGroup();
         }
         puntosPorSede[u.sede_id].addLayer(layer);
+
+        // Incluir puntos en el cálculo de bounds global
+        try {
+            var pBounds = layer.getBounds();
+            if (pBounds.isValid()) {
+                allBounds = allBounds
+                    ? allBounds.extend(pBounds)
+                    : L.latLngBounds(pBounds.getSouthWest(), pBounds.getNorthEast());
+
+                if (sedeBounds[u.sede_id]) {
+                    sedeBounds[u.sede_id].extend(pBounds);
+                } else {
+                    sedeBounds[u.sede_id] = L.latLngBounds(pBounds.getSouthWest(), pBounds.getNorthEast());
+                }
+            }
+        } catch (e) {}
     }
 });
 

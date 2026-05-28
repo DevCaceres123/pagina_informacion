@@ -115,6 +115,16 @@ PUNTOS.forEach(function (punto) {
     }
 });
 
+// Auto-centrar en ubicaciones existentes al cargar
+if (drawnItems.getLayers().length > 0) {
+    try {
+        var bounds = drawnItems.getBounds();
+        if (bounds.isValid()) {
+            map.fitBounds(bounds, { padding: [50, 50] });
+        }
+    } catch (e) {}
+}
+
 // boton para agreagr los elementos al mapa
 document.getElementById("activarDibujo").addEventListener("click", function () {
     const tipo = document.getElementById("tipo").value;
