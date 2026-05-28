@@ -282,17 +282,19 @@
     <!-- Final info sedes ============================-->
 
     <!-- seccion de noticias -->
-    <section class="py-6 text-center text-md-start" style="background-color: #003366;">
+    <section class="py-4" style="background: linear-gradient(135deg, #003366 0%, #004080 100%); border-bottom: 4px solid #880000;">
         <div class="container">
-            <div class="row align-items-center">
-                <div class="col-md">
-                    <h4 class="text-white mb-0 text-center">ÚLTIMAS NOTICIAS<br class="d-md-none" />
-                    </h4>
+            <div class="d-flex flex-column align-items-center text-center gap-2">
+                <div class="d-flex align-items-center gap-3">
+                    <span style="width:38px;height:38px;background:rgba(255,255,255,.12);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                        <i class="fas fa-newspaper text-white" style="font-size:16px"></i>
+                    </span>
+                    <h4 class="text-white mb-0 fw-bold">ÚLTIMAS NOTICIAS</h4>
                 </div>
-                <!--       <div class="col-md-auto mt-md-0 mt-4"><a class="btn btn-light rounded-pill" href="contact.html">Contact Us</a></div> -->
+                <div style="width:50px;height:3px;background:#880000;border-radius:2px;margin-top:2px"></div>
             </div>
-        </div><!-- end of .container-->
-    </section><!-- <section> close ============================-->
+        </div>
+    </section>
 
 
     <section class="bg-100">
@@ -388,13 +390,21 @@
 
     <!-- INICIO AUTORIDADES -->
 
-    <section class="bg-white position-relative"
+    <section class="position-relative py-6"
         style="background-image: url('pagina_template/assets/img/perfil2.png'); background-attachment: fixed; background-size: cover; background-position: center;">
-        <div class="container position-relative p-5" style="z-index: 1;">
-            <h4 class="text-center text-light rounded p-2" style="margin-top:-95px; background-color: #880000;">NUESTRAS
-                AUTORIDADES
-            </h4>
-            <div class="container py-1" style="margin-top:60px">
+        {{-- Overlay oscuro para legibilidad --}}
+        <div class="position-absolute top-0 start-0 w-100 h-100" style="background:rgba(0,0,0,.6);z-index:0"></div>
+        <div class="container position-relative" style="z-index: 1;">
+            <div class="d-flex flex-column align-items-center text-center mb-5 gap-2">
+                <div class="d-flex align-items-center gap-3">
+                    <span style="width:38px;height:38px;background:rgba(136,0,0,.7);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                        <i class="fas fa-user-tie text-white" style="font-size:15px"></i>
+                    </span>
+                    <h4 class="text-white mb-0 fw-bold">NUESTRAS AUTORIDADES</h4>
+                </div>
+                <div style="width:50px;height:3px;background:#880000;border-radius:2px;margin-top:2px"></div>
+            </div>
+            <div class="container py-1">
                 <div class="row d-flex flex-wrap justify-content-center">
                     <!-- AUTORIDAD 1 -->
                     <div class="col-12 col-md-3 d-flex flex-column align-items-center text-center">
@@ -446,6 +456,7 @@
                 </div>
             </div>
 
+        </div>
         </div><!-- end of .container-->
     </section>
     <!-- FINAL DE AUTORIDADES -->
@@ -454,16 +465,19 @@
 
     <!-- INICIO UBICACION DE SEDES ACADEMICAS DESCONCENTRADAS -->
 
-    <section class="py-6 text-center mt-4" style="background-color: #003366;">
+    <section class="py-4" style="background: linear-gradient(135deg, #003366 0%, #004080 100%); border-bottom: 4px solid #880000;">
         <div class="container">
-            <div class="row align-items-center">
-                <div class="col-md">
-                    <h4 class="text-white mb-0">UBICACIÓN DE SEDES ACADÉMICAS DESCONCENTRADAS (UPEA)<br
-                            class="d-md-none" /></h4>
+            <div class="d-flex flex-column align-items-center text-center gap-2">
+                <div class="d-flex align-items-center gap-3">
+                    <span style="width:38px;height:38px;background:rgba(255,255,255,.12);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                        <i class="fas fa-map-marked-alt text-white" style="font-size:16px"></i>
+                    </span>
+                    <h4 class="text-white mb-0 fw-bold">UBICACIÓN DE SEDES ACADÉMICAS DESCONCENTRADAS (UPEA)</h4>
                 </div>
+                <div style="width:50px;height:3px;background:#880000;border-radius:2px;margin-top:2px"></div>
             </div>
-        </div><!-- end of .container-->
-    </section><!-- <section> close ============================-->
+        </div>
+    </section>
 
 
     <section class="pt-0 mt-5">
@@ -482,13 +496,16 @@
 
     <!-- Redes sociales -->
 
-    <section class="py-6 text-center" style="background-color: #003366;">
+    <section class="py-4" style="background: linear-gradient(135deg, #003366 0%, #004080 100%); border-bottom: 4px solid #880000;">
         <div class="container">
-            <div class="row align-items-center">
-                <div class="col-md">
-                    <h4 class="text-white mb-0">REDES SOCIALES<br class="d-md-none" /></h4>
+            <div class="d-flex flex-column align-items-center text-center gap-2">
+                <div class="d-flex align-items-center gap-3">
+                    <span style="width:38px;height:38px;background:rgba(255,255,255,.12);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                        <i class="fas fa-share-alt text-white" style="font-size:16px"></i>
+                    </span>
+                    <h4 class="text-white mb-0 fw-bold">REDES SOCIALES</h4>
                 </div>
-                <!--       <div class="col-md-auto mt-md-0 mt-4"><a class="btn btn-light rounded-pill" href="contact.html">Contact Us</a></div> -->
+                <div style="width:50px;height:3px;background:#880000;border-radius:2px;margin-top:2px"></div>
             </div>
         </div>
     </section>
@@ -575,34 +592,34 @@
             }).addTo(map);
 
             const colors = ["#880000", "#007bff", "#28a745", "#ffc107"];
+            var allBounds = null;
+
             poligonos.forEach((pol, index) => {
-                const color = colors[index % colors.length]; // alterna colores
+                const color = colors[index % colors.length];
                 const layer = L.geoJSON(pol.geometry, {
-                    style: {
-                        color: color,
-                        weight: 2,
-                        fillColor: color,
-                        fillOpacity: 0.4
-                    }
+                    style: { color: color, weight: 2, fillColor: color, fillOpacity: 0.4 }
                 }).addTo(map);
 
-                // Tooltip permanente
-                layer.bindTooltip(pol.ubicacion, {
-                    permanent: true,
-                    direction: "top"
-                });
+                layer.bindTooltip(pol.ubicacion, { permanent: true, direction: "top" });
 
-                // Popup con link a Google Maps
-                const center = layer.getBounds().getCenter();
-                layer.bindPopup(`
-        <b>${pol.ubicacion}</b><br>
-        <a class="btn btn-sm btn-success mt-2" 
-           href="https://www.google.com/maps/dir/?api=1&destination=${center.lat},${center.lng}" 
-           target="_blank">
-           🚗 Cómo llegar
-        </a>
-    `);
+                try {
+                    const b = layer.getBounds();
+                    if (b.isValid()) {
+                        allBounds = allBounds ? allBounds.extend(b) : b;
+                        const center = b.getCenter();
+                        layer.bindPopup(`
+                            <b>${pol.ubicacion}</b><br>
+                            <a class="btn btn-sm btn-success mt-2"
+                               href="https://www.google.com/maps/dir/?api=1&destination=${center.lat},${center.lng}"
+                               target="_blank">🚗 Cómo llegar</a>
+                        `);
+                    }
+                } catch (e) {}
             });
+
+            if (allBounds && allBounds.isValid()) {
+                map.fitBounds(allBounds, { padding: [40, 40] });
+            }
 
 
             // 👉 Mensaje inicial para guiar al usuario
