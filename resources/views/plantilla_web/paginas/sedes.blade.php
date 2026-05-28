@@ -336,12 +336,13 @@
 
             // 🎨 Colores para los polígonos
             const colors = ["#880000", "#007bff", "#28a745", "#ffc107"];
+            var allBounds = null;
 
             // ======================
             // 📍 DIBUJAR POLÍGONOS
             // ======================
             poligonos.forEach((pol, index) => {
-                const color = colors[index % colors.length]; // alterna colores
+                const color = colors[index % colors.length];
                 const layer = L.geoJSON(pol.geometry, {
                     style: {
                         color: color,
@@ -351,91 +352,71 @@
                     }
                 }).addTo(map);
 
-                // Tooltip permanente
-                layer.bindTooltip(pol.ubicacion, {
-                    permanent: true,
-                    direction: "top"
-                });
+                layer.bindTooltip(pol.ubicacion, { permanent: true, direction: "top" });
 
-                // Popup con enlace a Google Maps
-                const center = layer.getBounds().getCenter();
-                layer.bindPopup(`
-            <b>${pol.ubicacion}</b><br>
-            <a class="btn btn-sm btn-success mt-2" 
-               href="https://www.google.com/maps/dir/?api=1&destination=${center.lat},${center.lng}" 
-               target="_blank">
-               🚗 Cómo llegar
-            </a>
-        `);
+                try {
+                    const b = layer.getBounds();
+                    if (b.isValid()) {
+                        allBounds = allBounds ? allBounds.extend(b) : b;
+                        const center = b.getCenter();
+                        layer.bindPopup(`
+                            <b>${pol.ubicacion}</b><br>
+                            <a class="btn btn-sm btn-success mt-2"
+                               href="https://www.google.com/maps/dir/?api=1&destination=${center.lat},${center.lng}"
+                               target="_blank">🚗 Cómo llegar</a>
+                        `);
+                    }
+                } catch (e) {}
             });
 
             // ======================
             // 🟢 DIBUJAR PUNTOS
             // ======================
-            const puntoIcon = L.icon({
-                iconUrl: 'https://cdn-icons-png.flaticon.com/512/854/854878.png', // puedes cambiarlo
-                iconSize: [32, 32],
-                iconAnchor: [16, 32],
-                popupAnchor: [0, -28]
-            });
-
-
-            // Mostrar PUNTOS existentes en el mapa y en el panel
             puntos.forEach(function(punto) {
                 if (punto.geometry && punto.geometry.coordinates) {
-
-                    // 🧠 Construimos un objeto Feature válido para Leaflet
                     const feature = {
                         type: "Feature",
                         geometry: punto.geometry,
-                        properties: {
-                            id: punto.id,
-                            ubicacion: punto.ubicacion
-                        }
+                        properties: { id: punto.id, ubicacion: punto.ubicacion }
                     };
 
-                    // 🗺️ Crear la capa GeoJSON del punto
                     const layer = L.geoJSON(feature, {
                         pointToLayer: function(feature, latlng) {
                             return L.marker(latlng);
                         },
                         onEachFeature: function(feature, layer) {
                             layer._idBD = feature.properties.id;
-
                             const [lng, lat] = feature.geometry.coordinates;
-
-                            // Popup con enlace a Google Maps
                             layer.bindPopup(`
-                    <b>${feature.properties.ubicacion}</b><br>
-                    <a class="btn btn-sm btn-success mt-2" 
-                       href="https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}" 
-                       target="_blank">
-                       🚗 Cómo llegar
-                    </a>
-                `);
+                                <b>${feature.properties.ubicacion}</b><br>
+                                <a class="btn btn-sm btn-success mt-2"
+                                   href="https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}"
+                                   target="_blank">🚗 Cómo llegar</a>
+                            `);
                         }
-                    }).bindTooltip(punto.ubicacion, {
-                        permanent: true,
-                        direction: "top",
-                    });
+                    }).bindTooltip(punto.ubicacion, { permanent: true, direction: "top" });
 
                     layer.addTo(map);
 
-                    // Mostrar en el panel de información
-                    const li = document.createElement("p");
-                    li.textContent = `${punto.ubicacion}`;
-
+                    try {
+                        const b = layer.getBounds();
+                        if (b.isValid()) {
+                            allBounds = allBounds ? allBounds.extend(b) : b;
+                        }
+                    } catch (e) {}
                 }
             });
 
+            // Centrar el mapa en las ubicaciones de la sede
+            if (allBounds && allBounds.isValid()) {
+                map.fitBounds(allBounds, { padding: [50, 50] });
+            }
 
             // ======================
             // 💬 MENSAJE GUIA
             // ======================
             L.control
-                .attribution({
-                    prefix: ""
-                })
+                .attribution({ prefix: "" })
                 .addAttribution("🖱️ Haz click en la ubicación o punto para ver cómo llegar")
                 .addTo(map);
         });

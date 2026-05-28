@@ -15,9 +15,18 @@ $(document).ready(function () {
         }
     });
 
+    // Guardar el HTML original de las carreras para poder restaurarlo
+    const htmlOriginalCarreras = $('#contenedorCarreras').html();
+
     // Escucha cuando el usuario escribe
     $('#buscadorCarreras').on('keyup', function () {
-        let valorBuscado = $(this).val().trim();
+        let valorBuscado = $(this).val().trim().toLowerCase();
+
+        // Si el input queda vacío, restaurar las 6 carreras originales
+        if (valorBuscado.length === 0) {
+            $('#contenedorCarreras').html(htmlOriginalCarreras);
+            return;
+        }
 
         // Si el texto tiene más de 2 caracteres, realiza la búsqueda
         if (valorBuscado.length > 2) {
