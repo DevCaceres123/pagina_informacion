@@ -168,6 +168,11 @@
                         @endcan
                         <div class="collapse " id="academico">
                             <ul class="nav flex-column">
+                                @can('seguimiento_estudiantes.inicio')
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="{{route('seguimiento.index')}}">Estudiantes</a>
+                                    </li>
+                                @endcan
                                 @can('estudiantes.inicio')
                                     <li class="nav-item">
                                         <a class="nav-link" href="{{route('estudiantes.index')}}">Estudiantes</a>

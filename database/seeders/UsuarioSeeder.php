@@ -152,12 +152,12 @@ class UsuarioSeeder extends Seeder
         Permission::create(['name' => 'academico'])->syncRoles([$rol1,$rol2]);
 
         // permiso para los estudiantes
-        Permission::create(['name' => 'estudiantes.inicio'])->syncRoles([$rol1,$rol2]);
-        Permission::create(['name' => 'estudiantes.subir_datos'])->syncRoles([$rol1]);
-        Permission::create(['name' => 'estudiantes.generar_reporte'])->syncRoles([$rol1]);
-        Permission::create(['name' => 'estudiantes.editar'])->syncRoles([$rol1]);
-        Permission::create(['name' => 'estudiantes.editar_url'])->syncRoles([$rol1]);
-        Permission::create(['name' => 'estudiantes.ingresar'])->syncRoles([$rol1]);
+        Permission::create(['name' => 'estudiantes.inicio'])->syncRoles([]);
+        Permission::create(['name' => 'estudiantes.subir_datos'])->syncRoles([]);
+        Permission::create(['name' => 'estudiantes.generar_reporte'])->syncRoles([]);
+        Permission::create(['name' => 'estudiantes.editar'])->syncRoles([]);
+        Permission::create(['name' => 'estudiantes.editar_url'])->syncRoles([]);
+        Permission::create(['name' => 'estudiantes.ingresar'])->syncRoles([]);
 
         // permiso para los titulados
         Permission::create(['name' => 'titulados.inicio'])->syncRoles([$rol1,$rol2]);
