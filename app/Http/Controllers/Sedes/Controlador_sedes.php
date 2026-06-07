@@ -18,7 +18,11 @@ use Exception;
 class Controlador_sedes extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * 🔎 EN PANTALLA: pantalla principal del módulo "Sedes" (la tabla de sedes)
+     * VISTA PRINCIPAL DE SEDES (la pantalla del listado).
+     * Solo muestra la página HTML. Valida que el usuario tenga el permiso
+     * 'sede.inicio'; si no lo tiene, lo devuelve a la página de inicio.
+     * Los datos de la tabla NO se cargan aquí, se cargan por AJAX con listarSedes().
      */
     public function index()
     {
@@ -28,6 +32,16 @@ class Controlador_sedes extends Controller
         return view('administrador.sedes.sedes');
     }
 
+    /**
+     * 🔎 EN PANTALLA: arma las filas y los botones de la tabla de sedes ("Ver Resolucion", "Editar Sede", "Actualizar Imagenes", "Agregar Rutas", "Eliminar Sede" y el switch de estado)
+     * DATOS DE LA TABLA DE SEDES (responde en formato JSON para DataTables).
+     * Aquí se arma cada fila del listado: nombre, descripción, resolución, etc.
+     * También se envían los PERMISOS del usuario ('editar', 'eliminar',
+     * 'ver_resolucion', etc.). Esos permisos son los que el JavaScript usa para
+     * decidir qué BOTONES mostrar en cada fila (por ejemplo, el botón
+     * "Ver resolución" aparece solo si 'ver_resolucion' es true).
+     * Soporta búsqueda por nombre o número de resolución y paginación.
+     */
     public function listarSedes(Request $request)
     {
         $query = Sede::with([
@@ -67,6 +81,12 @@ class Controlador_sedes extends Controller
     }
 
 
+    /**
+     * 🔎 EN PANTALLA: botón "Actualizar Imagenes"  ->  modal "Galería de Imágenes" (al abrirlo, muestra las fotos ya guardadas)
+     * GALERÍA: devuelve (en JSON) todas las imágenes de una sede.
+     * Se usa cuando se abre el modal/sección de imágenes de una sede para
+     * mostrar las fotos ya guardadas. Si no hay imágenes, avisa con un mensaje.
+     */
     public function listarImagenes($id_sede)
     {
 
@@ -85,6 +105,14 @@ class Controlador_sedes extends Controller
         return response()->json($this->mensaje, 200);
     }
 
+    /**
+     * 🔎 EN PANTALLA: modal "Galería de Imágenes"  ->  botón "Subir Imágenes"
+     * GALERÍA: agrega NUEVAS imágenes a una sede ya existente.
+     * Se ejecuta cuando, dentro del módulo de imágenes de una sede, se suben
+     * fotos nuevas. Procesa/optimiza las imágenes (ver guardarGaleria) y guarda
+     * cada una en la base de datos. Usa transacción: si algo falla, borra los
+     * archivos que ya se habían guardado para no dejar basura.
+     */
     public function agregarImagenes(Request $request, string $id_sede)
     {
         
@@ -129,6 +157,12 @@ class Controlador_sedes extends Controller
     }
 
 
+    /**
+     * 🔎 EN PANTALLA: modal "Galería de Imágenes"  ->  botón rojo (ícono) de borrar sobre cada foto
+     * GALERÍA: elimina UNA imagen de la sede.
+     * Se ejecuta al presionar el botón de borrar sobre una foto. Borra tanto el
+     * archivo físico del almacenamiento como el registro de la base de datos.
+     */
     public function eliminarImagen(string $id_imagen)
     {
 
@@ -165,7 +199,13 @@ class Controlador_sedes extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * 🔎 EN PANTALLA: botón "Nuevo" -> modal "CREAR NUEVA SEDE" -> botón "Guardar"
+     * CREAR / REGISTRAR una nueva sede.
+     * Se ejecuta al guardar el formulario de "Nueva sede". Guarda los datos de
+     * la sede (nombre, descripción, número de resolución, redes sociales), el
+     * PDF de la resolución (ver guardarPdf) y la galería de imágenes (ver
+     * guardarGaleria). Usa transacción: si algo falla, borra los archivos ya
+     * subidos para no dejar archivos sueltos.
      */
     public function store(SedesRquest $request)
     {
@@ -226,6 +266,13 @@ class Controlador_sedes extends Controller
         }
     }
 
+    /**
+     * 🔎 EN PANTALLA: no tiene botón propio (se usa por dentro al CREAR NUEVA SEDE)
+     * AYUDANTE (no es una acción de botón por sí sola).
+     * Guarda el PDF de la resolución en storage/app/public/resoluciones y
+     * devuelve solo el NOMBRE del archivo (sin la carpeta) para guardarlo en BD.
+     * Lo usan store() (al crear la sede) como parte del proceso de guardado.
+     */
     // guardamos el pdf o resolucion
     public function guardarPdf(Request $request)
     {
@@ -237,6 +284,15 @@ class Controlador_sedes extends Controller
         return null;
     }
 
+    /**
+     * 🔎 EN PANTALLA: no tiene botón propio (se usa por dentro al CREAR NUEVA SEDE y al "Actualizar Imagenes")
+     * AYUDANTE (no es una acción de botón por sí sola).
+     * Procesa y optimiza las imágenes recibidas: las redimensiona (máx 1200x800
+     * manteniendo proporción), las convierte a formato WEBP con calidad 80, les
+     * pone un nombre único y las guarda en storage/app/public/galeria_sedes.
+     * Devuelve la lista de nombres de archivo para guardarlos en BD.
+     * Lo usan store() y agregarImagenes().
+     */
     // guardarmos las imagenes
 
     public function guardarGaleria(Request $request)
@@ -288,6 +344,18 @@ class Controlador_sedes extends Controller
         return $rutas;
     }
 
+    /**
+     * 🔎 EN PANTALLA: botón "Ver Resolucion"  ->  modal "Visualización de Resolución"  ->  botón "Actualizar"
+     * ★ RESOLUCIÓN: este es el método del botón "VER / MODIFICAR RESOLUCIÓN".
+     * Aquí es donde se trabaja con la resolución de la sede. Permite dos cosas:
+     *   1) Reemplazar el PDF de la resolución (si se sube un 'nuevoPdf'): borra
+     *      el PDF anterior y guarda el nuevo en storage/app/public/resoluciones.
+     *   2) Definir si la resolución se PUBLICA o no en la web pública, según el
+     *      campo 'publicar_resolucion' (1 = activo / 0 = inactivo).
+     * Valida que el archivo sea PDF y máx 5MB. Usa transacción por seguridad.
+     * NOTA: la PARTE DE "VER" el PDF (mostrarlo en pantalla) se apoya en el dato
+     * 'resolucion_pdf' que devuelve listarSedes(); aquí se hace la MODIFICACIÓN.
+     */
     public function actualizar_pdf(Request $request, $id)
     {
         DB::beginTransaction();
@@ -335,7 +403,11 @@ class Controlador_sedes extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * 🔎 EN PANTALLA: botón "Editar Sede" (abre el modal "EDITAR SEDE" y llena los campos)
+     * EDITAR (cargar datos): devuelve en JSON los datos de UNA sede.
+     * Se ejecuta al presionar el botón "Editar" de una fila, para llenar el
+     * formulario de edición con la información actual de esa sede.
+     * (Aquí solo se traen los datos; el guardado lo hace actualizarDatos()).
      */
     public function edit(string $id)
     {
@@ -351,6 +423,14 @@ class Controlador_sedes extends Controller
     }
 
 
+    /**
+     * 🔎 EN PANTALLA: modal "EDITAR SEDE" -> botón "Guardar"
+     * EDITAR (guardar cambios): actualiza los datos de una sede existente.
+     * Se ejecuta al guardar el formulario de edición. Modifica nombre,
+     * descripción, número de resolución y redes sociales (whatsapp, facebook,
+     * youtube). Usa transacción para revertir si ocurre un error.
+     * OJO: aquí NO se cambia el PDF de la resolución (eso lo hace actualizar_pdf).
+     */
     public function actualizarDatos(SedesRquest $request)
     {
         
@@ -388,7 +468,11 @@ class Controlador_sedes extends Controller
         }
     }
     /**
-     * Update the specified resource in storage.
+     * 🔎 EN PANTALLA: el switch (interruptor) verde/gris de estado en cada fila de la tabla
+     * ACTIVAR / DESACTIVAR sede (cambiar estado).
+     * Se ejecuta al presionar el botón/switch de estado de una fila. Si la sede
+     * está "activo" la pasa a "inactivo" y viceversa (es un interruptor).
+     * Requiere el permiso 'sede.desactivar' que se manda en listarSedes().
      */
     public function update(Request $request, string $id)
     {
@@ -425,7 +509,11 @@ class Controlador_sedes extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * 🔎 EN PANTALLA: botón "Eliminar Sede"
+     * ELIMINAR sede.
+     * Se ejecuta al presionar el botón "Eliminar" de una fila. Borra la sede
+     * (borrado lógico / SoftDeletes, no se borra realmente de la base de datos).
+     * Requiere el permiso 'sede.eliminar' que se manda en listarSedes().
      */
     public function destroy(string $id)
     {
@@ -453,7 +541,14 @@ class Controlador_sedes extends Controller
     }
 
 
-    // listamos todas las ubicaciones de la sede
+    /**
+     * 🔎 EN PANTALLA: botón "Agregar Rutas" (abre la pantalla del mapa de esa sede)
+     * MAPA DE UNA SEDE: muestra la pantalla del mapa de una sede específica.
+     * Trae los polígonos (áreas dibujadas) y los puntos de salida guardados de
+     * esa sede, los convierte a GeoJSON para que Leaflet los pueda dibujar, y
+     * los manda a la vista del mapa. Solo lista lo que NO está eliminado.
+     */
+    
     public function ubicacionSede($id_sede)
     {
         $sede = Sede::find($id_sede);
@@ -491,6 +586,15 @@ class Controlador_sedes extends Controller
 
 
 
+    /**
+     * 🔎 EN PANTALLA: dentro del mapa, botón "Agregar ubicación" (dibujar) y luego botón "Guardar ubicación"
+     * MAPA: guarda las ubicaciones dibujadas en el mapa.
+     * Se ejecuta al guardar lo dibujado en el mapa (recibe un GeoJSON). Recorre
+     * cada figura y, según su tipo, la guarda en la tabla correcta:
+     *   - Polygon / MultiPolygon  -> tabla ubicacion_sedes (áreas de la sede)
+     *   - Point                   -> tabla puntos_salidas (puntos de salida)
+     * Usa transacción para revertir todo si una figura falla.
+     */
     public function guardarUbicaciones(Request $request)
     {
         $nombre = $request->input('nombre');
@@ -545,6 +649,13 @@ class Controlador_sedes extends Controller
     }
 
 
+    /**
+     * 🔎 EN PANTALLA: dentro del mapa, al BORRAR una figura (punto o área)
+     * MAPA: elimina UNA ubicación dibujada (un punto o un polígono).
+     * Se ejecuta al borrar una figura del mapa. Según el tipo de geometría
+     * busca en la tabla correcta (Point -> puntos_salidas, Polygon -> ubicacion_sedes)
+     * y la elimina. Usa transacción por seguridad.
+     */
     public function eliminarUbicacion(String $id_ubicacion, Request $request)
     {
 
@@ -581,6 +692,13 @@ class Controlador_sedes extends Controller
         }
     }
 
+    /**
+     * 🔎 EN PANTALLA: dentro del mapa, al EDITAR / MOVER una figura existente
+     * MAPA: edita / mueve UNA ubicación ya dibujada (punto o polígono).
+     * Se ejecuta al modificar una figura existente en el mapa. Según el tipo,
+     * actualiza la geometría en la tabla correcta (puntos_salidas o ubicacion_sedes).
+     * Usa transacción por seguridad.
+     */
     // editar ubocacion
     public function actualizarUbicacion(String $id_ubicacion, Request $request)
     {
@@ -624,6 +742,13 @@ class Controlador_sedes extends Controller
         }
     }
 
+    /**
+     * 🔎 EN PANTALLA: botón "Ver Ubicaciones" (mapa general con todas las sedes)
+     * MAPA GENERAL: vista con las ubicaciones de TODAS las sedes juntas.
+     * Muestra en un solo mapa todos los polígonos y puntos de todas las sedes
+     * (con el nombre de la sede a la que pertenecen). Requiere el permiso
+     * 'sede.agregar_rutas'. Solo trae lo que NO está eliminado.
+     */
     // Vista con todas las ubicaciones (polígonos y puntos) de todas las sedes
     public function todasUbicaciones()
     {
@@ -676,6 +801,13 @@ class Controlador_sedes extends Controller
         return view('administrador.sedes.ubicaciones', compact('sedes', 'ubicaciones'));
     }
 
+    /**
+     * 🔎 EN PANTALLA: el filtro/selector de sede del mapa general (carga la lista por AJAX)
+     * MAPA GENERAL (datos): lista en JSON las ubicaciones de todas las sedes.
+     * Alimenta por AJAX la vista anterior (todasUbicaciones). Permite filtrar
+     * por una sede específica si se envía 'sede_id'. Devuelve nombre, sede y
+     * tipo (Polígono o Punto) de cada ubicación no eliminada.
+     */
     // JSON: lista de ubicaciones con filtro opcional por sede (para AJAX)
     public function listarTodasUbicaciones(Request $request)
     {
@@ -714,6 +846,12 @@ class Controlador_sedes extends Controller
         return response()->json($this->mensaje, 200);
     }
 
+    /**
+     * 🔎 EN PANTALLA: no tiene botón (es la notificación/alerta de éxito o error que ves)
+     * AYUDANTE: arma el mensaje (tipo + texto) que se devuelve al usuario.
+     * Lo usan casi todos los métodos para responder con "exito" o "error" y un
+     * texto, que luego el JavaScript muestra como alerta/notificación.
+     */
     // Mensaje para mostrar al usuario
     public function mensaje($titulo, $mensaje)
     {
