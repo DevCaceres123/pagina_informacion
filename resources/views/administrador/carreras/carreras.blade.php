@@ -137,7 +137,7 @@
             <div class="modal-content shadow">
                 <div class="modal-header bg-black text-white">
                     <span class="badge badge-outline-light rounded">
-                        <i class="fas fa-university me-1"></i> CREAR NUEVA CARRERA
+                        <i class="fas fa-university me-1"></i> EDITAR CARRERA
                     </span>
                     <span class="ms-3">Campos obligatorios <strong class="text-danger">(*)</strong></span>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>

@@ -15,8 +15,33 @@ use Illuminate\Validation\Rule;
 use App\Imports\DocenteImport;
 use Maatwebsite\Excel\Validators\ValidationException as ExcelValidationException;
 
+/**
+ * ============================================================================
+ *  CONTROLADOR: Estadísticas de Docentes (módulo Académico)
+ * ============================================================================
+ *  Maneja la pantalla "Registro de docentes": la tabla de docentes (filtrable
+ *  por gestión), la edición rápida de un registro, la importación masiva por
+ *  CSV/Excel y el reporte en PDF por carrera o sede.
+ *
+ *  GUÍA RÁPIDA (busca con Ctrl+F el texto del botón que ves en pantalla):
+ *    (desplegable de gestión)  -> listarDocentes()  (recarga la tabla)
+ *    "Actualizar Informacion"  -> actualizar_registro_docente()
+ *    "Subir datos" / "Importar" (vista previa) -> previsualizarDocentes()
+ *    "Subir Definitivamente"   -> subirDatosDocentescsv()
+ *    "Generar Reporte" / "Generar PDF" -> generar_reporte_docente()
+ * ============================================================================
+ */
 class Controlador_estadisticasDocente extends Controller
 {
+    /**
+     * 🔎 EN PANTALLA: carga la PÁGINA completa "Registro de docentes"
+     * (la que abrís desde el menú del administrador).
+     *
+     * Prepara lo que la vista necesita: las gestiones (años) registradas, las
+     * carreras con sus sedes y las sedes activas para los filtros del reporte, y
+     * la configuración del botón del sistema (config_botones). Por defecto muestra
+     * la gestión actual.
+     */
     public function index(Request $request)
     {
         if (!auth()->user()->can('docentes.inicio')) {
@@ -50,6 +75,15 @@ class Controlador_estadisticasDocente extends Controller
     }
 
 
+    /**
+     * 🔎 EN PANTALLA: NO tiene botón propio: es la que LLENA LA TABLA de docentes.
+     * Se recarga según la gestión elegida en el desplegable de la parte superior.
+     *
+     * Responde en JSON al DataTable (carga por servidor): trae los docentes de la
+     * gestión elegida, aplica el buscador (sede, carrera, documento o estado) y
+     * devuelve el permiso de editar para que el JS muestre el botón de actualizar
+     * de cada fila.
+     */
     public function listarDocentes(Request $request)
     {
         $gestion = $request->input('fecha', date('Y')); // por defecto el año actual
@@ -102,6 +136,16 @@ class Controlador_estadisticasDocente extends Controller
 
 
 
+    /**
+     * 🔎 EN PANTALLA: botón con title="Actualizar Informacion" (el ✓ azul al final
+     * de cada fila de la tabla). Arranca deshabilitado; se activa al marcar el
+     * checkbox de la fila, que la pone en modo edición (los campos se vuelven
+     * editables ahí mismo, en la tabla, sin modal).
+     *
+     * Guarda los cambios de UN docente: solo permite editar nombre, documento,
+     * género, grado académico y profesión (la carrera, sede y gestión NO se tocan
+     * desde acá). El documento debe seguir siendo único.
+     */
     public function actualizar_registro_docente(Request $request, String $id)
     {
 
@@ -145,6 +189,16 @@ class Controlador_estadisticasDocente extends Controller
     }
 
 
+    /**
+     * 🔎 EN PANTALLA: botón "Subir datos" (arriba) -> abre el modal "Importar
+     * Planilla Docentes" -> botón "Importar" (muestra la vista previa).
+     *
+     * Primer paso de la importación (NO guarda nada todavía): lee el archivo CSV,
+     * verifica que tenga las columnas requeridas (nombre_completo, documento,
+     * carrera, sede, genero, gestion, profesion, grado_academico) y devuelve las
+     * primeras 3 filas para mostrar la vista previa. La carga real la hace
+     * subirDatosDocentescsv().
+     */
     public function previsualizarDocentes(Request $request)
     {
         try {
@@ -201,6 +255,15 @@ class Controlador_estadisticasDocente extends Controller
 
 
 
+    /**
+     * 🔎 EN PANTALLA: modal "Importar Planilla Docentes", después de previsualizar
+     * -> botón "Subir Definitivamente".
+     *
+     * Segundo paso: importa de verdad los docentes del archivo. Es "todo o nada":
+     * si hay CUALQUIER error en los datos, deshace la transacción y NO inserta nada,
+     * devolviendo la lista de errores por fila. Si todo está correcto, confirma e
+     * informa cuántas filas se insertaron.
+     */
     public function subirDatosDocentescsv(Request $request)
     {
         // 1️⃣ Validar que se suba un archivo válido
@@ -262,6 +325,16 @@ class Controlador_estadisticasDocente extends Controller
 
 
 
+    /**
+     * 🔎 EN PANTALLA: botón "Generar Reporte" (arriba) -> abre el modal "Filtrar
+     * Reporte" -> botón "Generar PDF".
+     *
+     * Genera el PDF con el conteo de docentes, agrupado de dos formas según el
+     * "tipo" elegido: por "carrera" o por "sede". Usa un cruce sede–carrera para
+     * mostrar también las combinaciones que quedaron en 0 (sin docentes). Filtra
+     * por la gestión elegida. El PDF sale en base64 y el JS lo abre en una pestaña
+     * nueva.
+     */
     public function generar_reporte_docente(Request $request)
     {
 
@@ -372,6 +445,12 @@ class Controlador_estadisticasDocente extends Controller
         }
     }
 
+    /**
+     * 🔎 EN PANTALLA: NO tiene botón. Es un AYUDANTE interno.
+     *
+     * Arma la respuesta estándar { tipo, mensaje } que casi todos los métodos
+     * devuelven en JSON, y que el JS usa para mostrar las alertas de éxito/error.
+     */
     public function mensaje($titulo, $mensaje)
     {
         $this->mensaje = [

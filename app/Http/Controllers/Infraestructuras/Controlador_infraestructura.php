@@ -20,7 +20,12 @@ use Illuminate\Support\Str;
 class Controlador_infraestructura extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * 🔎 EN PANTALLA: pantalla principal del módulo "Infraestructuras" (la tabla de infraestructuras)
+     * VISTA PRINCIPAL DE INFRAESTRUCTURAS (la pantalla del listado).
+     * Muestra la página HTML. Valida el permiso 'infraestructura.inicio'; si no lo
+     * tiene, devuelve al inicio. Trae las sedes ACTIVAS para llenar la lista
+     * desplegable del formulario de "Nuevo". Los datos de la tabla se cargan por
+     * AJAX con listarInfraestructuras().
      */
     public function index()
     {
@@ -33,6 +38,15 @@ class Controlador_infraestructura extends Controller
 
 
 
+    /**
+     * 🔎 EN PANTALLA: arma las filas y los botones de la tabla ("Planos", "Editar Infraestructura", "Ver Documentos", "Cambiar de estado", "Datos de ubicacion", "Generar Reporte" y "Eliminar Infraestructura")
+     * DATOS DE LA TABLA DE INFRAESTRUCTURAS (responde en JSON para DataTables).
+     * Arma cada fila: estado del inmueble, estado del trámite, observación, sede,
+     * fecha. También envía los PERMISOS ('planos', 'editar', 'eliminar',
+     * 'ver_documentos', 'cambiar_estado', 'datos_ubicacion', 'generar_reporte');
+     * el JavaScript los usa para decidir qué botones mostrar en cada fila.
+     * Soporta búsqueda por estado del inmueble, estado del trámite o sede.
+     */
     public function listarInfraestructuras(Request $request)
     {
         $query = Infraestructura::with([
@@ -89,7 +103,12 @@ class Controlador_infraestructura extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * 🔎 EN PANTALLA: botón "Nuevo" -> modal "CREAR NUEVA INFRAESTRUCTURA" -> botón "Guardar"
+     * CREAR / REGISTRAR una nueva infraestructura.
+     * Guarda los datos (propiedad, uso asignado, estado del inmueble, observación,
+     * sede), el PDF de la SOLICITUD (ver guardarPdf) y los planos/imágenes (ver
+     * guardarGaleria). El trámite arranca en estado 'inicial'. Usa transacción:
+     * si algo falla, borra los archivos ya subidos.
      */
     public function store(InfraestructuraRequest $request)
     {
@@ -162,7 +181,10 @@ class Controlador_infraestructura extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * 🔎 EN PANTALLA: botón "Editar Infraestructura" (abre el modal "EDITAR INFRAESTRUCTURA" y llena los campos)
+     * EDITAR (cargar datos): devuelve en JSON los datos de UNA infraestructura
+     * para llenar el formulario de edición.
+     * (Aquí solo se traen los datos; el guardado lo hace actualizarInfraestructura()).
      */
     public function edit(string $id)
     {
@@ -186,7 +208,9 @@ class Controlador_infraestructura extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * 🔎 EN PANTALLA: botón "Eliminar Infraestructura"
+     * ELIMINAR infraestructura (borrado lógico / SoftDeletes, no se borra de verdad).
+     * Requiere el permiso 'infraestructura.eliminar' que se manda en listarInfraestructuras().
      */
     public function destroy(string $id)
     {
@@ -214,6 +238,12 @@ class Controlador_infraestructura extends Controller
     }
 
 
+    /**
+     * 🔎 EN PANTALLA: botón "Cambiar de estado" (abre el modal "Cambiar Estado" mostrando el estado actual del trámite)
+     * Devuelve en JSON el estado de trámite actual de la infraestructura, para
+     * mostrarlo precargado en el modal.
+     * (El guardado del nuevo estado lo hace cambiarEstadoTramite()).
+     */
     public function estadoTramite(string $idInfraestructura)
     {
 
@@ -240,6 +270,11 @@ class Controlador_infraestructura extends Controller
     }
 
 
+    /**
+     * 🔎 EN PANTALLA: modal "Cambiar Estado" -> botón "Guardar"
+     * Cambia manualmente el estado del trámite. Solo acepta los valores válidos:
+     * 'inicial', 'proceso' o 'finalizado'. Usa transacción por seguridad.
+     */
     public function cambiarEstadoTramite(Request $request)
     {
 
@@ -273,6 +308,12 @@ class Controlador_infraestructura extends Controller
         }
     }
 
+    /**
+     * 🔎 EN PANTALLA: botón "Ver Documentos" (abre la PÁGINA "Documentos de la Infraestructura", con los 3 pasos del trámite)
+     * Muestra la página de documentos del trámite, que tiene 3 etapas:
+     *   1) Solicitud (estado inicial)  2) Nota (en proceso)  3) Contrato (finalizado).
+     * Trae la infraestructura con sus planos para mostrarla en esa página.
+     */
     public function docuementosInfraestructura(string $idInfraestructura)
     {
         try {
@@ -296,6 +337,12 @@ class Controlador_infraestructura extends Controller
         }
     }
 
+    /**
+     * 🔎 EN PANTALLA: no tiene botón propio (se usa por dentro al crear y al subir documentos)
+     * AYUDANTE: guarda un PDF/archivo en el disco PRIVADO (no público), dentro de
+     * documentos_infraestructura, con un nombre único (UUID) y un prefijo opcional.
+     * Devuelve la ruta guardada. Lo usan store() y guardarDocumentos().
+     */
     public function guardarPdf(Request $request, string $nombre_campo, string $prefijo = '')
     {
 
@@ -321,6 +368,12 @@ class Controlador_infraestructura extends Controller
         return throw new Exception('necesita seleccionar un archivo');
     }
 
+    /**
+     * 🔎 EN PANTALLA: no tiene botón propio (se usa por dentro al crear y al subir planos)
+     * AYUDANTE: procesa y optimiza las imágenes de planos (las achica a máx 1200px,
+     * las convierte a WEBP) y las guarda en el disco PRIVADO, dentro de la carpeta
+     * 'planos'. Devuelve la lista de rutas. Lo usan store() y agregarImagenesPlanos().
+     */
     // guardarmos las imagenes
 
     public function guardarGaleria(Request $request)
@@ -374,6 +427,12 @@ class Controlador_infraestructura extends Controller
 
 
 
+    /**
+     * 🔎 EN PANTALLA: página de documentos -> botones "Ver Solicitud" / "Ver Nota" / "Ver Contrato"
+     * Muestra (abre en el navegador) el archivo del documento solicitado según el
+     * tipo (solicitud, nota o contrato). El archivo está en el disco PRIVADO, así
+     * que pasa por aquí para servirlo de forma protegida (solo PDF, JPG o PNG).
+     */
     public function verDocumentos($tipo, $id)
     {
 
@@ -414,6 +473,15 @@ class Controlador_infraestructura extends Controller
         );
     }
 
+    /**
+     * 🔎 EN PANTALLA: página de documentos -> botones "Subir / Actualizar" (o "Guardar") de cada paso
+     * ★ Sube/actualiza el documento del trámite (solicitud, nota o contrato) y
+     * AVANZA el estado automáticamente:
+     *   - al subir la NOTA, el trámite pasa a 'proceso'.
+     *   - al subir el CONTRATO, pasa a 'finalizado' (solo si ya estaba en 'proceso',
+     *     o sea: no se puede cargar el contrato sin haber cargado antes la nota).
+     * Si es tipo 'nota' guarda además el número de nota. Usa transacción.
+     */
     public function guardarDocumentos(Request $request)
     {
 
@@ -492,6 +560,13 @@ class Controlador_infraestructura extends Controller
         }
     }
 
+    /**
+     * 🔎 EN PANTALLA: botón "Datos de ubicacion" (abre el modal "UBICACION DE LA INFRAESTRUCTURA" con los datos cargados)
+     * Devuelve en JSON los datos de ubicación guardados de la infraestructura
+     * (distrito, manzano, lote, superficies, etc.) para mostrarlos precargados
+     * en el modal. Si no hay datos, devuelve 'null'.
+     * (El guardado lo hace guardarDatosUbicacion()).
+     */
     public function datosUbicacion(Request $request)
     {
 
@@ -513,6 +588,12 @@ class Controlador_infraestructura extends Controller
     }
 
 
+    /**
+     * 🔎 EN PANTALLA: modal "UBICACION DE LA INFRAESTRUCTURA" -> botón "Guardar"
+     * Guarda o actualiza los datos de ubicación de la infraestructura (distrito,
+     * urbanización, manzano, lote, superficies, escala, etc.). Usa updateOrCreate:
+     * si ya existían los actualiza, y si no, los crea. Usa transacción.
+     */
     public function guardarDatosUbicacion(InfraestructuraRequest $request)
     {
 
@@ -550,6 +631,12 @@ class Controlador_infraestructura extends Controller
     }
 
 
+    /**
+     * 🔎 EN PANTALLA: botón "Planos" -> modal "ADMINISTRAR IMÁGENES DE PLANOS" (muestra los planos guardados)
+     * Devuelve en JSON la lista de planos (imágenes) de la infraestructura. Como
+     * están en el disco PRIVADO, en vez de la ruta directa devuelve una URL
+     * protegida (ver verPlano) para poder mostrarlas. Si no hay, avisa.
+     */
     public function listarImagenesPlanos($id_infraestructura)
     {
         $imagenes = PlanosInfraestructura::select('id', 'nombre')
@@ -585,6 +672,11 @@ class Controlador_infraestructura extends Controller
     }
 
 
+    /**
+     * 🔎 EN PANTALLA: no es un botón; es la URL que muestra cada imagen de plano dentro del modal "ADMINISTRAR IMÁGENES DE PLANOS"
+     * Sirve UNA imagen de plano de forma protegida (los planos están en el disco
+     * PRIVADO, por eso se entregan a través de este endpoint y no por URL directa).
+     */
     // Endpoint para servir la imagen individual
     public function verPlano($id)
     {
@@ -603,6 +695,11 @@ class Controlador_infraestructura extends Controller
 
 
 
+    /**
+     * 🔎 EN PANTALLA: modal "ADMINISTRAR IMÁGENES DE PLANOS" -> botón "Subir Imágenes"
+     * Agrega NUEVOS planos (imágenes) a una infraestructura existente. Procesa las
+     * imágenes (ver guardarGaleria) y las guarda. Usa transacción por seguridad.
+     */
     public function agregarImagenesPlanos(InfraestructuraRequest $request, string $id_infraestructura)
     {
         $archivosGuardados = [];
@@ -640,6 +737,10 @@ class Controlador_infraestructura extends Controller
         }
     }
 
+    /**
+     * 🔎 EN PANTALLA: modal "ADMINISTRAR IMÁGENES DE PLANOS" -> botón rojo (ícono) de borrar sobre cada plano
+     * Elimina UN plano (imagen) de la infraestructura. Usa transacción.
+     */
     public function eliminarImagenPlano($id_imagen)
     {
         DB::beginTransaction();
@@ -666,6 +767,12 @@ class Controlador_infraestructura extends Controller
         }
     }
 
+    /**
+     * 🔎 EN PANTALLA: modal "EDITAR INFRAESTRUCTURA" -> botón "Guardar"
+     * EDITAR (guardar cambios): actualiza los datos de una infraestructura
+     * (propiedad, uso asignado, estado del inmueble, observación, sede).
+     * Usa transacción para revertir si ocurre un error.
+     */
     public function actualizarInfraestructura(Request $request)
     {
 
@@ -700,6 +807,13 @@ class Controlador_infraestructura extends Controller
     }
 
 
+    /**
+     * 🔎 EN PANTALLA: botón "Generar Reporte"
+     * Genera el REPORTE en PDF de la infraestructura: junta sus datos, la sede,
+     * los datos de ubicación y los planos (que convierte a imagen WEBP en base64
+     * para incrustarlos en el PDF). Devuelve el PDF codificado en base64 para que
+     * el navegador lo muestre/descargue.
+     */
     public function reporteInfraestructura($id_infraestructura)
     {
         try {
@@ -754,6 +868,11 @@ class Controlador_infraestructura extends Controller
     }
 
 
+    /**
+     * 🔎 EN PANTALLA: no tiene botón (es la notificación/alerta de éxito o error que ves)
+     * AYUDANTE: arma el mensaje (tipo + texto) que se devuelve al usuario para
+     * mostrarlo como alerta/notificación. Lo usan casi todos los métodos.
+     */
     // Mensaje para mostrar al usuario
     public function mensaje($titulo, $mensaje)
     {

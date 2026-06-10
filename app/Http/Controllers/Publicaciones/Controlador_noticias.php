@@ -19,7 +19,10 @@ use Exception;
 class Controlador_noticias extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * 🔎 EN PANTALLA: pantalla principal del módulo "Noticias" (la tabla de noticias)
+     * VISTA PRINCIPAL DE NOTICIAS (la pantalla del listado).
+     * Muestra la página HTML. Valida el permiso 'noticia.inicio'; si no lo tiene,
+     * devuelve al inicio. Los datos de la tabla se cargan por AJAX con listarNoticias().
      */
     public function index()
     {
@@ -31,6 +34,12 @@ class Controlador_noticias extends Controller
 
 
 
+    /**
+     * 🔎 EN PANTALLA: botón "Nuevo" (abre la PÁGINA "Publicar Nueva Noticia" en pestaña nueva, formulario vacío)
+     * Muestra el FORMULARIO para crear una noticia (es una página completa, no un
+     * modal). Trae las sedes y las categorías ACTIVAS para llenar sus listas
+     * desplegables. El guardado lo hace store().
+     */
     public function nuevaNoticia()
     {
         $sedes = Sede::where('estado', 'activo')->get();
@@ -38,6 +47,12 @@ class Controlador_noticias extends Controller
         return view('administrador.publicaciones.nuevaNoticia',compact('sedes','tipos'));
     }
 
+    /**
+     * 🔎 EN PANTALLA: botón "Editar Noticia" (abre la MISMA página "Publicar Nueva Noticia" pero con los datos ya cargados)
+     * Muestra el formulario en modo EDICIÓN: trae la noticia, sus imágenes y de
+     * nuevo las sedes/categorías activas para mostrarlas precargadas.
+     * El guardado lo hace actualizarNoticia().
+     */
     public function editarNoticia($id_noticia)
     {
         $noticia = Noticia::select('id', 'titulo', 'contenido', 'url_video', 'sede_id', 'categoria_id')->where('id',$id_noticia)->first();
@@ -47,6 +62,14 @@ class Controlador_noticias extends Controller
         return view('administrador.publicaciones.nuevaNoticia',compact('sedes','tipos','noticia','imagenes'));
     }
 
+    /**
+     * 🔎 EN PANTALLA: arma las filas y los botones de la tabla de noticias (switch "NOT.DESTACADO", switch "PUBLICAR", botón "Editar Noticia" y botón "Eliminar Noticia")
+     * DATOS DE LA TABLA DE NOTICIAS (responde en formato JSON para DataTables).
+     * Arma cada fila: título, tipo/categoría, fecha de creación, estados, etc.
+     * También envía los PERMISOS ('editar', 'eliminar', 'noticia_destacada',
+     * 'publicar'); el JavaScript los usa para decidir qué botones/switches mostrar.
+     * Soporta búsqueda por título o por nombre de la categoría, y paginación.
+     */
     public function listarNoticias(Request $request)
     {
         $query = Noticia::with([
@@ -95,7 +118,11 @@ class Controlador_noticias extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * 🔎 EN PANTALLA: página "Publicar Nueva Noticia" -> botón "Guardar Noticia" (cuando es una noticia NUEVA)
+     * CREAR / REGISTRAR una nueva noticia.
+     * Guarda los datos (título, contenido, video de YouTube, sede, categoría) y
+     * la galería de imágenes (ver guardarGaleria). Usa transacción: si algo falla,
+     * borra las imágenes que ya se habían subido para no dejar archivos sueltos.
      */
     public function store(NoticiaRequest $request)
     {
@@ -168,6 +195,13 @@ class Controlador_noticias extends Controller
 
 
 
+    /**
+     * 🔎 EN PANTALLA: no tiene botón propio (se usa por dentro al crear y al editar una noticia)
+     * AYUDANTE: procesa y optimiza las imágenes recibidas: las redimensiona
+     * (máx 1200x800 manteniendo proporción), las convierte a WEBP calidad 80,
+     * les pone un nombre único y las guarda en storage/app/public/imagenes_noticias.
+     * Devuelve la lista de nombres de archivo. Lo usan store() y actualizarNoticia().
+     */
     public function guardarGaleria(Request $request)
     {
         $rutas = [];
@@ -224,6 +258,13 @@ class Controlador_noticias extends Controller
         
     }
 
+    /**
+     * 🔎 EN PANTALLA: página "Publicar Nueva Noticia" -> botón "Guardar Noticia" (cuando es una EDICIÓN)
+     * EDITAR (guardar cambios): actualiza los datos de una noticia existente
+     * (título, contenido, video, sede, categoría) y AGREGA las imágenes nuevas
+     * que se hayan subido (las anteriores se borran por separado, ver
+     * eliminarImagenNoticia). Usa transacción y borra las imágenes nuevas si falla.
+     */
     public function actualizarNoticia(Request $request, string $id_noticia)
     {
         DB::beginTransaction();
@@ -273,7 +314,9 @@ class Controlador_noticias extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * 🔎 EN PANTALLA: botón "Eliminar Noticia"
+     * ELIMINAR noticia (borrado lógico / SoftDeletes, no se borra de verdad).
+     * Requiere el permiso 'noticia.eliminar' que se manda en listarNoticias().
      */
     public function destroy(string $id)
     {
@@ -300,6 +343,12 @@ class Controlador_noticias extends Controller
         }
     }
 
+    /**
+     * 🔎 EN PANTALLA: el switch (interruptor) de la columna "NOT.DESTACADO" en la tabla
+     * Marca / desmarca la noticia como DESTACADA (cambia 'estado_destacado'):
+     * si está "activo" pasa a "inactivo" y viceversa.
+     * Requiere el permiso 'noticia.noticia_destacada'.
+     */
     public function cambiar_estado_destacado(Request $request, string $id_noticia)
     {
         DB::beginTransaction();
@@ -333,6 +382,12 @@ class Controlador_noticias extends Controller
     }
 
 
+    /**
+     * 🔎 EN PANTALLA: el switch (interruptor) de la columna "PUBLICAR" en la tabla
+     * Publica / oculta la noticia en la web pública (cambia 'estado_noticia'):
+     * si está "activo" pasa a "inactivo" y viceversa.
+     * Requiere el permiso 'noticia.publicar'.
+     */
     public function cambiar_estado_publicacion(Request $request, string $id_noticia)
     {
         DB::beginTransaction();
@@ -365,6 +420,11 @@ class Controlador_noticias extends Controller
         }
     }
 
+    /**
+     * 🔎 EN PANTALLA: página de editar noticia -> botón rojo (ícono) de borrar sobre cada foto
+     * GALERÍA: elimina UNA imagen de la noticia (borra el archivo físico y el
+     * registro de la base de datos). Usa transacción por seguridad.
+     */
     public function eliminarImagenNoticia($id_imagen)
     {
         
@@ -397,6 +457,11 @@ class Controlador_noticias extends Controller
         }
     }
 
+    /**
+     * 🔎 EN PANTALLA: no tiene botón (es la notificación/alerta de éxito o error que ves)
+     * AYUDANTE: arma el mensaje (tipo + texto) que se devuelve al usuario para
+     * mostrarlo como alerta/notificación. Lo usan casi todos los métodos.
+     */
     public function mensaje($titulo, $mensaje)
     {
         $this->mensaje = [

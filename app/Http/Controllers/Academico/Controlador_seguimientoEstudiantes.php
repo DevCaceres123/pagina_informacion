@@ -19,8 +19,40 @@ use App\Pdf\ReporteGeneralEstudiantesPdf;
 use App\Pdf\ReportePendientesEstudiantesPdf;
 use App\Pdf\ReporteIndividualEstudiantePdf;
 
+/**
+ * ============================================================================
+ *  CONTROLADOR: Seguimiento de Estudiantes (módulo Académico)
+ * ============================================================================
+ *  Maneja la pantalla "Seguimiento de Estudiantes" del panel de administración:
+ *  el registro de estudiantes, sus documentos de titulación (certificado,
+ *  copias de título, formularios de inscripción y requisitos de defensa),
+ *  la aprobación de expedientes, los reportes en PDF y la importación por CSV.
+ *
+ *  GUÍA RÁPIDA (busca con Ctrl+F el texto del botón que ves en pantalla):
+ *    "Nuevo"                  -> store()        (crear)  /  edit()+update() (editar)
+ *    "Documentos"             -> listarDocumentos()
+ *    "Subir" (doc principal)  -> subirDocumento()
+ *    "Subir Formulario"       -> agregarFormulario()
+ *    "Subir" (requisito)      -> agregarRequisitoDefensa()
+ *    "Marcar Aprobado"        -> aprobarExpediente()
+ *    "Ficha de Seguimiento PDF" -> reporteIndividual()
+ *    "Reporte General"        -> reporteGeneral()
+ *    "Pendientes"             -> reportePendientes()
+ *    "Subir CSV"              -> previsualizarCSV() / importarCSV()
+ *    "Eliminar"               -> destroy()
+ * ============================================================================
+ */
 class Controlador_seguimientoEstudiantes extends Controller
 {
+    /**
+     * 🔎 EN PANTALLA: carga la PÁGINA completa "Seguimiento de Estudiantes"
+     * (la que abrís desde el menú del administrador).
+     *
+     * Prepara los datos que necesitan los formularios y filtros de la vista:
+     * la lista de sedes y carreras activas, y un mapa de qué carreras pertenecen
+     * a cada sede (relacionesSedeCarre), que el JS usa para filtrar las carreras
+     * según la sede elegida en los modales de reportes.
+     */
     public function index()
     {
         if (!auth()->user()->can('seguimiento_estudiantes.inicio')) {
@@ -40,6 +72,15 @@ class Controlador_seguimientoEstudiantes extends Controller
         return view('administrador.academico.seguimiento', compact('sedes', 'carreras', 'relacionesSedeCarre'));
     }
 
+    /**
+     * 🔎 EN PANTALLA: NO tiene botón. Es la que LLENA LA TABLA de estudiantes
+     * (la tabla principal que ves apenas entrás a la página).
+     *
+     * Responde en JSON al DataTable (carga por servidor): aplica el buscador
+     * (nombre, matrícula o número de documento), pagina los resultados y además
+     * devuelve los permisos del usuario (editar/eliminar/documentos/ficha) para
+     * que el JS muestre o esconda los botones de cada fila.
+     */
     public function listar(Request $request)
     {
         $query = Estudiante::with(['sede:id,nombre', 'carrera:id,nombre'])
@@ -72,6 +113,14 @@ class Controlador_seguimientoEstudiantes extends Controller
         ]);
     }
 
+    /**
+     * 🔎 EN PANTALLA: botón "Nuevo" (arriba a la derecha) -> abre el modal
+     * "Nuevo Estudiante" -> botón "Guardar".
+     *
+     * Registra un estudiante nuevo. Valida los datos (matrícula única, tipo de
+     * documento, sede/carrera existentes, gestión y género) y lo crea dentro de
+     * una transacción. Si algo falla, deshace todo y devuelve el error.
+     */
     public function store(Request $request)
     {
         $request->validate([
@@ -101,6 +150,13 @@ class Controlador_seguimientoEstudiantes extends Controller
         }
     }
 
+    /**
+     * 🔎 EN PANTALLA: botón "Editar" (el lápiz azul de cada fila).
+     *
+     * NO guarda nada: solo BUSCA los datos del estudiante y los devuelve en JSON
+     * para que el JS los cargue en el modal "Editar Estudiante". El guardado del
+     * cambio lo hace update().
+     */
     public function edit(string $id)
     {
         $estudiante = Estudiante::with(['sede:id,nombre', 'carrera:id,nombre'])->find($id);
@@ -112,6 +168,13 @@ class Controlador_seguimientoEstudiantes extends Controller
         return response()->json($this->mensaje, 200);
     }
 
+    /**
+     * 🔎 EN PANTALLA: modal "Editar Estudiante" -> botón "Guardar".
+     *
+     * Guarda los cambios de un estudiante existente (es el mismo botón "Guardar"
+     * del modal, pero el JS manda PUT cuando hay un id cargado). Valida igual que
+     * store() pero permite mantener la propia matrícula del estudiante.
+     */
     public function update(Request $request, string $id)
     {
         $request->validate([
@@ -143,6 +206,13 @@ class Controlador_seguimientoEstudiantes extends Controller
         }
     }
 
+    /**
+     * 🔎 EN PANTALLA: botón "Eliminar" (el tacho rojo de cada fila) ->
+     * confirmación "¿Eliminar estudiante?".
+     *
+     * Borra el estudiante. Es borrado lógico (SoftDeletes): el registro queda
+     * marcado como eliminado pero no desaparece de la base de datos.
+     */
     public function destroy(string $id)
     {
         DB::beginTransaction();
@@ -160,6 +230,18 @@ class Controlador_seguimientoEstudiantes extends Controller
 
     // --- Documentos ---
 
+    /**
+     * ★ 🔎 EN PANTALLA: botón "Documentos" (la carpeta verde de cada fila) ->
+     * abre el modal "Documentos del Estudiante".
+     *
+     * Es el método CLAVE del expediente: junta TODO lo del estudiante para
+     * mostrarlo en ese modal:
+     *   - documentos principales (certificado y copias de título),
+     *   - formularios de inscripción,
+     *   - requisitos de defensa agrupados por tipo de título
+     *     (tec_medio / tec_superior / licenciatura),
+     *   - y el estado de aprobación de cada expediente.
+     */
     public function listarDocumentos(string $id)
     {
         $estudiante = Estudiante::with(['formulariosInscripcion', 'requisitosDefensa'])->findOrFail($id);
@@ -182,6 +264,17 @@ class Controlador_seguimientoEstudiantes extends Controller
         return response()->json($this->mensaje, 200);
     }
 
+    /**
+     * 🔎 EN PANTALLA: modal "Documentos del Estudiante", pestaña "Documentos" ->
+     * botón "Subir" que está al lado de cada documento (Certificado de
+     * habilitación, Copia de título Téc. Medio / Téc. Superior / Licenciatura).
+     *
+     * Sube (o reemplaza) uno de los documentos PRINCIPALES del estudiante. El
+     * archivo PDF se guarda en el disco PRIVADO (no es accesible por URL directa;
+     * se ve mediante verDocumento()). Si ya había un archivo de ese tipo, lo borra
+     * antes de guardar el nuevo. El campo de la base de datos que se actualiza es
+     * el mismo "tipo" que llega (ej. copia_titulo_licenciatura).
+     */
     public function subirDocumento(Request $request, string $id)
     {
         $request->validate([
@@ -215,6 +308,15 @@ class Controlador_seguimientoEstudiantes extends Controller
         }
     }
 
+    /**
+     * 🔎 EN PANTALLA: modal "Documentos del Estudiante", pestaña "Formularios de
+     * Inscripción" -> tarjeta "Agregar Formulario" -> botón "Subir Formulario".
+     *
+     * Agrega un formulario de inscripción (PDF + fecha de recepción). A diferencia
+     * de los documentos principales, de estos puede haber VARIOS por estudiante,
+     * por eso se guardan como registros aparte (FormularioInscripcion). El PDF va
+     * al disco privado.
+     */
     public function agregarFormulario(Request $request, string $id)
     {
         $request->validate([
@@ -244,6 +346,14 @@ class Controlador_seguimientoEstudiantes extends Controller
         }
     }
 
+    /**
+     * 🔎 EN PANTALLA: modal "Documentos del Estudiante", pestaña "Formularios de
+     * Inscripción" -> el botón del tacho (rojo) con title="Eliminar Formulario" en
+     * la fila de cada formulario.
+     *
+     * Borra un formulario de inscripción: elimina primero el PDF del disco privado
+     * y luego el registro de la base de datos.
+     */
     public function eliminarFormulario(string $id)
     {
         DB::beginTransaction();
@@ -261,6 +371,15 @@ class Controlador_seguimientoEstudiantes extends Controller
         }
     }
 
+    /**
+     * 🔎 EN PANTALLA: modal "Documentos del Estudiante", pestaña "Expediente de
+     * Titulación" -> dentro de la sub-pestaña de cada título (Téc. Medio /
+     * Téc. Superior / Licenciatura) -> escribís el nombre, elegís el archivo y
+     * tocás el botón "Subir".
+     *
+     * Agrega un requisito de defensa para uno de los tres tipos de título. Acepta
+     * imagen o PDF y se guarda en el disco privado. Pueden ser varios por título.
+     */
     public function agregarRequisitoDefensa(Request $request, string $id)
     {
         $request->validate([
@@ -292,6 +411,14 @@ class Controlador_seguimientoEstudiantes extends Controller
         }
     }
 
+    /**
+     * 🔎 EN PANTALLA: modal "Documentos del Estudiante", pestaña "Expediente de
+     * Titulación" -> el botón del tacho (rojo) con title="Eliminar Requisito" en la
+     * fila de cada requisito -> confirmación "¿Eliminar este requisito?".
+     *
+     * Borra un requisito de defensa: elimina el archivo del disco privado y luego
+     * el registro.
+     */
     public function eliminarRequisitoDefensa(string $id)
     {
         DB::beginTransaction();
@@ -309,6 +436,14 @@ class Controlador_seguimientoEstudiantes extends Controller
         }
     }
 
+    /**
+     * 🔎 EN PANTALLA: NO tiene botón propio. Alimenta los GRÁFICOS de las
+     * pestañas de estadísticas de la página (Aprobados y Tendencia por gestión).
+     *
+     * Devuelve en JSON dos resúmenes para las gráficas:
+     *   - aprobaciones: cuántos están aprobados / no aprobados en cada título.
+     *   - tendencia: total de estudiantes por gestión, separados por género.
+     */
     public function estadisticas()
     {
         $aprobaciones = Estudiante::selectRaw("
@@ -336,6 +471,18 @@ class Controlador_seguimientoEstudiantes extends Controller
         ]);
     }
 
+    /**
+     * 🔎 EN PANTALLA: botón "Reporte General" (arriba) -> abre el modal
+     * "Reporte General de Estudiantes" -> botón "Generar PDF".
+     *
+     * Genera el PDF del reporte general de estudiantes según los filtros elegidos
+     * (sedes, carreras, género, rango de gestión). Tiene dos formas de salida:
+     *   - vista "listado": lista detallada de estudiantes.
+     *   - vista "totales": solo conteos por sede o por carrera (según "agrupar_por"),
+     *     usando un cruce sede–carrera para mostrar también las combinaciones sin
+     *     estudiantes (en 0).
+     * El PDF se devuelve en base64 y el JS lo abre en una pestaña nueva.
+     */
     public function reporteGeneral(Request $request)
     {
         if (!auth()->user()->can('seguimiento_estudiantes.generar_reporte')) {
@@ -429,6 +576,19 @@ class Controlador_seguimientoEstudiantes extends Controller
         return response()->json($this->mensaje, 200);
     }
 
+    /**
+     * 🔎 EN PANTALLA: botón "Pendientes" (arriba) -> abre el modal que, según el
+     * tipo elegido, se titula "Reporte de Documentos Pendientes" o "Reporte de
+     * Aprobados para Titularse" -> botón "Generar PDF" / "Generar PDF de Aprobados".
+     *
+     * Genera UNO de dos reportes en PDF según "tipo_reporte":
+     *   - "aprobados": estudiantes según su estado de aprobación de expediente
+     *     (cumplen / no cumplen / ambos) en las modalidades elegidas.
+     *   - "pendientes" (por defecto): estudiantes según el estado de sus DOCUMENTOS
+     *     de titulación (a quién le falta el certificado o las copias de título).
+     * Las modalidades (tec_medio / tec_superior / licenciatura) se pueden filtrar;
+     * si no se elige ninguna, se asumen las tres. El PDF sale en base64.
+     */
     public function reportePendientes(Request $request)
     {
         if (!auth()->user()->can('seguimiento_estudiantes.generar_reporte')) {
@@ -567,6 +727,14 @@ class Controlador_seguimientoEstudiantes extends Controller
         return response()->json($this->mensaje, 200);
     }
 
+    /**
+     * 🔎 EN PANTALLA: botón "Ficha de Seguimiento PDF" (el ícono rojo de PDF en
+     * cada fila de la tabla).
+     *
+     * Genera la ficha individual del estudiante en PDF (con sus datos, formularios
+     * y requisitos) y la MUESTRA directamente en el navegador (inline), a diferencia
+     * de los reportes generales que vienen en base64.
+     */
     public function reporteIndividual(string $id)
     {
         if (!auth()->user()->can('seguimiento_estudiantes.ficha')) {
@@ -591,9 +759,18 @@ class Controlador_seguimientoEstudiantes extends Controller
         ]);
     }
 
+    /**
+     * 🔎 EN PANTALLA: botón del ojito con title="Ver Documento" que aparece al
+     * lado de cada documento en la pestaña "Documentos" del modal "Documentos del
+     * Estudiante" (cuando ya está "Subido").
+     *
+     * Sirve para VER el documento principal: como los archivos están en el disco
+     * PRIVADO, no se pueden abrir con un enlace directo; este método los entrega de
+     * forma protegida (inline) tras verificar que el archivo exista.
+     */
     public function verDocumento(string $tipo, string $id)
     {
-        if (!in_array($tipo, ['certificado_habilitacion', 'fotocopia_titulo', 'copia_titulo'])) {
+        if (!in_array($tipo, ['certificado_habilitacion', 'copia_titulo_tec_medio', 'copia_titulo_tec_superior', 'copia_titulo_licenciatura'])) {
             abort(404);
         }
 
@@ -620,6 +797,14 @@ class Controlador_seguimientoEstudiantes extends Controller
         );
     }
 
+    /**
+     * 🔎 EN PANTALLA: botón del ojito con title="Ver Formulario" en la fila de cada
+     * formulario, dentro de la pestaña "Formularios de Inscripción" del modal
+     * "Documentos del Estudiante".
+     *
+     * Entrega de forma protegida (inline) el PDF de un formulario de inscripción
+     * guardado en el disco privado.
+     */
     public function verFormulario(string $id)
     {
         $formulario = FormularioInscripcion::findOrFail($id);
@@ -640,6 +825,14 @@ class Controlador_seguimientoEstudiantes extends Controller
         );
     }
 
+    /**
+     * 🔎 EN PANTALLA: botón del ojito con title="Ver Requisito" en la fila de cada
+     * requisito, dentro de la pestaña "Expediente de Titulación" del modal
+     * "Documentos del Estudiante".
+     *
+     * Entrega de forma protegida (inline) el archivo (imagen o PDF) de un requisito
+     * de defensa guardado en el disco privado.
+     */
     public function verRequisito(string $id)
     {
         $requisito = RequisitoDefensa::findOrFail($id);
@@ -660,6 +853,15 @@ class Controlador_seguimientoEstudiantes extends Controller
         );
     }
 
+    /**
+     * 🔎 EN PANTALLA: botón "Marcar Aprobado" / "Revocar Aprobación" que está en
+     * la cabecera de cada sub-pestaña de título dentro de la pestaña "Expediente
+     * de Titulación" del modal "Documentos del Estudiante".
+     *
+     * Es un INTERRUPTOR (toggle): cambia el estado de aprobación del expediente del
+     * tipo de título indicado. Si estaba aprobado lo revoca, y si no lo estaba lo
+     * aprueba. Devuelve el nuevo estado para que el JS actualice el badge y el botón.
+     */
     public function aprobarExpediente(Request $request, string $id)
     {
         $request->validate([
@@ -692,6 +894,16 @@ class Controlador_seguimientoEstudiantes extends Controller
 
     // --- CSV ---
 
+    /**
+     * 🔎 EN PANTALLA: botón "Subir CSV" (arriba) -> abre el modal "Importar
+     * Estudiantes CSV" -> botón "Previsualizar".
+     *
+     * Primer paso de la importación (NO guarda nada todavía): lee el archivo CSV,
+     * verifica que tenga las columnas requeridas (nombre_completo, matricula,
+     * tipo_documento, numero_documento, sede, carrera, gestion, genero) y devuelve
+     * los primeros 10 registros para mostrar la "Vista Previa". La carga real la
+     * hace importarCSV().
+     */
     public function previsualizarCSV(Request $request)
     {
         try {
@@ -721,6 +933,15 @@ class Controlador_seguimientoEstudiantes extends Controller
         }
     }
 
+    /**
+     * 🔎 EN PANTALLA: modal "Importar Estudiantes CSV", tras previsualizar ->
+     * botón "Subir Definitivamente".
+     *
+     * Segundo paso: importa de verdad los estudiantes del CSV. Es "todo o nada":
+     * si hay CUALQUIER error de validación (de Laravel o personalizado), deshace la
+     * transacción y NO inserta nada, devolviendo la lista de errores por fila. Si
+     * todo está correcto, confirma e informa cuántas filas se insertaron.
+     */
     public function importarCSV(Request $request)
     {
         $request->validate(['archivo' => 'required|mimes:csv,txt']);
@@ -756,6 +977,12 @@ class Controlador_seguimientoEstudiantes extends Controller
         }
     }
 
+    /**
+     * 🔎 EN PANTALLA: NO tiene botón. Es un AYUDANTE interno.
+     *
+     * Arma la respuesta estándar { tipo, mensaje } que casi todos los métodos
+     * devuelven en JSON, y que el JS usa para mostrar las alertas de éxito/error.
+     */
     public function mensaje($titulo, $mensaje)
     {
         $this->mensaje = ['tipo' => $titulo, 'mensaje' => $mensaje];

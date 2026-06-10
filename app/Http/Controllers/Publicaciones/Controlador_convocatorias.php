@@ -19,7 +19,11 @@ use App\Http\Requests\Convocatoria\ComvocatoriaRequest;
 class Controlador_convocatorias extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * 🔎 EN PANTALLA: pantalla principal del módulo "Convocatorias" (la tabla de convocatorias)
+     * VISTA PRINCIPAL DE CONVOCATORIAS (la pantalla del listado).
+     * Muestra la página HTML. Valida el permiso 'convocatoria.inicio'; si no lo
+     * tiene, devuelve al inicio. Los datos de la tabla se cargan por AJAX con
+     * listarConvocatorias().
      */
     public function index()
     {
@@ -29,6 +33,14 @@ class Controlador_convocatorias extends Controller
         return view('administrador.publicaciones.convocatorias');
     }
 
+    /**
+     * 🔎 EN PANTALLA: arma las filas y los botones de la tabla de convocatorias (switch "PUBLICAR", botón "Editar Convocatoria" y botón "Eliminar")
+     * DATOS DE LA TABLA DE CONVOCATORIAS (responde en formato JSON para DataTables).
+     * Arma cada fila: título, tipo/categoría, sede, fecha de creación, estado.
+     * También envía los PERMISOS ('editar', 'eliminar', 'estado'); el JavaScript
+     * los usa para decidir qué botones/switches mostrar. Soporta búsqueda por
+     * título o por nombre de categoría, y paginación.
+     */
     public function listarConvocatorias(Request $request)
     {
         $query = Convocatoria::with([
@@ -72,6 +84,12 @@ class Controlador_convocatorias extends Controller
         ]);
     }
 
+    /**
+     * 🔎 EN PANTALLA: botón "Nuevo" (abre la PÁGINA "Publicar Nueva Convocatoria" en pestaña nueva, formulario vacío)
+     * Muestra el FORMULARIO para crear una convocatoria (es una página completa,
+     * no un modal). Trae las sedes y las categorías ACTIVAS para llenar sus
+     * listas desplegables. El guardado lo hace store().
+     */
     public function nuevaConvocatoria()
     {
         $sedes = Sede::where('estado', 'activo')->get();
@@ -88,7 +106,12 @@ class Controlador_convocatorias extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * 🔎 EN PANTALLA: página "Publicar Nueva Convocatoria" -> botón "Guardar Convocatoria" (cuando es una convocatoria NUEVA)
+     * CREAR / REGISTRAR una nueva convocatoria.
+     * Guarda los datos (título, descripción, sede, categoría), el DOCUMENTO PDF
+     * de la convocatoria (en storage/app/public/convocatorias) y la galería de
+     * imágenes (ver guardarGaleria). Usa transacción: si algo falla, borra los
+     * archivos ya subidos (PDF e imágenes) para no dejar archivos sueltos.
      */
     public function store(ComvocatoriaRequest $request)
     {
@@ -146,6 +169,12 @@ class Controlador_convocatorias extends Controller
         }
     }
 
+    /**
+     * 🔎 EN PANTALLA: botón "Editar Convocatoria" (abre la MISMA página "Publicar Nueva Convocatoria" pero con los datos ya cargados)
+     * Muestra el formulario en modo EDICIÓN: trae la convocatoria, sus imágenes
+     * y de nuevo las sedes/categorías activas para mostrarlas precargadas.
+     * El guardado lo hace actualizarConvocatoria().
+     */
     public function editarConvocatoria($id_convocatoria)
     {
         $noticia = Convocatoria::select('id', 'titulo', 'descripcion', 'sede_id', 'categoria_id', 'archivo')->where('id', $id_convocatoria)->first();
@@ -183,6 +212,13 @@ class Controlador_convocatorias extends Controller
     }
 
 
+    /**
+     * 🔎 EN PANTALLA: página "Publicar Nueva Convocatoria" -> botón "Guardar Convocatoria" (cuando es una EDICIÓN)
+     * EDITAR (guardar cambios): actualiza los datos de una convocatoria existente
+     * (título, descripción, sede, categoría). Si se sube un PDF nuevo, borra el
+     * anterior y guarda el nuevo. Si se suben imágenes nuevas, las agrega.
+     * Usa transacción y borra los archivos nuevos si ocurre un error.
+     */
     public function actualizarConvocatoria(Request $request, string $id_convocatoria)
     {
         DB::beginTransaction();
@@ -245,7 +281,9 @@ class Controlador_convocatorias extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * 🔎 EN PANTALLA: botón "Eliminar Convocatoria"
+     * ELIMINAR convocatoria (borrado lógico / SoftDeletes, no se borra de verdad).
+     * Requiere el permiso 'convocatoria.eliminar' que se manda en listarConvocatorias().
      */
     public function destroy(string $id)
     {
@@ -272,6 +310,11 @@ class Controlador_convocatorias extends Controller
         }
     }
 
+    /**
+     * 🔎 EN PANTALLA: página de editar convocatoria -> botón rojo (ícono) de borrar sobre cada foto
+     * GALERÍA: elimina UNA imagen de la convocatoria (borra el archivo físico y
+     * el registro de la base de datos). Usa transacción por seguridad.
+     */
     public function eliminarImagenConvocatoria($id_imagen)
     {
 
@@ -304,6 +347,13 @@ class Controlador_convocatorias extends Controller
         }
     }
 
+    /**
+     * 🔎 EN PANTALLA: no tiene botón propio (se usa por dentro al crear y al editar una convocatoria)
+     * AYUDANTE: procesa y optimiza las imágenes recibidas: las redimensiona
+     * (máx 1200x800 manteniendo proporción), las convierte a WEBP calidad 80,
+     * les pone un nombre único y las guarda en storage/app/public/imagenes_convocatorias.
+     * Devuelve la lista de nombres de archivo. Lo usan store() y actualizarConvocatoria().
+     */
     public function guardarGaleria(Request $request)
     {
 
@@ -366,6 +416,12 @@ class Controlador_convocatorias extends Controller
 
 
 
+    /**
+     * 🔎 EN PANTALLA: el switch (interruptor) de la columna "PUBLICAR" en la tabla
+     * Publica / oculta la convocatoria en la web pública (cambia 'estado'):
+     * si está "activo" pasa a "inactivo" y viceversa.
+     * Requiere el permiso 'convocatoria.publicar'.
+     */
     public function cambiar_estado_convocatoria(Request $request, string $id_convocatoria)
     {
         
@@ -399,6 +455,11 @@ class Controlador_convocatorias extends Controller
         }
     }
 
+    /**
+     * 🔎 EN PANTALLA: no tiene botón (es la notificación/alerta de éxito o error que ves)
+     * AYUDANTE: arma el mensaje (tipo + texto) que se devuelve al usuario para
+     * mostrarlo como alerta/notificación. Lo usan casi todos los métodos.
+     */
     public function mensaje($titulo, $mensaje)
     {
         $this->mensaje = [

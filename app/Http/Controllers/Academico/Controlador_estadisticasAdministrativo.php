@@ -14,8 +14,34 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\AdministrativoImport;
 use Maatwebsite\Excel\Validators\ValidationException as ExcelValidationException;
 
+/**
+ * ============================================================================
+ *  CONTROLADOR: Estadísticas de Administrativos (módulo Académico)
+ * ============================================================================
+ *  Maneja la pantalla "Registro de administrativos": la tabla de personal
+ *  administrativo (filtrable por gestión), la edición rápida de un registro, la
+ *  importación masiva por CSV/Excel y el reporte en PDF por sede o por servicio
+ *  (planta / contrato / línea).
+ *
+ *  GUÍA RÁPIDA (busca con Ctrl+F el texto del botón que ves en pantalla):
+ *    (desplegable de gestión)  -> listarAdministrativos()  (recarga la tabla)
+ *    "Actualizar Informacion"  -> actualizar_registro_administrativo()
+ *    "Subir datos" / "Importar" (vista previa) -> previsualizarAdministrativos()
+ *    "Subir Definitivamente"   -> subirDatosAdministrativoscsv()
+ *    "Generar Reporte" / "Generar PDF" -> generar_reporte_administrativo()
+ * ============================================================================
+ */
 class Controlador_estadisticasAdministrativo extends Controller
 {
+    /**
+     * 🔎 EN PANTALLA: carga la PÁGINA completa "Registro de administrativos"
+     * (la que abrís desde el menú del administrador).
+     *
+     * Prepara lo que la vista necesita: las gestiones (años) registradas, las
+     * carreras con sus sedes y las sedes activas para los filtros del reporte, y
+     * la configuración del botón del sistema (config_botones). Por defecto muestra
+     * la gestión actual.
+     */
     public function index(Request $request)
     {
 
@@ -53,6 +79,16 @@ class Controlador_estadisticasAdministrativo extends Controller
     }
 
 
+    /**
+     * 🔎 EN PANTALLA: NO tiene botón propio: es la que LLENA LA TABLA de
+     * administrativos. Se recarga según la gestión elegida en el desplegable
+     * de la parte superior.
+     *
+     * Responde en JSON al DataTable (carga por servidor): trae los administrativos
+     * de la gestión elegida, aplica el buscador (sede, nombre, documento, género,
+     * cargo, profesión o servicio) y devuelve el permiso de editar para que el JS
+     * muestre el botón de actualizar de cada fila.
+     */
     public function listarAdministrativos(Request $request)
     {
         $gestion = $request->input('fecha', date('Y')); // por defecto el año actual
@@ -95,12 +131,22 @@ class Controlador_estadisticasAdministrativo extends Controller
             'recordsFiltered' => $recordsTotal, // Ajustar si hay filtros
             'data' => $sedes,
             'permisos' => [
-                'editar' => auth()->user()->can('estudiantes.editar'),
+                'editar' => auth()->user()->can('administrativos.editar'),
 
             ],
         ]);
     }
 
+    /**
+     * 🔎 EN PANTALLA: botón "Subir datos" (arriba) -> abre el modal de importación
+     * -> botón "Importar" (muestra la vista previa).
+     *
+     * Primer paso de la importación (NO guarda nada todavía): lee el archivo CSV,
+     * verifica que tenga las columnas requeridas (nombre_completo, documento, sede,
+     * genero, gestion, cargo, profesion, servicio) y devuelve las primeras 3 filas
+     * para mostrar la vista previa. La carga real la hace
+     * subirDatosAdministrativoscsv().
+     */
     public function previsualizarAdministrativos(Request $request)
     {
         try {
@@ -156,6 +202,16 @@ class Controlador_estadisticasAdministrativo extends Controller
     }
 
 
+    /**
+     * 🔎 EN PANTALLA: botón con title="Actualizar Informacion" (el ✓ azul al final
+     * de cada fila de la tabla). Arranca deshabilitado; se activa al marcar el
+     * checkbox de la fila, que la pone en modo edición (los campos se vuelven
+     * editables ahí mismo, en la tabla, sin modal).
+     *
+     * Guarda los cambios de UN administrativo: solo permite editar nombre,
+     * documento, género y servicio (planta/contrato/línea). El cargo, profesión,
+     * sede y gestión NO se tocan desde acá.
+     */
     public function actualizar_registro_administrativo(Request $request, String $id)
     {
 
@@ -195,6 +251,15 @@ class Controlador_estadisticasAdministrativo extends Controller
 
 
 
+    /**
+     * 🔎 EN PANTALLA: modal de importación, después de previsualizar -> botón
+     * "Subir Definitivamente".
+     *
+     * Segundo paso: importa de verdad los administrativos del archivo. Es "todo o
+     * nada": si hay CUALQUIER error en los datos, deshace la transacción y NO
+     * inserta nada, devolviendo la lista de errores por fila. Si todo está
+     * correcto, confirma e informa cuántas filas se insertaron.
+     */
     public function subirDatosAdministrativoscsv(Request $request)
     {
         // 1️⃣ Validar que se suba un archivo válido
@@ -255,6 +320,17 @@ class Controlador_estadisticasAdministrativo extends Controller
     }
 
 
+    /**
+     * 🔎 EN PANTALLA: botón "Generar Reporte" (arriba) -> abre el modal "Filtrar
+     * Reporte" -> botón "Generar PDF".
+     *
+     * Genera el PDF con el conteo de administrativos por tipo de servicio
+     * (planta / contrato / línea). Se puede agrupar de dos formas según el "tipo":
+     *   - "sede": cuenta por cada sede seleccionada, separando por servicio.
+     *   - "servicio": cuenta por los servicios seleccionados, en todas las sedes.
+     * Usa un cruce sede × servicio para que aparezcan también las combinaciones en
+     * 0 (sin personal). El PDF sale en base64 y el JS lo abre en una pestaña nueva.
+     */
     public function generar_reporte_administrativo(Request $request)
     {
 
@@ -356,6 +432,12 @@ class Controlador_estadisticasAdministrativo extends Controller
             return response()->json($this->mensaje, 200);
         }
     }
+    /**
+     * 🔎 EN PANTALLA: NO tiene botón. Es un AYUDANTE interno.
+     *
+     * Arma la respuesta estándar { tipo, mensaje } que casi todos los métodos
+     * devuelven en JSON, y que el JS usa para mostrar las alertas de éxito/error.
+     */
     public function mensaje($titulo, $mensaje)
     {
         $this->mensaje = [

@@ -16,8 +16,33 @@ use Illuminate\Validation\Rule;
 use App\Imports\tituladosImport;
 use Maatwebsite\Excel\Validators\ValidationException as ExcelValidationException;
 
+/**
+ * ============================================================================
+ *  CONTROLADOR: Estadísticas de Titulados (módulo Académico)
+ * ============================================================================
+ *  Maneja la pantalla "Registro de Titulados": la tabla de titulados (filtrable
+ *  por año/gestión y por fecha de colación), la edición rápida de un registro,
+ *  la importación masiva por CSV/Excel y el reporte en PDF por carrera o sede.
+ *
+ *  GUÍA RÁPIDA (busca con Ctrl+F el texto del botón que ves en pantalla):
+ *    "Filtrar"               -> listarTitulados()  (recarga la tabla)
+ *    "Actualizar Informacion"-> actualizar_registro_titulado()
+ *    "Subir datos" / "Importar" (vista previa) -> previsualizarTitulados()
+ *    "Subir Definitivamente" -> subirDatosTituladoscsv()
+ *    "Generar Reporte" / "Generar PDF" -> generar_reporte_titulados()
+ * ============================================================================
+ */
 class Controlador_estadisticasTitulados extends Controller
 {
+    /**
+     * 🔎 EN PANTALLA: carga la PÁGINA completa "Registro de Titulados"
+     * (la que abrís desde el menú del administrador).
+     *
+     * Prepara todo lo que la vista necesita: los años (gestiones) que tienen
+     * titulados registrados, las fechas de colación del año actual, las carreras
+     * y sedes activas para los filtros del reporte, y la configuración del botón
+     * del sistema (config_botones). Por defecto muestra el año actual.
+     */
     public function index(Request $request)
     {
          if (!auth()->user()->can('titulados.inicio')) {
@@ -61,6 +86,16 @@ class Controlador_estadisticasTitulados extends Controller
 
 
 
+    /**
+     * 🔎 EN PANTALLA: NO tiene botón propio: es la que LLENA LA TABLA de titulados.
+     * Se recarga al elegir un año y tocar el botón "Filtrar" (también filtra por la
+     * fecha de colación elegida en el desplegable).
+     *
+     * Responde en JSON al DataTable (carga por servidor): trae los titulados del
+     * año/gestión elegido (y de la colación exacta si se seleccionó una), aplica el
+     * buscador (nombre, documento, carrera, sede, género o grado) y devuelve el
+     * permiso de editar para que el JS muestre el botón de actualizar de cada fila.
+     */
     public function listarTitulados(Request $request)
     {
         $gestion = $request->input('gestion', date('Y')); // por defecto el año actual
@@ -115,6 +150,16 @@ class Controlador_estadisticasTitulados extends Controller
         ]);
     }
 
+    /**
+     * 🔎 EN PANTALLA: botón con title="Actualizar Informacion" (el ✓ azul al final
+     * de cada fila de la tabla). Ese botón está deshabilitado hasta que marcás el
+     * checkbox de la fila, que la pone en modo edición (los campos se vuelven
+     * editables ahí mismo, en la tabla, sin modal).
+     *
+     * Guarda los cambios de UN titulado: solo permite editar nombre, documento,
+     * género y grado académico (la carrera, sede y fecha de colación NO se tocan
+     * desde acá).
+     */
     public function actualizar_registro_titulado(Request $request, String $id)
     {
 
@@ -155,6 +200,16 @@ class Controlador_estadisticasTitulados extends Controller
 
 
 
+    /**
+     * 🔎 EN PANTALLA: botón "Subir datos" (arriba) -> abre el modal "Importar
+     * Planilla Titulados" -> botón "Importar" (muestra la vista previa).
+     *
+     * Primer paso de la importación (NO guarda nada todavía): lee el archivo CSV,
+     * verifica que tenga las columnas requeridas (nombre_completo, documento,
+     * carrera, sede, genero, fecha, grado_academico) y devuelve las primeras 3
+     * filas para mostrar la vista previa. La carga real la hace
+     * subirDatosTituladoscsv().
+     */
     public function previsualizarTitulados(Request $request)
     {
         try {
@@ -210,6 +265,15 @@ class Controlador_estadisticasTitulados extends Controller
 
 
 
+    /**
+     * 🔎 EN PANTALLA: modal "Importar Planilla Titulados", después de previsualizar
+     * -> botón "Subir Definitivamente".
+     *
+     * Segundo paso: importa de verdad los titulados del archivo. Es "todo o nada":
+     * si hay CUALQUIER error en los datos, deshace la transacción y NO inserta nada,
+     * devolviendo la lista de errores por fila. Si todo está correcto, confirma e
+     * informa cuántas filas se insertaron.
+     */
     public function subirDatosTituladoscsv(Request $request)
     {
         // 1️⃣ Validar que se suba un archivo válido
@@ -269,6 +333,13 @@ class Controlador_estadisticasTitulados extends Controller
             ], 200);
         }
     }
+    /**
+     * 🔎 EN PANTALLA: NO tiene botón. Alimenta el DESPLEGABLE de fechas de colación.
+     *
+     * Cuando elegís un año, devuelve en JSON las fechas de colación de ese año (ya
+     * formateadas en español, ej. "12 de marzo 2024") para llenar el selector de
+     * fecha con el que después filtrás la tabla.
+     */
     public function listarFechasColacion(Request $request)
     {
         $gestion = $request->input('anio', date('Y'));
@@ -297,6 +368,16 @@ class Controlador_estadisticasTitulados extends Controller
 
 
 
+    /**
+     * 🔎 EN PANTALLA: botón "Generar Reporte" (arriba) -> abre el modal "Filtrar
+     * Reporte" -> botón "Generar PDF".
+     *
+     * Genera el PDF con el conteo de titulados, agrupado de dos formas según el
+     * "tipo" elegido: por "carrera" o por "sede". Usa un cruce sede–carrera para
+     * mostrar también las combinaciones que quedaron en 0 (sin titulados). Filtra
+     * por los grados académicos marcados y por la gestión. El PDF sale en base64 y
+     * el JS lo abre en una pestaña nueva.
+     */
     public function generar_reporte_titulados(Request $request)
     {
         try {
@@ -411,6 +492,12 @@ class Controlador_estadisticasTitulados extends Controller
     }
 
 
+    /**
+     * 🔎 EN PANTALLA: NO tiene botón. Es un AYUDANTE interno.
+     *
+     * Arma la respuesta estándar { tipo, mensaje } que casi todos los métodos
+     * devuelven en JSON, y que el JS usa para mostrar las alertas de éxito/error.
+     */
     public function mensaje($titulo, $mensaje)
     {
         $this->mensaje = [

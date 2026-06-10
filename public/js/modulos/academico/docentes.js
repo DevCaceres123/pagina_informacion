@@ -404,7 +404,7 @@ $("#btnConfirmar").on("click", function (e) {
             }
 
             // Deshabilitamos el botón mientras se sube
-            $("#btnConfirmar").prop("disablde", true).text("Importando...");
+            $("#btnConfirmar").prop("disabled", true).text("Importando...");
 
             crud(
                 "admin/subirDatosDocentescsv",

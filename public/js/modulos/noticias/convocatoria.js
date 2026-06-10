@@ -147,7 +147,7 @@ function listar_infraestructuras() {
                         ${
                              permisosGlobal.eliminar
                                  ? `
-                        <a class="btn btn-sm btn-outline-danger px-2 d-inline-flex align-items-center eliminar_convocatoria me-1" data-id="${row.id}" title="Eliminar Noticia">
+                        <a class="btn btn-sm btn-outline-danger px-2 d-inline-flex align-items-center eliminar_convocatoria me-1" data-id="${row.id}" title="Eliminar Convocatoria">
                             <i class="fas fa-window-close fs-16"></i>
                         </a>
                             `

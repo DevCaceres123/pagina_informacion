@@ -15,7 +15,12 @@ use App\Http\Requests\Carrera\CarrerasRequest;
 class Controlador_carrera extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * 🔎 EN PANTALLA: pantalla principal del módulo "Carreras" (la tabla de carreras)
+     * VISTA PRINCIPAL DE CARRERAS (la pantalla del listado).
+     * Muestra la página HTML. Valida el permiso 'carrera.inicio'; si no lo tiene,
+     * devuelve al inicio. Además trae las sedes ACTIVAS para llenar la lista
+     * desplegable de sedes del formulario de "Nuevo".
+     * Los datos de la tabla NO se cargan aquí, se cargan por AJAX con listarCarreras().
      */
     public function index()
     {
@@ -28,6 +33,14 @@ class Controlador_carrera extends Controller
     }
 
 
+    /**
+     * 🔎 EN PANTALLA: arma las filas y los botones de la tabla de carreras ("Sedes", "Editar carrera", "Ver Malla curricular", "Eliminar carrera" y el switch de estado)
+     * DATOS DE LA TABLA DE CARRERAS (responde en formato JSON para DataTables).
+     * Aquí se arma cada fila del listado: nombre, modalidad, estado, etc.
+     * También envía los PERMISOS del usuario ('editar', 'eliminar', 'ver_sedes',
+     * 'ver_malla', etc.); el JavaScript los usa para decidir qué BOTONES mostrar
+     * en cada fila. Soporta búsqueda por nombre o modalidad y paginación.
+     */
     public function listarCarreras(Request $request)
     {
         $query = Carrera::select('id', 'nombre', 'modalidad', 'estado', 'malla_curricular_pdf', 'vinculo_web')->orderBy('id', 'desc');
@@ -70,7 +83,12 @@ class Controlador_carrera extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * 🔎 EN PANTALLA: botón "Nuevo" -> modal "CREAR NUEVA CARRERA" -> botón "Guardar Carrera"
+     * CREAR / REGISTRAR una nueva carrera.
+     * Guarda los datos de la carrera (nombre, modalidad, vínculo web), el PDF de
+     * la malla curricular (ver guardarPdf) y le ASIGNA las sedes seleccionadas
+     * (relación carrera-sedes). Usa transacción: si algo falla, borra el PDF que
+     * ya se había subido para no dejar archivos sueltos.
      */
     public function store(CarrerasRequest $request)
     {
@@ -118,6 +136,12 @@ class Controlador_carrera extends Controller
         }
     }
 
+    /**
+     * 🔎 EN PANTALLA: el switch (interruptor) verde/gris de estado en cada fila de la tabla
+     * ACTIVAR / DESACTIVAR carrera (cambiar estado).
+     * Si la carrera está "activo" la pasa a "inactivo" y viceversa (interruptor).
+     * Requiere el permiso 'carrera.desactivar' que se manda en listarCarreras().
+     */
     public function cambiarEstado(Request $request, string $id)
     {
 
@@ -162,7 +186,10 @@ class Controlador_carrera extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * 🔎 EN PANTALLA: botón "Editar carrera" (abre el modal "EDITAR CARRERA" y llena los campos, incluidas sus sedes)
+     * EDITAR (cargar datos): devuelve en JSON los datos de UNA carrera y las
+     * sedes que tiene asignadas, para llenar el formulario de edición.
+     * (Aquí solo se traen los datos; el guardado lo hace update()).
      */
     public function edit(string $id)
     {
@@ -180,7 +207,10 @@ class Controlador_carrera extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * 🔎 EN PANTALLA: modal "EDITAR CARRERA" -> botón "Guardar Carrera"
+     * EDITAR (guardar cambios): actualiza los datos de una carrera existente
+     * (nombre, modalidad y vínculo web). Usa transacción para revertir si falla.
+     * OJO: aquí NO se cambia el PDF de la malla (eso lo hace actualizar_malla).
      */
     public function update(Request $request, string $id_carrera)
     {
@@ -214,6 +244,15 @@ class Controlador_carrera extends Controller
         }
     }
 
+    /**
+     * 🔎 EN PANTALLA: botón "Ver Malla curricular" -> modal "MALLA CURRICULAR" -> botón "Subir nuevo PDF"
+     * ★ MALLA CURRICULAR: este es el método del botón "VER / MODIFICAR MALLA".
+     * Permite reemplazar el PDF de la malla curricular de la carrera: guarda el
+     * PDF nuevo en storage/app/public/mallas_curriculares y recién entonces borra
+     * el PDF anterior. Usa transacción; si algo falla, borra el nuevo archivo.
+     * NOTA: la parte de "VER" el PDF se apoya en el dato 'malla_curricular_pdf'
+     * que devuelve listarCarreras(); aquí se hace la MODIFICACIÓN del archivo.
+     */
     public function actualizar_malla(Request $request)
     {
         DB::beginTransaction();
@@ -257,6 +296,12 @@ class Controlador_carrera extends Controller
         }
     }
 
+    /**
+     * 🔎 EN PANTALLA: no tiene botón propio (se usa por dentro al crear una carrera)
+     * AYUDANTE: guarda el PDF de la malla curricular en
+     * storage/app/public/mallas_curriculares y devuelve solo el NOMBRE del
+     * archivo (sin la carpeta) para guardarlo en BD. Lo usa store().
+     */
     public function guardarPdf(Request $request)
     {
         if ($request->hasFile('malla_curricular')) {
@@ -270,7 +315,9 @@ class Controlador_carrera extends Controller
 
 
     /**
-     * Remove the specified resource from storage.
+     * 🔎 EN PANTALLA: botón "Eliminar carrera"
+     * ELIMINAR carrera (borrado lógico / SoftDeletes, no se borra de verdad).
+     * Requiere el permiso 'carrera.eliminar' que se manda en listarCarreras().
      */
     public function destroy(string $id)
     {
@@ -298,6 +345,12 @@ class Controlador_carrera extends Controller
     }
 
 
+    /**
+     * 🔎 EN PANTALLA: botón "Sedes" -> modal "Sedes Asignadas"
+     * Devuelve (en JSON) TODAS las sedes, marcando con 'asignada' (true/false)
+     * cuáles ya pertenecen a esta carrera. Sirve para mostrar en el modal la
+     * lista de sedes con su check activado/desactivado según corresponda.
+     */
     public function listarSedesCarrera($id_carrera)
     {
         try {
@@ -333,9 +386,9 @@ class Controlador_carrera extends Controller
     }
 
     /**
-     * Asignar una sede a una carrera
+     * 🔎 EN PANTALLA: modal "Sedes Asignadas" -> al MARCAR (activar) una sede
+     * Asigna (vincula) una sede a la carrera.
      */
-
     public function asignarSede(Request $request, string $carreraId)
     {
         
@@ -344,6 +397,10 @@ class Controlador_carrera extends Controller
         return response()->json(['tipo' => 'exito', 'mensaje' => 'Sede asignada correctamente']);
     }
 
+    /**
+     * 🔎 EN PANTALLA: modal "Sedes Asignadas" -> al DESMARCAR (quitar) una sede
+     * Quita (desvincula) una sede de la carrera.
+     */
     public function quitarSede(Request $request, string $carreraId)
     {
         $carrera = Carrera::findOrFail($carreraId);
@@ -351,6 +408,11 @@ class Controlador_carrera extends Controller
         return response()->json(['tipo' => 'exito', 'mensaje' => 'Sede quitada correctamente']);
     }
 
+    /**
+     * 🔎 EN PANTALLA: no tiene botón (es la notificación/alerta de éxito o error que ves)
+     * AYUDANTE: arma el mensaje (tipo + texto) que se devuelve al usuario para
+     * mostrarlo como alerta/notificación. Lo usan casi todos los métodos.
+     */
     // Mensaje para mostrar al usuario
     public function mensaje($titulo, $mensaje)
     {

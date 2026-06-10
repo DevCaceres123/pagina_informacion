@@ -293,7 +293,8 @@
                                             {{ $doc['label'] }}
                                         </div>
                                         <a id="link_{{ $doc['campo'] }}" href="#" target="_blank"
-                                           class="btn btn-sm btn-outline-{{ $grupo['color'] }} flex-shrink-0 d-none">
+                                           class="btn btn-sm btn-outline-{{ $grupo['color'] }} flex-shrink-0 d-none"
+                                           title="Ver Documento">
                                             <i class="fas fa-eye"></i>
                                         </a>
                                         <input type="file" class="form-control form-control-sm doc-input flex-shrink-0"

@@ -270,12 +270,12 @@ function renderizarFormularios(formularios) {
                 <td>${i + 1}</td>
                 <td>${f.fecha_de_recepcion_formateada}</td>
                 <td class="text-center">
-                    <a href="${url}" target="_blank" class="btn btn-sm btn-outline-primary">
+                    <a href="${url}" target="_blank" class="btn btn-sm btn-outline-primary" title="Ver Formulario">
                         <i class="fas fa-eye"></i>
                     </a>
                 </td>
                 <td class="text-center">
-                    <button class="btn btn-sm btn-outline-danger btn-del-formulario" data-id="${f.id}">
+                    <button class="btn btn-sm btn-outline-danger btn-del-formulario" data-id="${f.id}" title="Eliminar Formulario">
                         <i class="fas fa-trash"></i>
                     </button>
                 </td>
@@ -307,13 +307,13 @@ function renderizarExpediente(requisitosPorTipo, aprobaciones) {
                     <td class="ps-3" style="width:40px">${i + 1}</td>
                     <td class="text-capitalize">${r.nombre}</td>
                     <td class="text-center" style="width:60px">
-                        <a href="${url}" target="_blank" class="btn btn-sm btn-outline-primary">
+                        <a href="${url}" target="_blank" class="btn btn-sm btn-outline-primary" title="Ver Requisito">
                             <i class="fas fa-eye"></i>
                         </a>
                     </td>
                     <td class="text-center" style="width:60px">
                         <button class="btn btn-sm btn-outline-danger btn-del-requisito"
-                            data-id="${r.id}" data-tipo="${tipo}">
+                            data-id="${r.id}" data-tipo="${tipo}" title="Eliminar Requisito">
                             <i class="fas fa-trash"></i>
                         </button>
                     </td>
