@@ -42,10 +42,10 @@
                         </div>
                         <div class="dropdown-divider mt-0"></div>
                         <small class="text-muted px-2 pb-1 d-block">Cuenta</small>
-                        <a class="dropdown-item" href="{{ route('perfil') }}">
+                        {{-- <a class="dropdown-item" href="{{ route('perfil') }}">
                             <i class="las la-user fs-18 me-1 align-text-bottom"></i>
                             Perfil
-                        </a>
+                        </a> --}}
 
                         <div class="dropdown-divider mb-0"></div>
                         <a class="dropdown-item text-danger" href="javascript:void(0)" id="btn-cerrar-session"><i
